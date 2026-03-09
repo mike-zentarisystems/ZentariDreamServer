@@ -68,7 +68,7 @@ list_backups() {
     local backups=()
     while IFS= read -r -d '' backup; do
         backups+=("$backup")
-    done < <(find "$BACKUP_ROOT" -maxdepth 1 -type d -name "*-*-*" -print0 2>/dev/null | sort -z -r)
+    done < <(find "$BACKUP_ROOT" -maxdepth 1 \( -type d -o -name "*.tar.gz" \) -name "*-*-*" -print0 2>/dev/null | sort -z -r)
 
     if [[ ${#backups[@]} -eq 0 ]]; then
         log_info "No backups found"
@@ -84,15 +84,24 @@ list_backups() {
     for backup in "${backups[@]}"; do
         local id
         id=$(basename "$backup")
-        local manifest="$backup/manifest.json"
         local backup_type="unknown"
         local description=""
         local size
         size=$(du -sh "$backup" 2>/dev/null | cut -f1)
 
-        if [[ -f "$manifest" ]]; then
-            backup_type=$(grep -o '"backup_type": "[^"]*"' "$manifest" 2>/dev/null | cut -d'"' -f4 || echo "unknown")
-            description=$(grep -o '"description": "[^"]*"' "$manifest" 2>/dev/null | cut -d'"' -f4 || echo "")
+        if [[ "$backup" == *.tar.gz ]]; then
+            # Compressed archive — extract manifest from inside the tar
+            local manifest_data
+            local archive_name="${id%.tar.gz}"
+            if manifest_data=$(tar xzf "$backup" -O "${archive_name}/manifest.json" 2>/dev/null); then
+                backup_type=$(echo "$manifest_data" | grep -o '"backup_type": "[^"]*"' 2>/dev/null | cut -d'"' -f4 || echo "compressed")
+                description=$(echo "$manifest_data" | grep -o '"description": "[^"]*"' 2>/dev/null | cut -d'"' -f4 || echo "")
+            else
+                backup_type="compressed"
+            fi
+        elif [[ -f "$backup/manifest.json" ]]; then
+            backup_type=$(grep -o '"backup_type": "[^"]*"' "$backup/manifest.json" 2>/dev/null | cut -d'"' -f4 || echo "unknown")
+            description=$(grep -o '"description": "[^"]*"' "$backup/manifest.json" 2>/dev/null | cut -d'"' -f4 || echo "")
         fi
 
         printf "%-20s %-12s %-10s %s\n" "$id" "$backup_type" "$size" "$description"
@@ -199,21 +208,11 @@ backup_config() {
     local backup_dir="$1"
     log_info "Backing up configuration..."
 
-    # Essential config files
-    local config_files=(
-        ".env"
-        "docker-compose.yml"
-        ".version"
-        "dream-preflight.sh"
-        "dream-update.sh"
-    )
-
-    for file in "${config_files[@]}"; do
-        if [[ -f "$DREAM_DIR/$file" ]]; then
-            cp "$DREAM_DIR/$file" "$backup_dir/"
-            log_success "Backed up: $file"
-        else
-            log_warn "Skipped (not found): $file"
+    # Essential config files: discover compose overlays + dotfiles dynamically
+    for file in "$DREAM_DIR"/.env "$DREAM_DIR"/.version "$DREAM_DIR"/docker-compose*.y*ml "$DREAM_DIR"/dream-preflight.sh "$DREAM_DIR"/dream-update.sh; do
+        if [[ -f "$file" ]]; then
+            cp "$file" "$backup_dir/"
+            log_success "Backed up: $(basename "$file")"
         fi
     done
 
@@ -257,7 +256,7 @@ apply_retention() {
     local backups=()
     while IFS= read -r -d '' backup; do
         backups+=("$backup")
-    done < <(find "$BACKUP_ROOT" -maxdepth 1 -type d -name "*-*-*" -print0 2>/dev/null | sort -z -r)
+    done < <(find "$BACKUP_ROOT" -maxdepth 1 \( -type d -o -name "*.tar.gz" \) -name "*-*-*" -print0 2>/dev/null | sort -z -r)
 
     local count=${#backups[@]}
     if [[ $count -gt $RETENTION_COUNT ]]; then
@@ -409,7 +408,11 @@ main() {
     fi
 
     # Check if running in Dream Server directory
-    if [[ ! -f "$DREAM_DIR/docker-compose.yml" && ! -d "$DREAM_DIR/data" ]]; then
+    local has_compose=false
+    for f in "$DREAM_DIR"/docker-compose*.y*ml; do
+        [[ -f "$f" ]] && has_compose=true && break
+    done
+    if [[ "$has_compose" == "false" && ! -d "$DREAM_DIR/data" ]]; then
         log_warn "This doesn't appear to be a Dream Server directory"
         log_warn "Expected: docker-compose.yml or data/ directory"
         read -rp "Continue anyway? [y/N] " confirm
