@@ -13,12 +13,16 @@ import hashlib
 import base64
 import time
 import os
+from dotenv import load_dotenv
 
-# HVAC LiveKit credentials - UPDATE THESE FROM YOUR HVAC LIVEKIT PROJECT
-# Create a new project at https://cloud.livekit.io
-API_KEY = 'APIRUdt5f4Hp87o'
-API_SECRET = 'bTpgs0RC42jjluOevB9D64zcYhZFG7qEdU0T1m1QMNX'
-LIVEKIT_URL = 'wss://grace-hvac-jtcdy0sb.livekit.cloud'
+load_dotenv(".env")
+
+API_KEY = os.getenv("LIVEKIT_API_KEY", "")
+API_SECRET = os.getenv("LIVEKIT_API_SECRET", "")
+LIVEKIT_URL = os.getenv("LIVEKIT_URL", "wss://grace-hvac-jtcdy0sb.livekit.cloud")
+
+if not API_KEY or not API_SECRET:
+    raise ValueError("LIVEKIT_API_KEY and LIVEKIT_API_SECRET must be set in environment or .env file")
 
 def base64url_encode(data):
     """Base64URL encode without padding"""

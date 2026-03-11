@@ -35,6 +35,7 @@ import json
 import logging
 import os
 import re
+import secrets
 import time
 from collections import deque
 from datetime import datetime, timezone
@@ -42,7 +43,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 import yaml
-from fastapi import FastAPI, Request, HTTPException
+from fastapi import FastAPI, Request, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -52,9 +53,18 @@ POLICY_FILE = Path(os.environ.get("APE_POLICY_FILE", "/config/policy.yaml"))
 AUDIT_LOG   = Path(os.environ.get("APE_AUDIT_LOG",   "/data/ape/audit.jsonl"))
 RATE_LIMIT  = int(os.environ.get("APE_RATE_LIMIT_RPM", "60"))
 STRICT_MODE = os.environ.get("APE_STRICT_MODE", "false").lower() == "true"
+_API_KEY = os.environ.get("APE_API_KEY", "")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger("ape")
+
+API_KEY = _API_KEY or secrets.token_hex(32)
+
+if not _API_KEY:
+    logger.warning(f"APE_API_KEY not set - auto-generated key: {API_KEY[:16]}... (set APE_API_KEY env var to use a fixed key)")
+
+if not STRICT_MODE:
+    logger.warning("WARNING: APE is running in advisory mode. Tool calls are logged but NOT blocked. Set APE_STRICT_MODE=true to enforce policies.")
 
 # ── Policy ───────────────────────────────────────────────────────────────────
 
@@ -232,8 +242,14 @@ app.add_middleware(
     allow_origins=["http://localhost:3001", "http://localhost:3000",
                    "http://127.0.0.1:3001", "http://127.0.0.1:3000"],
     allow_methods=["GET", "POST"],
-    allow_headers=["Content-Type", "Authorization"],
+    allow_headers=["Content-Type", "Authorization", "X-API-Key"],
 )
+
+
+async def verify_api_key(x_api_key: Optional[str] = Header(None)):
+    if API_KEY and x_api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API key")
+    return True
 
 
 class VerifyRequest(BaseModel):
@@ -258,8 +274,9 @@ async def health():
 
 @app.post("/verify", response_model=VerifyResponse)
 async def verify(req: VerifyRequest, request: Request):
+    await verify_api_key(request)
     policy = load_policy()
-    decision_id = f"{int(time.time() * 1000)}-{id(req) & 0xFFFF:04x}"
+    decision_id = f"{int(time.time() * 1000)}-{secrets.token_hex(8)}"
 
     # Rate limit check
     if not check_rate_limit(policy, req.session_id):
@@ -310,14 +327,37 @@ async def verify(req: VerifyRequest, request: Request):
 
 
 @app.get("/audit")
-async def audit(last_n: int = 50):
+async def audit(last_n: int = 50, x_api_key: Optional[str] = Header(None)):
     """Return the last N audit log entries."""
+    if API_KEY and x_api_key != API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid API key")
     if not AUDIT_LOG.exists():
         return {"entries": []}
     try:
-        lines = AUDIT_LOG.read_text().strip().splitlines()
-        entries = [json.loads(l) for l in lines[-last_n:] if l.strip()]
-        return {"entries": entries, "total": len(lines)}
+        entries = []
+        total_lines = 0
+        with open(AUDIT_LOG, "rb") as f:
+            f.seek(0, 2)
+            file_size = f.tell()
+            if file_size == 0:
+                return {"entries": [], "total": 0}
+            chunk_size = 8192
+            position = file_size
+            lines_found = 0
+            while position > 0 and lines_found < last_n + 1:
+                chunk_start = max(0, position - chunk_size)
+                f.seek(chunk_start)
+                chunk = f.read(position - chunk_start)
+                lines_found += chunk.count(b'\n')
+                position = chunk_start
+            f.seek(position)
+            for line in f:
+                total_lines += 1
+                if line.strip():
+                    if len(entries) >= last_n:
+                        entries.pop(0)
+                    entries.append(json.loads(line))
+        return {"entries": entries, "total": total_lines}
     except Exception as e:
         return {"entries": [], "error": str(e)}
 
