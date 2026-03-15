@@ -119,6 +119,141 @@ else
     fi
 fi
 
+# ---------------------------------------------------------------------------
+# Runtime sanity checks
+# ---------------------------------------------------------------------------
+# Goal: make this phase resilient across:
+# - fresh installs (daemon not started yet)
+# - non-interactive runs (can't prompt)
+# - sudo-required sessions (docker group not applied yet)
+# - systems where docker exists but user permissions are wrong
+
+_docker_try_with_optional_sudo() {
+    # If DOCKER_CMD isn't already sudo docker, try docker first and fall back to sudo docker.
+    if docker_run "$@" &>/dev/null; then
+        return 0
+    fi
+
+    if [[ "$DOCKER_CMD" != "sudo docker" ]] && command -v sudo &>/dev/null; then
+        DOCKER_CMD="sudo docker"
+        DOCKER_COMPOSE_CMD="sudo docker compose"
+        if docker_run "$@" &>/dev/null; then
+            return 0
+        fi
+    fi
+
+    return 1
+}
+
+_docker_daemon_start_hint() {
+    warn "Docker daemon does not appear to be running or accessible."
+    warn "Common fixes:"
+    warn "  - Linux (systemd): sudo systemctl enable --now docker"
+    warn "  - Linux (non-systemd): start dockerd using your init system"
+    warn "  - WSL2: ensure Docker Desktop is running"
+}
+
+_docker_ensure_daemon() {
+    # Returns 0 if docker responds to 'info' (with optional sudo fallback).
+    # If not, tries to start docker on systemd systems, then retries.
+
+    if _docker_try_with_optional_sudo info; then
+        return 0
+    fi
+
+    # Try to start docker service if systemd is present
+    if command -v systemctl &>/dev/null; then
+        ai_warn "Docker not responding; attempting to start docker service..."
+        if ! $DRY_RUN; then
+            sudo systemctl start docker 2>>"$LOG_FILE" || true
+        fi
+        if _docker_try_with_optional_sudo info; then
+            return 0
+        fi
+    fi
+
+    _docker_daemon_start_hint
+    return 1
+}
+
+_docker_compose_detect_cmd() {
+    # Prefer v2 (docker compose). If docker requires sudo, wrapper will handle it.
+    if docker_compose_run version &>/dev/null 2>&1; then
+        echo "docker compose"
+        return 0
+    fi
+
+    # v1 fallback
+    if command -v docker-compose &>/dev/null; then
+        echo "docker-compose"
+        return 0
+    fi
+
+    echo ""
+    return 1
+}
+
+_docker_compose_verify() {
+    local detected
+    detected="$(_docker_compose_detect_cmd || true)"
+
+    if [[ -n "$detected" ]]; then
+        ai_ok "Compose detected: $detected"
+        return 0
+    fi
+
+    return 1
+}
+
+_docker_post_install_checks() {
+    # Best-effort checks. Should not hard-fail in dry-run.
+    if $DRY_RUN; then
+        log "[DRY RUN] Skipping docker runtime checks"
+        return 0
+    fi
+
+    # Ensure daemon is reachable (and set DOCKER_CMD to sudo docker if needed)
+    if ! _docker_ensure_daemon; then
+        error "Docker is installed but not usable (daemon not running or permissions issue)."
+    fi
+
+    # Show effective docker command (for later phases)
+    log "Using docker command: $DOCKER_CMD"
+
+    # Verify compose availability; if missing, install compose plugin when possible.
+    if ! _docker_compose_verify; then
+        if [[ "$SKIP_DOCKER" == "true" ]]; then
+            warn "Compose missing and --skip-docker set; cannot install compose automatically."
+            return 0
+        fi
+
+        ai_warn "Docker Compose not detected; attempting install of compose plugin..."
+        pkg_update
+        # shellcheck disable=SC2046
+        pkg_install $(pkg_resolve docker-compose-plugin) || true
+
+        if ! _docker_compose_verify; then
+            warn "Compose still not detected after install attempt."
+            warn "You may need to install Docker Compose manually for your distro."
+        fi
+    fi
+
+    # Basic engine health
+    if docker_run version &>/dev/null 2>&1; then
+        ai_ok "Docker engine responding"
+    else
+        warn "Docker engine did not respond to 'docker version'"
+    fi
+
+    # Optional: give the user a clear hint if they are likely missing group perms
+    if [[ "$DOCKER_CMD" == "sudo docker" ]]; then
+        warn "Docker commands are running via sudo in this installer session."
+        warn "After the install finishes, log out/in (or run 'newgrp docker') to use docker without sudo."
+    fi
+}
+
+_docker_post_install_checks
+
 # NVIDIA Container Toolkit (skip for AMD — uses /dev/dri + /dev/kfd passthrough)
 if [[ $GPU_COUNT -gt 0 && "$GPU_BACKEND" == "nvidia" ]]; then
     if command -v nvidia-container-cli &> /dev/null 2>&1; then
