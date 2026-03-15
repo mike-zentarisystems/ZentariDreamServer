@@ -1330,7 +1330,7 @@ def _kill_session(agent: str, reason: str = "manual") -> dict:
             del data[k]
         with open(sessions_json, "w") as f:
             json.dump(data, f, indent=2)
-    except Exception:
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
         log.warning(f"[RESET] Failed to clean sessions.json for {agent}")
 
     log.warning(f"[RESET] Killed session {largest} for {agent} ({size} bytes) — {reason}")
