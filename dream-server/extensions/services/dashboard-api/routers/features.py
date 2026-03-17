@@ -98,9 +98,12 @@ def calculate_feature_status(feature: dict, services: list, gpu_info: Optional[G
 @router.get("/api/features")
 async def api_features(api_key: str = Depends(verify_api_key)):
     """Get feature discovery data."""
+    import asyncio
     from helpers import get_all_services
-    gpu_info = get_gpu_info()
-    service_list = await get_all_services()
+    gpu_info, service_list = await asyncio.gather(
+        asyncio.to_thread(get_gpu_info),
+        get_all_services(),
+    )
 
     feature_statuses = [calculate_feature_status(f, service_list, gpu_info) for f in FEATURES]
     feature_statuses.sort(key=lambda x: x["priority"])
