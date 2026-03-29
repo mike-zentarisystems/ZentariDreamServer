@@ -87,6 +87,14 @@ else
         log "Running in-place (source == install dir), skipping file copy"
     fi
 
+    # Copy extensions library to data dir for dashboard portal
+    _ext_lib_src="$SCRIPT_DIR/../resources/dev/extensions-library/services"
+    if [[ -d "$_ext_lib_src" ]]; then
+        mkdir -p "$INSTALL_DIR/data/extensions-library"
+        cp -r "$_ext_lib_src/." "$INSTALL_DIR/data/extensions-library/"
+        ai_ok "Extensions library copied to data/extensions-library/"
+    fi
+
     # Select tier-appropriate OpenClaw config
     if [[ "$ENABLE_OPENCLAW" == "true" && -n "$OPENCLAW_CONFIG" ]]; then
         OPENCLAW_MODEL="$LLM_MODEL"
