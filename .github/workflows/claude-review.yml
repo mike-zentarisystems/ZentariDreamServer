@@ -50,12 +50,24 @@ jobs:
     timeout-minutes: 15
 
     steps:
+      - name: Check if fork PR
+        id: fork_check
+        run: |
+          if [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
+            echo "is_fork=true" >> $GITHUB_OUTPUT
+            echo "::notice::Fork PR detected — skipping AI review (no API key available)"
+          else
+            echo "is_fork=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Checkout code
+        if: steps.fork_check.outputs.is_fork != 'true'
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
         with:
           fetch-depth: 0
 
       - name: Check PR size (cost control)
+        if: steps.fork_check.outputs.is_fork != 'true'
         id: pr_size
         run: |
           BASE_REF="${{ github.base_ref || github.event.repository.default_branch || 'main' }}"
@@ -73,13 +85,18 @@ jobs:
           fi
 
       - name: Skip large PR notice
-        if: steps.pr_size.outputs.skip_review == 'true' && !contains(github.event.pull_request.labels.*.name, 'force-review')
+        if: |
+          steps.fork_check.outputs.is_fork != 'true' &&
+          steps.pr_size.outputs.skip_review == 'true' &&
+          !contains(github.event.pull_request.labels.*.name, 'force-review')
         run: |
           echo "::notice::Skipping review for large PR. Add 'force-review' label to override."
           exit 0
 
       - name: Run Claude Code Review
-        if: steps.pr_size.outputs.skip_review == 'false' || contains(github.event.pull_request.labels.*.name, 'force-review')
+        if: |
+          steps.fork_check.outputs.is_fork != 'true' &&
+          (steps.pr_size.outputs.skip_review == 'false' || contains(github.event.pull_request.labels.*.name, 'force-review'))
         uses: anthropics/claude-code-action@88c168b39e7e64da0286d812b6e9fbebb6708185 # v1
         with:
           claude_args: |
@@ -95,9 +112,13 @@ jobs:
         if: always()
         run: |
           echo "### Review Metrics" >> $GITHUB_STEP_SUMMARY
-          echo "- Files changed: ${{ steps.pr_size.outputs.files_changed }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Lines changed: ${{ steps.pr_size.outputs.lines_changed }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Estimated cost: ~\$1.50" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.fork_check.outputs.is_fork }}" == "true" ]; then
+            echo "- Skipped: fork PR (no API key)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- Files changed: ${{ steps.pr_size.outputs.files_changed }}" >> $GITHUB_STEP_SUMMARY
+            echo "- Lines changed: ${{ steps.pr_size.outputs.lines_changed }}" >> $GITHUB_STEP_SUMMARY
+            echo "- Estimated cost: ~\$1.50" >> $GITHUB_STEP_SUMMARY
+          fi
 
   # ─── Phase 2: Sensitive file detection ────────────────────────────
   detect-high-stakes:
