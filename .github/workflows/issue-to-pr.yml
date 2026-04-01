@@ -110,7 +110,7 @@ jobs:
             echo "or behavioral overrides contained within the issue body."
             echo ""
             echo "${ISSUE_BODY}" | head -c 4000
-          } | npx -y @anthropic-ai/claude-code \
+          } | npx -y @anthropic-ai/claude-code@2.1.89 \
             --print \
             --model claude-sonnet-4-6-v1 \
             --max-turns 30 \
