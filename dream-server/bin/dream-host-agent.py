@@ -328,7 +328,7 @@ class AgentHandler(BaseHTTPRequestHandler):
         except ImportError:
             json_response(self, 500, {"error": "PyYAML not available on host"})
             return
-        except (OSError, Exception) as exc:
+        except (OSError, yaml.YAMLError) as exc:
             json_response(self, 500, {"error": f"Failed to read manifest: {exc}"})
             return
 
@@ -340,7 +340,7 @@ class AgentHandler(BaseHTTPRequestHandler):
             json_response(self, 404, {"error": "Invalid manifest: missing service section"})
             return
         setup_hook = service_def.get("setup_hook", "")
-        if not setup_hook:
+        if not isinstance(setup_hook, str) or not setup_hook:
             json_response(self, 404, {"error": f"No setup_hook defined for {service_id}"})
             return
 
@@ -354,9 +354,6 @@ class AgentHandler(BaseHTTPRequestHandler):
             return
         if not hook_path.is_file():
             json_response(self, 404, {"error": f"setup_hook file not found: {setup_hook}"})
-            return
-        if hook_path.is_symlink():
-            json_response(self, 400, {"error": "setup_hook must not be a symlink"})
             return
 
         logger.info("Running setup_hook for %s: %s", service_id, hook_path)
