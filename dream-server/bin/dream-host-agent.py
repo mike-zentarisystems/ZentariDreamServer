@@ -21,7 +21,8 @@ from socketserver import ThreadingMixIn
 VERSION = "1.0.0"
 SERVICE_ID_RE = re.compile(r"^[a-z0-9][a-z0-9_-]*$")
 MAX_BODY = 4096
-SUBPROCESS_TIMEOUT = 120
+SUBPROCESS_TIMEOUT_START = 600  # 10 min — image pulls can be slow
+SUBPROCESS_TIMEOUT_STOP = 120   # 2 min — stop should be fast
 logger = logging.getLogger("dream-host-agent")
 
 # Hardcoded fallback — used when core-service-ids.json is missing or unreadable.
@@ -145,14 +146,15 @@ def docker_compose_action(service_id: str, action: str) -> tuple:
         cmd = ["docker", "compose"] + flags + ["stop", service_id]
     else:
         return False, f"Unknown action: {action}"
+    timeout = SUBPROCESS_TIMEOUT_START if action == "start" else SUBPROCESS_TIMEOUT_STOP
     try:
         result = subprocess.run(
             cmd, cwd=str(INSTALL_DIR),
-            capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT,
+            capture_output=True, text=True, timeout=timeout,
         )
         return (True, "") if result.returncode == 0 else (False, result.stderr[:500])
     except subprocess.TimeoutExpired:
-        return False, "Docker compose operation timed out (120s)"
+        return False, f"Docker compose operation timed out ({timeout}s)"
 
 
 def json_response(handler, code: int, body: dict):
@@ -361,7 +363,7 @@ class AgentHandler(BaseHTTPRequestHandler):
             result = subprocess.run(
                 ["bash", str(hook_path), str(INSTALL_DIR), GPU_BACKEND],
                 cwd=str(ext_dir),
-                capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT,
+                capture_output=True, text=True, timeout=SUBPROCESS_TIMEOUT_STOP,
             )
             if result.returncode != 0:
                 logger.error("setup_hook failed for %s (exit %d): %s",
@@ -437,9 +439,9 @@ def main():
         pid_path.write_text(str(os.getpid()), encoding="utf-8")
         atexit.register(lambda: pid_path.unlink(missing_ok=True))
 
-    server = ThreadedHTTPServer(("127.0.0.1", port), AgentHandler)
+    server = ThreadedHTTPServer(("0.0.0.0", port), AgentHandler)
     signal.signal(signal.SIGTERM, lambda *_: server.shutdown())
-    logger.info("Dream Host Agent v%s listening on 127.0.0.1:%d", VERSION, port)
+    logger.info("Dream Host Agent v%s listening on 0.0.0.0:%d", VERSION, port)
     logger.info("Install dir: %s | GPU: %s | Tier: %s", INSTALL_DIR, GPU_BACKEND, TIER)
     try:
         server.serve_forever()
