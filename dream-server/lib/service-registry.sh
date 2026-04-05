@@ -98,6 +98,7 @@ user_ext_dir = ext_dir.parent.parent / "data" / "user-extensions"
 if user_ext_dir.exists():
     _all_service_dirs += sorted(user_ext_dir.iterdir())
 
+_seen_ids = set()
 for service_dir in _all_service_dirs:
     if not service_dir.is_dir():
         continue
@@ -125,6 +126,10 @@ for service_dir in _all_service_dirs:
         if not sid:
             print(f'# SKIP: {manifest_path}: missing required "id" field', file=sys.stderr)
             continue
+        if sid in _seen_ids:
+            print(f'# SKIP: {manifest_path}: duplicate service id {sid!r} (built-in takes precedence)', file=sys.stderr)
+            continue
+        _seen_ids.add(sid)
 
         # Validate service ID — must be safe for use as bash associative array key
         if not _re.match(r'^[a-zA-Z0-9_-]+$', sid):
