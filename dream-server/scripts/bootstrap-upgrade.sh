@@ -146,7 +146,7 @@ else
     # Start background download monitor
     monitor_download "$MODELS_DIR/$FULL_GGUF_FILE.part" "$TOTAL_BYTES" &
     _monitor_pid=$!
-    trap 'kill $_monitor_pid 2>/dev/null || true; write_status "failed"' EXIT TERM INT
+    trap 'kill $_monitor_pid 2>/dev/null || true; write_status "failed"; exit 1' EXIT TERM INT
 
     # Download with resume support, retry up to 3 times
     _dl_success=false
@@ -355,6 +355,10 @@ elif [[ -f "$INSTALL_DIR/data/.llama-server.pid" ]]; then
             else
                 log "WARNING: New model failed to load. Attempting rollback..."
                 kill "$_new_pid" 2>/dev/null || true
+                sleep 2
+                if kill -0 "$_new_pid" 2>/dev/null; then
+                    kill -9 "$_new_pid" 2>/dev/null || true
+                fi
                 if [[ -n "${_old_model_path:-}" && -f "$_old_model_path" ]]; then
                     "$LLAMA_SERVER_BIN" \
                         --host 0.0.0.0 --port 8080 \
