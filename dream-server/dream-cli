@@ -873,6 +873,10 @@ cmd_update() {
         _env_set "DREAM_VERSION" "$_COMPAT_TARGET_VER"
     fi
 
+    # Restart host agent so new endpoints / code changes take effect
+    log "Restarting host agent..."
+    cmd_agent restart || warn "Host agent restart failed (non-fatal)"
+
     success "Update complete"
 
     cmd_status
