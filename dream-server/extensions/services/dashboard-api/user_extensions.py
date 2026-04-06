@@ -97,7 +97,7 @@ def scan_user_extension_services(
 
 # --- TTL Cache ---
 
-_cache: dict[str, Any] = {"result": {}, "timestamp": 0.0}
+_cache: dict[str, Any] = {"result": {}, "timestamp": float("-inf")}
 _cache_lock = threading.Lock()
 
 
@@ -124,4 +124,4 @@ def _reset_cache() -> None:
     """Clear the cached scan result. Used for test isolation."""
     with _cache_lock:
         _cache["result"] = {}
-        _cache["timestamp"] = 0.0
+        _cache["timestamp"] = float("-inf")
