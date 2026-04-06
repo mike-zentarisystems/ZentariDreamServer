@@ -675,6 +675,18 @@ class TestDisableExtension:
         resp = test_client.post("/api/extensions/my-ext/disable")
         assert resp.status_code == 401
 
+    def test_disable_skips_data_info(self, test_client, monkeypatch, tmp_path):
+        """include_data_info=false → data_info is None (skips expensive dir scan)."""
+        user_dir = _setup_user_ext(tmp_path, "my-ext", enabled=True)
+        _patch_mutation_config(monkeypatch, tmp_path, user_dir=user_dir)
+
+        resp = test_client.post(
+            "/api/extensions/my-ext/disable?include_data_info=false",
+            headers=test_client.auth_headers,
+        )
+        assert resp.status_code == 200
+        assert resp.json()["data_info"] is None
+
 
 # --- Uninstall endpoint ---
 

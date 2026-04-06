@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Optional
 
 import yaml
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 
 from config import (
@@ -709,7 +709,7 @@ def enable_extension(service_id: str, api_key: str = Depends(verify_api_key)):
 
 
 @router.post("/api/extensions/{service_id}/disable")
-def disable_extension(service_id: str, api_key: str = Depends(verify_api_key)):
+def disable_extension(service_id: str, include_data_info: bool = Query(True), api_key: str = Depends(verify_api_key)):
     """Disable an enabled extension."""
     _validate_service_id(service_id)
     _assert_not_core(service_id)
@@ -788,13 +788,13 @@ def disable_extension(service_id: str, api_key: str = Depends(verify_api_key)):
         "action": "disabled",
         "restart_required": not agent_ok,
         "dependents_warning": dependents_warning,
-        "data_info": _get_service_data_info(service_id),
+        "data_info": _get_service_data_info(service_id) if include_data_info else None,
         "message": message,
     }
 
 
 @router.delete("/api/extensions/{service_id}")
-def uninstall_extension(service_id: str, api_key: str = Depends(verify_api_key)):
+def uninstall_extension(service_id: str, include_data_info: bool = Query(True), api_key: str = Depends(verify_api_key)):
     """Uninstall a disabled extension."""
     _validate_service_id(service_id)
     _assert_not_core(service_id)
@@ -834,7 +834,7 @@ def uninstall_extension(service_id: str, api_key: str = Depends(verify_api_key))
     return {
         "id": service_id,
         "action": "uninstalled",
-        "data_info": _get_service_data_info(service_id),
+        "data_info": _get_service_data_info(service_id) if include_data_info else None,
         "message": "Extension uninstalled. Docker volumes may remain — run 'docker volume ls' to check.",
         "cleanup_hint": f"To remove orphaned volumes: docker volume ls --filter 'name={service_id}' -q | xargs docker volume rm",
     }
