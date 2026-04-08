@@ -131,7 +131,7 @@ snapshot_pre_update() {
 
     # .env and .env.* variants
     for pattern in ".env" ".env.*"; do
-        for f in ${INSTALL_DIR}/${pattern}; do
+        for f in "${INSTALL_DIR}"/${pattern}; do
             [[ -f "$f" ]] || continue
             cp "$f" "${snap_dir}/"
             files_saved=$(( files_saved + 1 ))
@@ -456,7 +456,7 @@ cmd_backup() {
     # Backup compose files
     local files_backed_up=0
     for pattern in "docker-compose*.yml" "docker-compose*.yaml" ".env" ".env.*"; do
-        for file in ${INSTALL_DIR}/${pattern}; do
+        for file in "${INSTALL_DIR}"/${pattern}; do
             if [[ -f "$file" ]]; then
                 cp "$file" "$backup_path/"
                 ((files_backed_up++))
