@@ -340,6 +340,11 @@ elif [[ -f "$INSTALL_DIR/data/.llama-server.pid" ]]; then
             # from consuming the entire token budget on internal reasoning)
             _reasoning=$(grep '^LLAMA_REASONING=' "$ENV_FILE" 2>/dev/null | cut -d= -f2 || echo "")
             [[ -z "$_reasoning" ]] && _reasoning="off"
+            case "$_reasoning" in
+                off)  _reasoning_fmt="none" ;;
+                on)   _reasoning_fmt="deepseek" ;;
+                *)    _reasoning_fmt="$_reasoning" ;;
+            esac
 
             # Relaunch with new model
             log "Starting native llama-server with ${_gguf_file}..."
@@ -348,7 +353,7 @@ elif [[ -f "$INSTALL_DIR/data/.llama-server.pid" ]]; then
                 --model "$_model_path" \
                 --ctx-size "$_ctx_size" \
                 --n-gpu-layers 999 \
-                --reasoning "$_reasoning" \
+                --reasoning-format "$_reasoning_fmt" \
                 --metrics \
                 > "$LLAMA_SERVER_LOG" 2>&1 &
             _new_pid=$!
@@ -380,7 +385,7 @@ elif [[ -f "$INSTALL_DIR/data/.llama-server.pid" ]]; then
                         --model "$_old_model_path" \
                         --ctx-size "$_ctx_size" \
                         --n-gpu-layers 999 \
-                        --reasoning "${_reasoning:-off}" \
+                        --reasoning-format "${_reasoning_fmt:-none}" \
                         --metrics \
                         > "$LLAMA_SERVER_LOG" 2>&1 &
                     _rollback_pid=$!
