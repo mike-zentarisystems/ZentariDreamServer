@@ -128,6 +128,10 @@ header "2/6" "Docker Compose Validation"
 
 # Provide required compose variables so validation doesn't fail on :? guards
 export WEBUI_SECRET="${WEBUI_SECRET:-test}"
+export N8N_USER="${N8N_USER:-admin@example.invalid}"
+export N8N_PASS="${N8N_PASS:-test-password}"
+export OPENCLAW_TOKEN="${OPENCLAW_TOKEN:-test-openclaw-token}"
+export SEARXNG_SECRET="${SEARXNG_SECRET:-test-searxng-secret}"
 
 if [[ -z "$COMPOSE_FILE" ]]; then
     fail "No compose file found (expected base+overlay or docker-compose.yml)"
