@@ -3,8 +3,8 @@
 # ============================================================================
 # Part of: installers/windows/phases/
 # Purpose: Install OpenCode (AI coding IDE), Claude Code CLI, and Codex CLI.
-#          Configures OpenCode to point at the local llama-server. Adds
-#          OpenCode to Windows Startup so it persists across reboots.
+#          Configures OpenCode to point at the local llama-server and creates
+#          a manual launcher instead of auto-starting it at login.
 #
 # Reads:
 #   $dryRun, $cloudMode         -- from orchestrator context
@@ -27,7 +27,7 @@ Write-Phase -Phase 7 -Total 13 -Name "DEVELOPER TOOLS" -Estimate "~2-5 minutes"
 if ($dryRun) {
     Write-AI "[DRY RUN] Would install OpenCode v$($script:OPENCODE_VERSION) to $($script:OPENCODE_EXE)"
     Write-AI "[DRY RUN] Would configure OpenCode for local llama-server (model: $($tierConfig.LlmModel))"
-    Write-AI "[DRY RUN] Would add OpenCode to Windows Startup folder"
+    Write-AI "[DRY RUN] Would create a manual OpenCode launcher"
     if (-not $cloudMode) {
         Write-AI "[DRY RUN] Would check for Node.js and install Claude Code + Codex CLI via npm"
     }
@@ -37,6 +37,7 @@ if ($dryRun) {
 }
 
 # ── OpenCode ──────────────────────────────────────────────────────────────────
+# Config helpers are sourced from installers/windows/lib/opencode-config.ps1.
 Write-AI "Setting up OpenCode AI coding assistant..."
 
 if (-not (Test-Path $script:OPENCODE_EXE)) {
@@ -88,57 +89,24 @@ if (-not (Test-Path $script:OPENCODE_EXE)) {
 
 # ── OpenCode configuration ────────────────────────────────────────────────────
 if (Test-Path $script:OPENCODE_EXE) {
-    New-Item -ItemType Directory -Path $script:OPENCODE_CONFIG_DIR -Force | Out-Null
-    $_ocConfigFile = Join-Path $script:OPENCODE_CONFIG_DIR "opencode.json"
+    $_ocSync = Sync-WindowsOpenCodeConfigFromEnv `
+        -InstallDir $installDir `
+        -GpuBackend $gpuInfo.Backend `
+        -CloudMode:$cloudMode `
+        -DefaultModelId $tierConfig.GgufFile `
+        -DefaultModelName $tierConfig.LlmModel `
+        -DefaultContextLimit ([int]$tierConfig.MaxContext)
 
-    if (-not (Test-Path $_ocConfigFile)) {
-        # llama-server is always on port 8080 (OLLAMA_PORT in .env)
-        # AMD native + NVIDIA Docker both expose on 127.0.0.1:8080
-        $_llamaPort = "8080"
-
-        # Read OLLAMA_PORT from generated .env in case it was overridden
-        $_envPath = Join-Path $installDir ".env"
-        if (Test-Path $_envPath) {
-            $_portLine = Get-Content $_envPath |
-                Where-Object { $_ -match "^OLLAMA_PORT=" } |
-                Select-Object -First 1
-            if ($_portLine) {
-                $_llamaPort = ($_portLine -split "=", 2)[1].Trim()
-            }
+    switch ($_ocSync.Status) {
+        "created" {
+            Write-AISuccess "OpenCode configured for local llama-server (model: $($_ocSync.ModelName))"
         }
-
-        # NOTE: llama-server exposes models by GGUF filename (not the LlmModel alias)
-        $_ocModelId = $tierConfig.GgufFile
-
-        $ocConfig = @"
-{
-  "`$schema": "https://opencode.ai/config.json",
-  "model": "llama-server/$_ocModelId",
-  "provider": {
-    "llama-server": {
-      "npm": "@ai-sdk/openai-compatible",
-      "name": "llama-server (local)",
-      "options": {
-        "baseURL": "http://127.0.0.1:${_llamaPort}/v1",
-        "apiKey": "no-key"
-      },
-      "models": {
-        "$_ocModelId": {
-          "name": "$($tierConfig.LlmModel)",
-          "limit": {
-            "context": $($tierConfig.MaxContext),
-            "output": 32768
-          }
+        "updated" {
+            Write-AISuccess "OpenCode config updated for local llama-server (model: $($_ocSync.ModelName))"
         }
-      }
-    }
-  }
-}
-"@
-        Write-Utf8NoBom -Path $_ocConfigFile -Content $ocConfig
-        Write-AISuccess "OpenCode configured for local llama-server (model: $($tierConfig.LlmModel))"
-    } else {
-        Write-AISuccess "OpenCode config already exists -- preserving existing configuration"
+        default {
+            Write-AISuccess "OpenCode config regenerated for local llama-server (model: $($_ocSync.ModelName))"
+        }
     }
 
     # ── VBS launcher (available for manual startup) ──────────────────────────
@@ -284,15 +252,19 @@ if (Test-Path $_agentScript) {
             -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries `
             -StartWhenAvailable -ExecutionTimeLimit ([TimeSpan]::Zero)
 
-        Register-ScheduledTask -TaskName $script:DREAM_AGENT_TASK_NAME `
-            -Action $taskAction -Trigger $taskTrigger -Settings $taskSettings `
-            -Description "DreamServer Host Agent -- manages extensions and bridges dashboard to host" `
-            -ErrorAction SilentlyContinue | Out-Null
-
-        if ($?) {
+        $taskError = $null
+        try {
+            Register-ScheduledTask -TaskName $script:DREAM_AGENT_TASK_NAME `
+                -Action $taskAction -Trigger $taskTrigger -Settings $taskSettings `
+                -Description "DreamServer Host Agent -- manages extensions and bridges dashboard to host" `
+                -ErrorAction Stop | Out-Null
             Write-AISuccess "Host agent registered to start at login (Task: $($script:DREAM_AGENT_TASK_NAME))"
-        } else {
+        } catch {
+            $taskError = $_
             Write-AIWarn "Could not register login task -- start manually: .\dream.ps1 agent start"
+            if ($taskError -and $taskError.Exception) {
+                Write-AI "  Scheduled Tasks error: $($taskError.Exception.Message)"
+            }
         }
     } else {
         Write-AIWarn "Python not found -- Dream host agent not started"
