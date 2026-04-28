@@ -1,13 +1,13 @@
 # APE Policy Configuration
-# Reload is automatic — edit this file and APE picks it up within ~30s.
+# Reload is automatic â€” edit this file and APE picks it up within ~30s.
 #
 # Intent classes: ExecuteCommand, WriteFile, ReadFile, NetworkFetch, SpawnAgent, Other
 #
 # Modes:
-#   allow       — always permit
-#   deny        — always block
-#   allowlist   — permit only listed commands; optionally reject by regex pattern
-#   path_guard  — permit writes only within allowed_paths
+#   allow       â€” always permit
+#   deny        â€” always block
+#   allowlist   â€” permit only listed commands; optionally reject by regex pattern
+#   path_guard  â€” permit writes only within allowed_paths
 
 version: 1
 

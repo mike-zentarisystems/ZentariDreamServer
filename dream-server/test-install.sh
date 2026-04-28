@@ -1,5 +1,5 @@
 #!/bin/bash
-# test-install.sh — Run a full install with the smallest model for fast testing
+# test-install.sh â€” Run a full install with the smallest model for fast testing
 #
 # Uses Tier 0 (Qwen 3.5 2B, ~1.5GB) and non-interactive mode.
 # All other installer behavior is identical to a normal install.

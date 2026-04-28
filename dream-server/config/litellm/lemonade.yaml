@@ -1,5 +1,5 @@
 model_list:
-  # Lemonade exposes models as "extra.<GGUF_FILENAME>" — the wildcard
+  # Lemonade exposes models as "extra.<GGUF_FILENAME>" â€” the wildcard
   # passthrough (openai/*) does NOT work because it forwards the friendly
   # model name verbatim and lemonade returns 404.
   #

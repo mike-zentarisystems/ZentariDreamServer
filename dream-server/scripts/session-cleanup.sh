@@ -1,5 +1,5 @@
 #!/bin/bash
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Dream Server - Session Cleanup Script
 # https://github.com/Light-Heart-Labs/DreamServer
 #
@@ -8,22 +8,22 @@
 # threshold, it's deleted and its reference removed from
 # sessions.json, forcing the gateway to create a fresh session.
 #
-# The agent doesn't notice — it just gets a clean context window.
-# ═══════════════════════════════════════════════════════════════
+# The agent doesn't notice â€” it just gets a clean context window.
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 set -euo pipefail
 
-# ── Configuration ──────────────────────────────────────────────
-# Strix Halo: OpenClaw runs in Docker, sessions are in data volume
-OPENCLAW_DIR="${OPENCLAW_DIR:-$HOME/dream-server/data/openclaw/home/.openclaw}"
-SESSIONS_DIR="${SESSIONS_DIR:-$OPENCLAW_DIR/agents/main/sessions}"
+# â”€â”€ Configuration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Hermes Agent: session data is in the Docker named volume
+HERMES_DIR="${HERMES_DIR:-$HOME/dream-server/data/hermes-agent}"
+SESSIONS_DIR="${SESSIONS_DIR:-$HERMES_DIR/sessions}"
 SESSIONS_JSON="$SESSIONS_DIR/sessions.json"
 MAX_SIZE="${MAX_SIZE:-256000}"
 
 usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
-    echo "Prevents context overflow by pruning OpenClaw session files: removes inactive"
+    echo "Prevents context overflow by pruning Hermes Agent session files: removes inactive"
     echo "sessions and deletes bloated ones (over size threshold), then updates"
     echo "sessions.json so the gateway creates a fresh session."
     echo ""
@@ -31,8 +31,8 @@ usage() {
     echo "  -h, --help   Show this help and exit."
     echo ""
     echo "Environment:"
-    echo "  OPENCLAW_DIR   Base OpenClaw dir (default: \$HOME/dream-server/data/openclaw/home/.openclaw)"
-    echo "  SESSIONS_DIR   Sessions directory (default: \$OPENCLAW_DIR/agents/main/sessions)"
+    echo "  HERMES_DIR     Base Hermes Agent dir (default: \$HOME/dream-server/data/hermes-agent)"
+    echo "  SESSIONS_DIR   Sessions directory (default: \$HERMES_DIR/sessions)"
     echo "  MAX_SIZE       Max session file size in bytes (default: 256000)"
     echo ""
     echo "Exit: 0 (always; missing paths are skipped with a log message)."
@@ -42,7 +42,7 @@ case "${1:-}" in
     -h|--help) usage; exit 0 ;;
 esac
 
-# ── Preflight ──────────────────────────────────────────────────
+# â”€â”€ Preflight â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if [ ! -f "$SESSIONS_JSON" ]; then
     echo "[$(date)] No sessions.json found at $SESSIONS_JSON, skipping"
     exit 0
@@ -53,7 +53,7 @@ if [ ! -d "$SESSIONS_DIR" ]; then
     exit 0
 fi
 
-# ── Extract active session IDs (portable: no grep -P) ─────────
+# â”€â”€ Extract active session IDs (portable: no grep -P) â”€â”€â”€â”€â”€â”€â”€â”€â”€
 ACTIVE_IDS_EXIT=0
 ACTIVE_IDS=$(grep -oE '"sessionId"[[:space:]]*:[[:space:]]*"[^"]+"' "$SESSIONS_JSON" 2>&1 | sed -E 's/.*"sessionId"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/') || ACTIVE_IDS_EXIT=$?
 if [[ $ACTIVE_IDS_EXIT -ne 0 ]]; then
@@ -65,7 +65,7 @@ echo "[$(date)] Sessions dir: $SESSIONS_DIR"
 echo "[$(date)] Max size threshold: $MAX_SIZE bytes"
 echo "[$(date)] Active sessions found: $(echo "$ACTIVE_IDS" | wc -w)"
 
-# ── Clean up debris ────────────────────────────────────────────
+# â”€â”€ Clean up debris â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 DELETED_EXIT=0
 DELETED_COUNT=$(find "$SESSIONS_DIR" -name '*.deleted.*' -delete -print 2>&1 | wc -l) || DELETED_EXIT=$?
 if [[ $DELETED_EXIT -ne 0 ]]; then
@@ -82,7 +82,7 @@ if [ "$DELETED_COUNT" -gt 0 ] || [ "$BAK_COUNT" -gt 0 ]; then
     echo "[$(date)] Cleaned up $DELETED_COUNT .deleted files, $BAK_COUNT .bak files"
 fi
 
-# ── Process session files ──────────────────────────────────────
+# â”€â”€ Process session files â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 WIPE_IDS=""
 REMOVED_INACTIVE=0
 REMOVED_BLOATED=0
@@ -127,7 +127,7 @@ for f in "$SESSIONS_DIR"/*.jsonl; do
     fi
 done
 
-# ── Remove wiped session references from sessions.json ─────────
+# â”€â”€ Remove wiped session references from sessions.json â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if [ -n "$WIPE_IDS" ]; then
     echo "[$(date)] Clearing session references from sessions.json for:$WIPE_IDS"
     cp "$SESSIONS_JSON" "$SESSIONS_JSON.bak-cleanup"
@@ -160,7 +160,7 @@ with open(sessions_file, 'w') as f:
     rm -f "$SESSIONS_JSON.bak-cleanup"
 fi
 
-# ── Summary ────────────────────────────────────────────────────
+# â”€â”€ Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 echo "[$(date)] Cleanup complete: removed $REMOVED_INACTIVE inactive, $REMOVED_BLOATED bloated"
 REMAINING_EXIT=0
 REMAINING=$(find "$SESSIONS_DIR" -maxdepth 1 -name '*.jsonl' 2>&1 | wc -l) || REMAINING_EXIT=$?

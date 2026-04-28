@@ -1,18 +1,18 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Phase 03: Feature Selection
+# Dream Server Installer â€” Phase 03: Feature Selection
 # ============================================================================
 # Part of: installers/phases/
 # Purpose: Interactive feature selection menu
 #
 # Expects: INTERACTIVE, DRY_RUN, TIER, ENABLE_VOICE, ENABLE_WORKFLOWS,
-#           ENABLE_RAG, ENABLE_OPENCLAW, GPU_COUNT, GPU_BACKEND,
+#           ENABLE_RAG, ENABLE_HERMES, GPU_COUNT, GPU_BACKEND,
 #           GPU_TOPOLOGY_JSON, LLM_MODEL_SIZE_MB, SCRIPT_DIR, VERBOSE, DEBUG,
 #           GPU_INDICES, GPU_UUIDS (arrays from topology),
 #           show_phase(), show_install_menu(), chapter(), bootline(),
 #           success(), log(), warn(), error(), signal()
-# Provides: ENABLE_VOICE, ENABLE_WORKFLOWS, ENABLE_RAG, ENABLE_OPENCLAW,
-#           OPENCLAW_CONFIG, GPU_ASSIGNMENT_JSON,
+# Provides: ENABLE_VOICE, ENABLE_WORKFLOWS, ENABLE_RAG, ENABLE_HERMES,
+#           GPU_ASSIGNMENT_JSON,
 #           LLAMA_SERVER_GPU_UUIDS, WHISPER_GPU_UUID, COMFYUI_GPU_UUID,
 #           EMBEDDINGS_GPU_UUID, LLAMA_ARG_SPLIT_MODE, LLAMA_ARG_TENSOR_SPLIT
 #
@@ -39,9 +39,18 @@ if $INTERACTIVE && ! $DRY_RUN; then
         echo
         [[ $REPLY =~ ^[Nn]$ ]] || ENABLE_RAG=true
 
-        read -p "  Enable OpenClaw AI agent framework? [y/N] " -r < /dev/tty
+        read -p "  Enable Hermes Agent (Nous Research autonomous agent)? [Y/n] " -r < /dev/tty
         echo
-        [[ $REPLY =~ ^[Yy]$ ]] && ENABLE_OPENCLAW=true
+        [[ $REPLY =~ ^[Nn]$ ]] || ENABLE_HERMES=true
+
+        read -p "  Enable Standard Infrastructure (Authelia, Caddy, Monitoring, Baserow)? [Y/n] " -r < /dev/tty
+        echo
+        if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+            ENABLE_AUTHELIA=true
+            ENABLE_CADDY=true
+            ENABLE_MONITORING=true
+            ENABLE_BASEROW=true
+        fi
 
         read -p "  Enable image generation (ComfyUI + SDXL Lightning, ~6.5GB)? [Y/n] " -r < /dev/tty
         echo
@@ -70,7 +79,7 @@ if $INTERACTIVE && ! $DRY_RUN; then
 fi
 
 # Tier safety net: disable ComfyUI on Tier 0/1 in non-interactive mode.
-# Interactive mode has its own tier checks in the menu — this catches --non-interactive.
+# Interactive mode has its own tier checks in the menu â€” this catches --non-interactive.
 if ! $INTERACTIVE && [[ "$ENABLE_COMFYUI" == "true" ]]; then
     case "${TIER:-}" in
         0|1)
@@ -80,7 +89,7 @@ if ! $INTERACTIVE && [[ "$ENABLE_COMFYUI" == "true" ]]; then
     esac
 fi
 
-# Sync optional-extension compose state with the ENABLE_* flags — the
+# Sync optional-extension compose state with the ENABLE_* flags â€” the
 # resolver uses the .disabled convention to exclude services from the compose
 # stack. These mv calls are skipped during --dry-run so the source tree is
 # never mutated by a preview invocation.
@@ -93,7 +102,7 @@ if ! $DRY_RUN; then
             log "ComfyUI compose re-enabled"
         fi
     else
-        # Disable — prevents resolve-compose-stack.sh from including a compose
+        # Disable â€” prevents resolve-compose-stack.sh from including a compose
         # file whose image was never built/pulled, blocking ALL containers.
         if [[ -f "$_comfyui_compose" ]]; then
             mv "$_comfyui_compose" "${_comfyui_compose}.disabled"
@@ -102,7 +111,7 @@ if ! $DRY_RUN; then
     fi
     unset _comfyui_compose
 
-    # Sync DreamForge compose state with ENABLE_DREAMFORGE — same .disabled convention.
+    # Sync DreamForge compose state with ENABLE_DREAMFORGE â€” same .disabled convention.
     _dreamforge_compose="$SCRIPT_DIR/extensions/services/dreamforge/compose.yaml"
     if [[ "${ENABLE_DREAMFORGE:-}" == "true" ]]; then
         if [[ ! -f "$_dreamforge_compose" && -f "${_dreamforge_compose}.disabled" ]]; then
@@ -117,7 +126,41 @@ if ! $DRY_RUN; then
     fi
     unset _dreamforge_compose
 
-    # Sync Langfuse compose state with ENABLE_LANGFUSE — same .disabled convention.
+    # Sync Hermes Agent compose state
+    _hermes_compose="$SCRIPT_DIR/extensions/services/hermes-agent/compose.yaml"
+    if [[ "${ENABLE_HERMES:-}" == "true" ]]; then
+        if [[ ! -f "$_hermes_compose" && -f "${_hermes_compose}.disabled" ]]; then
+            mv "${_hermes_compose}.disabled" "$_hermes_compose"
+            log "Hermes Agent compose re-enabled"
+        fi
+    else
+        if [[ -f "$_hermes_compose" ]]; then
+            mv "$_hermes_compose" "${_hermes_compose}.disabled"
+            log "Hermes Agent compose disabled"
+        fi
+    fi
+
+    # Sync Authelia, Caddy, Monitoring, Baserow
+    for _svc in authelia caddy prometheus grafana baserow; do
+        _svc_compose="$SCRIPT_DIR/extensions/services/$_svc/compose.yaml"
+        _enabled_var="ENABLE_${_svc^^}"
+        [[ "$_svc" == "prometheus" || "$_svc" == "grafana" ]] && _enabled_var="ENABLE_MONITORING"
+        if [[ "${!_enabled_var:-}" == "true" ]]; then
+            if [[ ! -f "$_svc_compose" && -f "${_svc_compose}.disabled" ]]; then
+                mv "${_svc_compose}.disabled" "$_svc_compose"
+                log "$_svc compose re-enabled"
+            fi
+        else
+            if [[ -f "$_svc_compose" ]]; then
+                mv "$_svc_compose" "${_svc_compose}.disabled"
+                log "$_svc compose disabled"
+            fi
+        fi
+    done
+
+    unset _hermes_compose _svc_compose _enabled_var
+
+    # Sync Langfuse compose state with ENABLE_LANGFUSE â€” same .disabled convention.
     _langfuse_compose="$SCRIPT_DIR/extensions/services/langfuse/compose.yaml"
     if [[ "${ENABLE_LANGFUSE:-}" == "true" ]]; then
         if [[ ! -f "$_langfuse_compose" && -f "${_langfuse_compose}.disabled" ]]; then
@@ -145,25 +188,16 @@ if [[ -x "$SCRIPT_DIR/scripts/resolve-compose-stack.sh" ]]; then
     fi
 fi
 
-# All services are core — no profiles needed (compose profiles removed)
+# All services are core â€” no profiles needed (compose profiles removed)
 
-# Select tier-appropriate OpenClaw config
-if [[ "$ENABLE_OPENCLAW" == "true" ]]; then
-    case $TIER in
-        NV_ULTRA) OPENCLAW_CONFIG="pro.json" ;;
-        SH_LARGE|SH_COMPACT) OPENCLAW_CONFIG="openclaw-strix-halo.json" ;;
-        1) OPENCLAW_CONFIG="minimal.json" ;;
-        2) OPENCLAW_CONFIG="entry.json" ;;
-        3) OPENCLAW_CONFIG="prosumer.json" ;;
-        4) OPENCLAW_CONFIG="pro.json" ;;
-        *) OPENCLAW_CONFIG="prosumer.json" ;;
-    esac
-    log "OpenClaw config: $OPENCLAW_CONFIG (matched to Tier $TIER)"
+# Hermes Agent uses environment variables â€” no JSON config needed
+if [[ "$ENABLE_HERMES" == "true" ]]; then
+    log "Hermes Agent enabled ( Nous Research autonomous agent)"
 fi
 
 log "All services enabled (core install)"
 
-# Single GPU — generate a trivial assignment so the dashboard API can map
+# Single GPU â€” generate a trivial assignment so the dashboard API can map
 # the GPU UUID to services (without this, /api/gpu/detailed shows empty
 # assigned_services).  Multi-GPU systems fall through to the full TUI below.
 if [[ "$GPU_COUNT" -le 1 ]]; then
@@ -192,13 +226,13 @@ if [[ "$GPU_COUNT" -le 1 ]]; then
                         }
                     }
                 }')
-            log "Single GPU — assignment generated ($_single_gpu_uuid)"
+            log "Single GPU â€” assignment generated ($_single_gpu_uuid)"
         else
-            log "Single GPU detected — no NVIDIA UUID available, skipping assignment."
+            log "Single GPU detected â€” no NVIDIA UUID available, skipping assignment."
         fi
         unset _single_gpu_uuid
     else
-        log "Single GPU detected — non-NVIDIA backend, skipping GPU assignment."
+        log "Single GPU detected â€” non-NVIDIA backend, skipping GPU assignment."
     fi
     return
 fi
@@ -215,7 +249,7 @@ ASSIGN_GPUS_SCRIPT="$SCRIPT_DIR/scripts/assign_gpus.py"
 # Validate topology gpu_count matches installer's GPU_COUNT (don't overwrite the canonical value)
 _topo_gpu_count=$(jq '.gpu_count // 0' "$TOPOLOGY_FILE")
 if [[ "$_topo_gpu_count" != "$GPU_COUNT" ]]; then
-    warn "Topology gpu_count ($_topo_gpu_count) differs from detected GPU_COUNT ($GPU_COUNT) — using detected value"
+    warn "Topology gpu_count ($_topo_gpu_count) differs from detected GPU_COUNT ($GPU_COUNT) â€” using detected value"
 fi
 VENDOR=$(jq -r '.vendor' "$TOPOLOGY_FILE")
 
@@ -286,7 +320,7 @@ run_automatic() {
 
 # Custom assignment
 run_custom() {
-  [[ "$INTERACTIVE" == "true" ]] || { warn "run_custom called in non-interactive mode — skipping."; return; }
+  [[ "$INTERACTIVE" == "true" ]] || { warn "run_custom called in non-interactive mode â€” skipping."; return; }
   echo ""
   chapter "CUSTOM GPU ASSIGNMENT"
   echo -e "  ${GRN}Assign GPUs to each service manually.${NC}"
@@ -446,7 +480,7 @@ fi
 
 LLAMA_SERVER_GPU_UUIDS=$(echo "$GPU_ASSIGNMENT_JSON" | jq -r '.gpu_assignment.services.llama_server.gpus // [] | join(",")')
 if [[ -z "$LLAMA_SERVER_GPU_UUIDS" ]]; then
-    warn "LLAMA_SERVER_GPU_UUIDS is empty — NVIDIA_VISIBLE_DEVICES will fall back to 'all' (all GPUs visible to llama-server)"
+    warn "LLAMA_SERVER_GPU_UUIDS is empty â€” NVIDIA_VISIBLE_DEVICES will fall back to 'all' (all GPUs visible to llama-server)"
 fi
 WHISPER_GPU_UUID=$(echo "$GPU_ASSIGNMENT_JSON" | jq -r '.gpu_assignment.services.whisper.gpus[0]?')
 COMFYUI_GPU_UUID=$(echo "$GPU_ASSIGNMENT_JSON" | jq -r '.gpu_assignment.services.comfyui.gpus[0]?')

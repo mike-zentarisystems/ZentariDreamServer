@@ -1,7 +1,7 @@
 {
   "schema_version": "dream.hardware.v1",
   "_attribution": {
-    "gpu_bandwidth_data": "llmfit by Alex Jones (MIT) — github.com/AlexsJones/llmfit",
+    "gpu_bandwidth_data": "llmfit by Alex Jones (MIT) â€” github.com/AlexsJones/llmfit",
     "note": "GPU bandwidth numbers sourced from the llmfit project's hardware database. Thank you to Alex Jones and the llmfit contributors for maintaining this excellent open-source resource."
   },
   "known_gpus": [

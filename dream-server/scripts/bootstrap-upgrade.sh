@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# bootstrap-upgrade.sh — Background Model Download + Auto Hot-Swap
+# bootstrap-upgrade.sh â€” Background Model Download + Auto Hot-Swap
 # ============================================================================
 # Runs in the background after the installer starts services with the
 # bootstrap model. Downloads the full tier-appropriate model, then swaps
@@ -18,14 +18,14 @@
 # Phase 4b cleanup step removes the actual bootstrap model after hot-swap.
 #
 # On failure: logs the error and exits. The bootstrap model continues
-# running — the user can retry via re-running the installer.
+# running â€” the user can retry via re-running the installer.
 # ============================================================================
 
 set -uo pipefail
-# Note: no set -e — we handle errors explicitly to avoid killing the
+# Note: no set -e â€” we handle errors explicitly to avoid killing the
 # background process on transient failures.
 
-# ── Arguments ──
+# â”€â”€ Arguments â”€â”€
 INSTALL_DIR="$1"
 FULL_GGUF_FILE="$2"
 FULL_GGUF_URL="$3"
@@ -159,10 +159,10 @@ monitor_download() {
     done
 }
 
-# ── Docker permission detection ──
+# â”€â”€ Docker permission detection â”€â”€
 # This script runs detached via nohup, so DOCKER_CMD from the parent installer
 # is not inherited. For Linux installs we MUST be able to talk to the docker
-# daemon — silently failing here leaves the user running the small bootstrap
+# daemon â€” silently failing here leaves the user running the small bootstrap
 # model forever. macOS installs use a native llama-server PID file and never
 # enter the docker hot-swap path; skip detection there. Mirrors the
 # sudo-fallback pattern in installers/phases/05-docker.sh.
@@ -176,9 +176,9 @@ if command -v docker >/dev/null 2>&1; then
         log "Detected docker requires sudo (user not in docker group). Using 'sudo docker'."
     elif [[ ! -f "$INSTALL_DIR/data/.llama-server.pid" ]]; then
         # Linux install: docker is the only hot-swap path. Failing silently
-        # would leave the bootstrap model running forever — fail loudly.
+        # would leave the bootstrap model running forever â€” fail loudly.
         log "ERROR: docker is installed but not accessible by this user."
-        log "       Tried 'docker info' and 'sudo -n docker info' — both failed."
+        log "       Tried 'docker info' and 'sudo -n docker info' â€” both failed."
         log "       The bootstrap model will continue running. Fix one of:"
         log "         1. Re-login (so 'docker' group membership takes effect), then re-run this script."
         log "         2. Configure passwordless sudo for 'docker' (e.g. NOPASSWD in /etc/sudoers.d)."
@@ -204,7 +204,7 @@ log "Starting full model download: $FULL_GGUF_FILE"
 log "URL: $FULL_GGUF_URL"
 log "Target: $MODELS_DIR/$FULL_GGUF_FILE"
 
-# ── Phase 1: Download the full model ──
+# â”€â”€ Phase 1: Download the full model â”€â”€
 mkdir -p "$MODELS_DIR"
 
 # Get total file size for progress calculation
@@ -251,7 +251,7 @@ else
     log "Download complete: $FULL_GGUF_FILE"
 fi
 
-# ── Phase 2: Verify integrity (if SHA256 provided) ──
+# â”€â”€ Phase 2: Verify integrity (if SHA256 provided) â”€â”€
 if [[ -n "$FULL_GGUF_SHA256" ]]; then
     write_status "verifying" 100 "$TOTAL_BYTES" "$TOTAL_BYTES" 0 ""
     log "Verifying SHA256..."
@@ -260,7 +260,7 @@ if [[ -n "$FULL_GGUF_SHA256" ]]; then
     elif command -v shasum &>/dev/null; then
         ACTUAL_HASH=$(shasum -a 256 "$MODELS_DIR/$FULL_GGUF_FILE" 2>/dev/null | awk '{print $1}')
     else
-        log "WARNING: No checksum tool available — skipping SHA256 verification"
+        log "WARNING: No checksum tool available â€” skipping SHA256 verification"
         ACTUAL_HASH=""
     fi
     if [[ -n "$ACTUAL_HASH" ]]; then
@@ -274,7 +274,7 @@ if [[ -n "$FULL_GGUF_SHA256" ]]; then
     write_status "complete"
 fi
 
-# ── Phase 3: Update .env ──
+# â”€â”€ Phase 3: Update .env â”€â”€
 log "Updating .env..."
 if [[ -f "$ENV_FILE" ]]; then
     # Update GGUF_FILE
@@ -301,7 +301,7 @@ else
     fail ".env not found at $ENV_FILE"
 fi
 
-# ── Phase 4: Update models.ini ──
+# â”€â”€ Phase 4: Update models.ini â”€â”€
 log "Updating models.ini..."
 mkdir -p "$(dirname "$MODELS_INI")"
 cat > "$MODELS_INI" << EOF
@@ -312,7 +312,7 @@ n-ctx = ${FULL_MAX_CONTEXT}
 EOF
 log "models.ini updated"
 
-# ── Phase 4b: Remove bootstrap model ──
+# â”€â”€ Phase 4b: Remove bootstrap model â”€â”€
 # Lemonade's --extra-models-dir auto-discovers all GGUFs in /models and may
 # load the bootstrap model instead of the full one specified in models.ini.
 # Remove the bootstrap file to prevent this.
@@ -324,7 +324,7 @@ if [[ -f "$BOOTSTRAP_PATH" && "$FULL_GGUF_FILE" != "$BOOTSTRAP_GGUF" ]]; then
     log "Bootstrap model removed"
 fi
 
-# ── Phase 5: Hot-swap llama-server (if running) ──
+# â”€â”€ Phase 5: Hot-swap llama-server (if running) â”€â”€
 # Read OLLAMA_PORT from .env (nohup doesn't inherit env vars from parent)
 if [[ -f "$ENV_FILE" ]]; then
     OLLAMA_PORT=$(grep -E '^OLLAMA_PORT=' "$ENV_FILE" | cut -d= -f2)
@@ -368,7 +368,7 @@ if [[ -n "$DOCKER_CMD" ]] && $DOCKER_CMD ps --filter name=dream-llama-server --f
 
     cd "$INSTALL_DIR" || fail "Cannot cd to $INSTALL_DIR"
 
-    # Restart llama-server — strategy depends on GPU backend:
+    # Restart llama-server â€” strategy depends on GPU backend:
     # - AMD (Lemonade): use 'restart' to preserve cached llama-server build.
     #   Lemonade reads models.ini at startup, so it picks up the new model.
     # - NVIDIA/CPU (llama.cpp): use 'stop + up -d' to recreate the container.
@@ -388,18 +388,18 @@ if [[ -n "$DOCKER_CMD" ]] && $DOCKER_CMD ps --filter name=dream-llama-server --f
             $DOCKER_COMPOSE_CMD "${COMPOSE_ARGS[@]}" stop llama-server 2>&1 || true
             $DOCKER_COMPOSE_CMD "${COMPOSE_ARGS[@]}" up -d llama-server 2>&1 || true
         else
-            # No compose flags — use docker rm to force a fresh container that
+            # No compose flags â€” use docker rm to force a fresh container that
             # re-reads GGUF_FILE from the env file. 'docker start' reuses the old
             # baked environment and would crash-loop if the bootstrap model was
             # already deleted in Phase 4b.
             $DOCKER_CMD stop dream-llama-server 2>&1 || true
             $DOCKER_CMD rm dream-llama-server 2>&1 || true
-            log "WARNING: .compose-flags not found — container removed. Run 'dream restart' to bring llama-server back up with the correct model."
+            log "WARNING: .compose-flags not found â€” container removed. Run 'dream restart' to bring llama-server back up with the correct model."
             write_status "failed"
         fi
     fi
 
-    # Pick health endpoint based on GPU backend — Lemonade (AMD) serves
+    # Pick health endpoint based on GPU backend â€” Lemonade (AMD) serves
     # /api/v1/health, llama.cpp (NVIDIA/Apple/CPU) serves /health.
     if [[ "$_gpu_backend" == "amd" ]]; then
         _health_url="http://localhost:${OLLAMA_PORT:-8080}/api/v1/health"
@@ -410,9 +410,9 @@ if [[ -n "$DOCKER_CMD" ]] && $DOCKER_CMD ps --filter name=dream-llama-server --f
     # Wait for health (up to 5 minutes for the larger model to load)
     # For AMD/Lemonade: check that model_loaded is non-null in the JSON response.
     # Lemonade returns 200 with "model_loaded": null when no model is loaded yet.
-    # Lemonade doesn't auto-load models from models.ini — it uses --extra-models-dir
+    # Lemonade doesn't auto-load models from models.ini â€” it uses --extra-models-dir
     # for discovery but loads on-demand. We send a warm-up request to trigger loading.
-    # For llama.cpp: a simple 200 check is sufficient — the server only starts
+    # For llama.cpp: a simple 200 check is sufficient â€” the server only starts
     # after loading the model specified in --model.
     log "Waiting for llama-server health at $_health_url ..."
     _healthy=false
@@ -426,11 +426,11 @@ if [[ -n "$DOCKER_CMD" ]] && $DOCKER_CMD ps --filter name=dream-llama-server --f
                     _healthy=true
                     break
                 fi
-                # Lemonade is healthy but no model loaded — send a warm-up request
+                # Lemonade is healthy but no model loaded â€” send a warm-up request
                 # to trigger on-demand loading of the new model. Lemonade caches the
                 # previously-loaded model name across restarts, which fails after the
                 # bootstrap GGUF is deleted. This request forces it to load the new one.
-                # Retry every 15s — the first request may fail if Lemonade isn't fully
+                # Retry every 15s â€” the first request may fail if Lemonade isn't fully
                 # ready to accept chat completions yet.
                 if [[ "$_warmup_sent" == "false" ]] || (( _i % 3 == 0 )); then
                     # Escape any double-quotes in the filename so the JSON body
@@ -444,7 +444,7 @@ if [[ -n "$DOCKER_CMD" ]] && $DOCKER_CMD ps --filter name=dream-llama-server --f
                         -d "{\"model\":\"${_model_id}\",\"messages\":[{\"role\":\"user\",\"content\":\"hello\"}],\"max_tokens\":1}" \
                         &>/dev/null; then
                         _warmup_sent=true
-                        log "Warm-up request accepted — waiting for model to finish loading"
+                        log "Warm-up request accepted â€” waiting for model to finish loading"
                     fi
                 fi
                 log "Lemonade healthy but no model loaded yet (attempt $_i/60)"
@@ -460,7 +460,7 @@ if [[ -n "$DOCKER_CMD" ]] && $DOCKER_CMD ps --filter name=dream-llama-server --f
     if $_healthy; then
         log "SUCCESS: llama-server is running with $FULL_LLM_MODEL"
         # Regenerate lemonade.yaml with the new model ID and restart LiteLLM.
-        # Lemonade exposes models as "extra.<GGUF_FILE>" — the config must
+        # Lemonade exposes models as "extra.<GGUF_FILE>" â€” the config must
         # reference the exact ID, not a wildcard passthrough.
         if $DOCKER_CMD ps --filter name=dream-litellm --format '{{.Names}}' 2>/dev/null | grep -q dream-litellm; then
             log "Updating LiteLLM config for new model: extra.${FULL_GGUF_FILE}"
@@ -492,16 +492,16 @@ LITELLM_UPGRADE_EOF
             log "Restarting DreamForge to pick up model change..."
             docker restart dream-dreamforge 2>&1 || log "WARNING: DreamForge restart failed (non-fatal)"
         fi
-        # Recreate OpenClaw so inject-token.js picks up the new GGUF_FILE/LLM_MODEL
-        # from .env. A restart alone won't work — env vars are baked in at container
-        # creation time, and inject-token.js builds the Lemonade model name from them.
-        if docker ps --filter name=dream-openclaw --format '{{.Names}}' 2>/dev/null | grep -q dream-openclaw; then
-            log "Recreating OpenClaw to pick up model change..."
+        # Recreate Hermes Agent so it picks up the new GGUF_FILE/LLM_MODEL
+        # from .env. A restart alone won't work â€” env vars are baked in at container
+        # creation time, and Hermes reads the model config at startup.
+        if docker ps --filter name=dream-hermes-agent --format '{{.Names}}' 2>/dev/null | grep -q dream-hermes-agent; then
+            log "Recreating Hermes Agent to pick up model change..."
             if [[ ${#COMPOSE_ARGS[@]} -gt 0 ]]; then
-                docker compose "${COMPOSE_ARGS[@]}" up -d --force-recreate openclaw 2>&1 || \
-                    log "WARNING: OpenClaw recreate failed (non-fatal)"
+                docker compose "${COMPOSE_ARGS[@]}" up -d --force-recreate hermes-agent 2>&1 || \
+                    log "WARNING: Hermes Agent recreate failed (non-fatal)"
             else
-                log "WARNING: No compose args — cannot recreate OpenClaw. Restart manually."
+                log "WARNING: No compose args â€” cannot recreate Hermes Agent. Restart manually."
             fi
         fi
         sync_windows_opencode_config
@@ -510,7 +510,7 @@ LITELLM_UPGRADE_EOF
         log "Check: docker logs dream-llama-server"
     fi
 elif [[ -f "$INSTALL_DIR/data/.llama-server.pid" ]]; then
-    # macOS native llama-server (Metal) — restart with new model
+    # macOS native llama-server (Metal) â€” restart with new model
     log "Detected native llama-server (macOS Metal mode)"
 
     LLAMA_SERVER_BIN="$INSTALL_DIR/bin/llama-server"
@@ -563,7 +563,7 @@ elif [[ -f "$INSTALL_DIR/data/.llama-server.pid" ]]; then
                 *)    _reasoning_fmt="$_reasoning" ;;
             esac
 
-            # Honour the unified BIND_ADDRESS knob (PR #964); empty/missing → loopback.
+            # Honour the unified BIND_ADDRESS knob (PR #964); empty/missing â†’ loopback.
             _bind=$(grep '^BIND_ADDRESS=' "$ENV_FILE" 2>/dev/null | cut -d= -f2 | tr -d '"' || echo "")
             [[ -z "$_bind" ]] && _bind="127.0.0.1"
 
@@ -613,18 +613,18 @@ elif [[ -f "$INSTALL_DIR/data/.llama-server.pid" ]]; then
                     echo "$_rollback_pid" > "$LLAMA_SERVER_PID_FILE"
                     log "Rolled back to previous model: $(basename "$_old_model_path") (PID $_rollback_pid)"
                 else
-                    log "WARNING: Could not rollback — previous model not found."
+                    log "WARNING: Could not rollback â€” previous model not found."
                     log "Run './dream-macos.sh restart' to manually recover."
                 fi
             fi
         fi
     fi
 else
-    log "Docker services not running. Config updated — full model will load on next start."
+    log "Docker services not running. Config updated â€” full model will load on next start."
 fi
 
-# ── Phase 6: Restart host agent (if running) ──
-# The host agent may cache stale state — restart it so it picks up the new
+# â”€â”€ Phase 6: Restart host agent (if running) â”€â”€
+# The host agent may cache stale state â€” restart it so it picks up the new
 # model config and any updated endpoints.
 if command -v systemctl &>/dev/null && systemctl --user is-active dream-host-agent.service &>/dev/null; then
     log "Restarting dream-host-agent (systemd)..."

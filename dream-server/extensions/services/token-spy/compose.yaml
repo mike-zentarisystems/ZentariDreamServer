@@ -1,4 +1,4 @@
-# Token Spy — LLM usage monitoring service
+# Token Spy â€” LLM usage monitoring service
 services:
   token-spy:
     build:

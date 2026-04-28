@@ -1,0 +1,27 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: dream-uptime-kuma
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - TZ=${TZ:-UTC}
+    volumes:
+      - uptime-kuma-data:/app/data
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${UPTIME_KUMA_PORT:-3008}:3001"
+    healthcheck:
+      test: ["CMD-SHELL", "node /app/extra/healthcheck.js"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  uptime-kuma-data:

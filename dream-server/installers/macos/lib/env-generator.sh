@@ -244,7 +244,7 @@ OPENCODE_SERVER_PASSWORD=${opencode_password}
 
 #=== Voice Settings ===
 WHISPER_MODEL=base
-# Whisper STT model. macOS (Apple Silicon, Metal) uses base by default —
+# Whisper STT model. macOS (Apple Silicon, Metal) uses base by default â€”
 # Metal performance is good enough for most transcription needs. Override
 # here and run 'dream-macos.sh restart' to use a different model.
 AUDIO_STT_MODEL=Systran/faster-whisper-base

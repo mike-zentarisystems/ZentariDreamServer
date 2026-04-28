@@ -1,10 +1,10 @@
 #!/bin/bash
-# Dream Server — ASCII QR Code Generator
+# Dream Server â€” ASCII QR Code Generator
 # Generates simple QR codes for terminal display without external dependencies
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # QR CODE DISPLAY
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 # Print a QR code for the dashboard URL
 # Falls back to plain text if qrencode not available
@@ -46,16 +46,16 @@ print_url_box() {
     
     # Build horizontal line
     local hline=""
-    for ((i=0; i<box_width; i++)); do hline+="═"; done
+    for ((i=0; i<box_width; i++)); do hline+="â•"; done
     
-    echo -e "  ${CYAN}╔${hline}╗${NC}"
-    echo -e "  ${CYAN}║${NC}   ${BOLD}${url}${NC}   ${CYAN}║${NC}"
-    echo -e "  ${CYAN}╚${hline}╝${NC}"
+    echo -e "  ${CYAN}â•”${hline}â•—${NC}"
+    echo -e "  ${CYAN}â•‘${NC}   ${BOLD}${url}${NC}   ${CYAN}â•‘${NC}"
+    echo -e "  ${CYAN}â•š${hline}â•${NC}"
 }
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # SUCCESS CARD
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 # Print the final success card with all access info
 print_success_card() {
@@ -74,35 +74,35 @@ print_success_card() {
     local remote_api="http://${lan_ip:-localhost}:8000/v1"
     
     echo ""
-    echo -e "${GREEN}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${GREEN}║${NC}                                                               ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}   ${BOLD}🌙 Dream Server is Ready!${NC}                                  ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}                                                               ${GREEN}║${NC}"
-    echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${GREEN}║${NC}                                                               ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}   ${BOLD}Tier:${NC}       $tier                                           ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}   ${BOLD}Model:${NC}      $model                     ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}                                                               ${GREEN}║${NC}"
-    echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${GREEN}║${NC}                                                               ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}   ${CYAN}Local Access:${NC}                                              ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}     Dashboard:  $dashboard_url                               ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}     API:        $api_url                            ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}                                                               ${GREEN}║${NC}"
+    echo -e "${GREEN}â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—${NC}"
+    echo -e "${GREEN}â•‘${NC}                                                               ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}   ${BOLD}ðŸŒ™ Dream Server is Ready!${NC}                                  ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}                                                               ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£${NC}"
+    echo -e "${GREEN}â•‘${NC}                                                               ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}   ${BOLD}Tier:${NC}       $tier                                           ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}   ${BOLD}Model:${NC}      $model                     ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}                                                               ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£${NC}"
+    echo -e "${GREEN}â•‘${NC}                                                               ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}   ${CYAN}Local Access:${NC}                                              ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}     Dashboard:  $dashboard_url                               ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}     API:        $api_url                            ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}                                                               ${GREEN}â•‘${NC}"
     if [[ -n "$lan_ip" ]]; then
-        echo -e "${GREEN}║${NC}   ${CYAN}Remote Access (LAN):${NC}                                       ${GREEN}║${NC}"
-        echo -e "${GREEN}║${NC}     Dashboard:  $remote_dash                        ${GREEN}║${NC}"
-        echo -e "${GREEN}║${NC}     API:        $remote_api                 ${GREEN}║${NC}"
-        echo -e "${GREEN}║${NC}                                                               ${GREEN}║${NC}"
+        echo -e "${GREEN}â•‘${NC}   ${CYAN}Remote Access (LAN):${NC}                                       ${GREEN}â•‘${NC}"
+        echo -e "${GREEN}â•‘${NC}     Dashboard:  $remote_dash                        ${GREEN}â•‘${NC}"
+        echo -e "${GREEN}â•‘${NC}     API:        $remote_api                 ${GREEN}â•‘${NC}"
+        echo -e "${GREEN}â•‘${NC}                                                               ${GREEN}â•‘${NC}"
     fi
-    echo -e "${GREEN}╠═══════════════════════════════════════════════════════════════╣${NC}"
-    echo -e "${GREEN}║${NC}                                                               ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}   ${BOLD}Quick Commands:${NC}                                             ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}     View logs:     docker compose logs -f                    ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}     Stop server:   docker compose down                       ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}     Restart:       docker compose restart                    ${GREEN}║${NC}"
-    echo -e "${GREEN}║${NC}                                                               ${GREEN}║${NC}"
-    echo -e "${GREEN}╚═══════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${GREEN}â• â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•£${NC}"
+    echo -e "${GREEN}â•‘${NC}                                                               ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}   ${BOLD}Quick Commands:${NC}                                             ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}     View logs:     docker compose logs -f                    ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}     Stop server:   docker compose down                       ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}     Restart:       docker compose restart                    ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•‘${NC}                                                               ${GREEN}â•‘${NC}"
+    echo -e "${GREEN}â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
     
     # Print QR code for mobile access
     if [[ -n "$lan_ip" ]]; then
@@ -110,13 +110,13 @@ print_success_card() {
     fi
     
     echo ""
-    echo -e "${BOLD}Welcome to your Dream. 🌙${NC}"
+    echo -e "${BOLD}Welcome to your Dream. ðŸŒ™${NC}"
     echo ""
 }
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # INSTALL SUMMARY
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 # Print installation summary with timing
 print_install_summary() {
@@ -130,9 +130,9 @@ print_install_summary() {
     duration_str=$(format_duration $duration)
     
     echo ""
-    echo -e "${GREEN}═══════════════════════════════════════════════════════════════${NC}"
+    echo -e "${GREEN}â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
     echo -e "${BOLD}Installation Complete${NC}"
-    echo -e "${GREEN}═══════════════════════════════════════════════════════════════${NC}"
+    echo -e "${GREEN}â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
     echo ""
     echo -e "  ${BOLD}Tier:${NC}           $tier"
     echo -e "  ${BOLD}Model:${NC}          $model"

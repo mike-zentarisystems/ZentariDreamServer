@@ -1,0 +1,361 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Dream Server Architecture">
+    <mxGraphModel dx="2200" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ===== USER LAYER ===== -->
+        <mxCell id="browser" value="Browser / Users" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565c0;strokeColor=#0d47a1;fontColor=#ffffff;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="voice_io" value="Voice I/O" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565c0;strokeColor=#0d47a1;fontColor=#ffffff;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="20" y="90" width="160" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="git_cli" value="Git Client" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565c0;strokeColor=#0d47a1;fontColor=#ffffff;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="20" y="160" width="160" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== ENTRY POINT ===== -->
+        <mxCell id="caddy" value="Caddy&#xa;:80 / :443" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e65100;strokeColor=#bf360c;fontColor=#ffffff;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="260" y="20" width="130" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="authelia" value="Authelia&#xa;:9091" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565c0;strokeColor=#0d47a1;fontColor=#ffffff;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="260" y="100" width="130" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== USER INTERFACES ===== -->
+        <mxCell id="openwebui" value="Open WebUI&#xa;:3000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="480" y="20" width="130" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="dashboard" value="Dashboard&#xa;:3001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="480" y="100" width="130" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="grafana" value="Grafana&#xa;:3007" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="480" y="180" width="130" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== LLM GATEWAY ===== -->
+        <mxCell id="litellm" value="LiteLLM Gateway&#xa;:4000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f57f17;strokeColor=#e65100;fontStyle=1;strokeWidth=2" vertex="1" parent="1">
+          <mxGeometry x="720" y="60" width="170" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== CLOUD PROVIDERS ===== -->
+        <mxCell id="cloud_header" value="Cloud Providers" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#666666;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="980" y="20" width="120" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="anthropic" value="Anthropic&#xa;Claude" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8d6e63;strokeColor=#5d4037;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="980" y="60" width="110" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="openai" value="OpenAI&#xa;GPT-4o" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8d6e63;strokeColor=#5d4037;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="980" y="120" width="110" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="minimax" value="MiniMax" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8d6e63;strokeColor=#5d4037;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="1100" y="60" width="110" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="openrouter" value="OpenRouter&#xa;100+ models" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8d6e63;strokeColor=#5d4037;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="1100" y="120" width="110" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== LOCAL INFERENCE ===== -->
+        <mxCell id="llamaserver" value="llama-server&#xa;:8080" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c62828;strokeColor=#b71c1c;fontColor=#ffffff;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="980" y="220" width="230" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== AGENTS ===== -->
+        <mxCell id="hermes" value="Hermes Agent&#xa;:8642" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6a1b9a;strokeColor=#4a148c;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="480" y="300" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="dreamforge" value="DreamForge&#xa;:3010" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6a1b9a;strokeColor=#4a148c;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="480" y="380" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ape" value="APE&#xa;:7890" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6a1b9a;strokeColor=#4a148c;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="480" y="460" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== VOICE ===== -->
+        <mxCell id="whisper" value="Whisper STT&#xa;:9000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00838f;strokeColor=#006064;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="720" y="300" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="kokoro" value="Kokoro TTS&#xa;:8880" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00838f;strokeColor=#006064;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="720" y="380" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="comfyui" value="ComfyUI&#xa;:8188" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00838f;strokeColor=#006064;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="720" y="460" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== DATA / RAG ===== -->
+        <mxCell id="qdrant" value="Qdrant&#xa;:6333" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#388e3c;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="980" y="330" width="150" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="tei" value="TEI Embeddings&#xa;:8090" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#388e3c;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="980" y="440" width="150" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="docling" value="Docling&#xa;:5001" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#388e3c;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="330" width="150" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="baserow" value="Baserow&#xa;:8110" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#388e3c;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="430" width="150" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== AUTOMATION ===== -->
+        <mxCell id="n8n" value="n8n&#xa;:5678" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0d47a1;strokeColor=#0d47a1;fontColor=#ffffff;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1400" y="20" width="130" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="searxng" value="SearXNG&#xa;:8888" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0d47a1;strokeColor=#0d47a1;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="1400" y="100" width="130" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== INFRASTRUCTURE ===== -->
+        <mxCell id="vaultwarden" value="Vaultwarden&#xa;:8222" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#37474f;strokeColor=#263238;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="1400" y="220" width="130" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="forgejo" value="Forgejo&#xa;:3009/:2222" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#37474f;strokeColor=#263238;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="1400" y="300" width="130" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== OBSERVABILITY ===== -->
+        <mxCell id="prometheus" value="Prometheus&#xa;:9090" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1b5e20;strokeColor=#1b5e20;fontColor=#ffffff;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="1580" y="20" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="grafana_dash" value="Grafana&#xa;:3007" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1b5e20;strokeColor=#1b5e20;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="1580" y="100" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="langfuse" value="Langfuse&#xa;:3006" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0d47a1;strokeColor=#0d47a1;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="1580" y="180" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="cadvisor" value="cAdvisor&#xa;:8083" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4e342e;strokeColor=#3e2723;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="1580" y="260" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="nodeexp" value="Node Exporter&#xa;:9100" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4e342e;strokeColor=#3e2723;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="1580" y="340" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uptimekuma" value="Uptime Kuma&#xa;:3008" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#006064;strokeColor=#004d40;fontColor=#ffffff" vertex="1" parent="1">
+          <mxGeometry x="1580" y="420" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== EDGES ===== -->
+
+        <!-- User → Caddy -->
+        <mxCell id="e1" edge="1" parent="1" source="browser" target="caddy">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="browser" target="authelia">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Voice → Open WebUI -->
+        <mxCell id="e_voice" edge="1" parent="1" source="voice_io" target="openwebui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Git → Forgejo SSH -->
+        <mxCell id="e_git" edge="1" parent="1" source="git_cli" target="forgejo">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Caddy → Authelia (forward auth) -->
+        <mxCell id="e_caddy_auth" edge="1" parent="1" source="caddy" target="authelia" style="dashed=1;strokeColor=#1565c0;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Caddy → UIs -->
+        <mxCell id="e_caddy_webui" edge="1" parent="1" source="caddy" target="openwebui" style="dashed=1;strokeColor=#e65100;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_caddy_dash" edge="1" parent="1" source="caddy" target="dashboard" style="dashed=1;strokeColor=#e65100;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_caddy_grafana" edge="1" parent="1" source="caddy" target="grafana" style="dashed=1;strokeColor=#e65100;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Open WebUI → LiteLLM -->
+        <mxCell id="e_webui_llm" edge="1" parent="1" source="openwebui" target="litellm" style="strokeColor=#2e7d32;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- LiteLLM → Cloud Providers -->
+        <mxCell id="e_llm_anthropic" edge="1" parent="1" source="litellm" target="anthropic">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_llm_openai" edge="1" parent="1" source="litellm" target="openai">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_llm_minimax" edge="1" parent="1" source="litellm" target="minimax">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_llm_openrouter" edge="1" parent="1" source="litellm" target="openrouter">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- LiteLLM → llama-server -->
+        <mxCell id="e_llm_local" edge="1" parent="1" source="litellm" target="llamaserver" style="strokeColor=#c62828;strokeWidth=2;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- llama-server → Prometheus -->
+        <mxCell id="e_llm_prom" edge="1" parent="1" source="llamaserver" target="prometheus" style="dashed=1;strokeColor=#1b5e20;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- LiteLLM → Langfuse (tracing) -->
+        <mxCell id="e_llm_langfuse" edge="1" parent="1" source="litellm" target="langfuse" style="dashed=1;strokeColor=#0d47a1;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Agents → LiteLLM -->
+        <mxCell id="e_hermes_llm" edge="1" parent="1" source="hermes" target="litellm">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_dreamforge_llm" edge="1" parent="1" source="dreamforge" target="litellm">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Agents → SearXNG -->
+        <mxCell id="e_hermes_searx" edge="1" parent="1" source="hermes" target="searxng">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Agents → Hermes (APE) -->
+        <mxCell id="e_ape_hermes" edge="1" parent="1" source="ape" target="hermes" style="dashed=1;strokeColor=#6a1b9a;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Voice -->
+        <mxCell id="e_webui_whisper" edge="1" parent="1" source="openwebui" target="whisper">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_whisper_llm" edge="1" parent="1" source="whisper" target="litellm">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_kokoro_webui" edge="1" parent="1" source="kokoro" target="openwebui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_llm_kokoro" edge="1" parent="1" source="litellm" target="kokoro">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Image Gen -->
+        <mxCell id="e_webui_comfy" edge="1" parent="1" source="openwebui" target="comfyui">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- RAG pipeline -->
+        <mxCell id="e_docling_tei" edge="1" parent="1" source="docling" target="tei" style="strokeColor=#388e3c;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_tei_qdrant" edge="1" parent="1" source="tei" target="qdrant" style="strokeColor=#388e3c;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_n8n_docling" edge="1" parent="1" source="n8n" target="docling" style="strokeColor=#0d47a1;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_n8n_qdrant" edge="1" parent="1" source="n8n" target="qdrant" style="strokeColor=#0d47a1;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_webui_qdrant" edge="1" parent="1" source="openwebui" target="qdrant" style="dashed=1;strokeColor=#2e7d32;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Automation -->
+        <mxCell id="e_n8n_searx" edge="1" parent="1" source="n8n" target="searxng">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_n8n_llm" edge="1" parent="1" source="n8n" target="litellm">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_n8n_hermes" edge="1" parent="1" source="n8n" target="hermes">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Search -->
+        <mxCell id="e_webui_searx" edge="1" parent="1" source="openwebui" target="searxng">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Prometheus → Grafana -->
+        <mxCell id="e_prom_grafana" edge="1" parent="1" source="prometheus" target="grafana_dash" style="dashed=1;strokeColor=#1b5e20;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- cAdvisor/NodeExporter → Prometheus -->
+        <mxCell id="e_cadvisor_prom" edge="1" parent="1" source="cadvisor" target="prometheus" style="dashed=1;strokeColor=#4e342e;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_nodeexp_prom" edge="1" parent="1" source="nodeexp" target="prometheus" style="dashed=1;strokeColor=#4e342e;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Uptime Kuma → n8n -->
+        <mxCell id="e_uptime_n8n" edge="1" parent="1" source="uptimekuma" target="n8n" style="dashed=1;strokeColor=#006064;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Langfuse → n8n webhook -->
+        <mxCell id="e_langfuse_n8n" edge="1" parent="1" source="langfuse" target="n8n" style="dashed=1;strokeColor=#0d47a1;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- n8n → Prometheus metrics -->
+        <mxCell id="e_n8n_prom" edge="1" parent="1" source="n8n" target="prometheus" style="dashed=1;strokeColor=#0d47a1;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Prometheus → n8n metrics -->
+        <mxCell id="e_hermes_prom" edge="1" parent="1" source="hermes" target="prometheus" style="dashed=1;strokeColor=#6a1b9a;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Dashboard API -->
+        <mxCell id="e_dash_api" value="Dashboard API&#xa;:3002" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#455a64;strokeColor=#263238;fontColor=#ffffff;dashed=1;opacity=60" vertex="1" parent="1">
+          <mxGeometry x="640" y="180" width="100" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_dash_dashapi" edge="1" parent="1" source="dashboard" target="e_dash_api" style="dashed=1;strokeColor=#455a64;">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <!-- Privacy Shield (standalone) -->
+        <mxCell id="privacyshield" value="Privacy Shield&#xa;:8085" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#37474f;strokeColor=#263238;fontColor=#ffffff;opacity=70" vertex="1" parent="1">
+          <mxGeometry x="720" y="560" width="130" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- LAYER LABELS -->
+        <mxCell id="label_user" value="User" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#1565c0;fontStyle=1;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="20" y="200" width="60" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="label_entry" value="Entry / Auth" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#e65100;fontStyle=1;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="260" y="180" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="label_ui" value="UIs" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#2e7d32;fontStyle=1;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="480" y="180" width="60" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="label_llm" value="LLM Gateway" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#f57f17;fontStyle=1;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="720" y="180" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="label_inference" value="Inference" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#c62828;fontStyle=1;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="980" y="180" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="label_agents" value="Agents" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#6a1b9a;fontStyle=1;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="480" y="540" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="label_voice" value="Voice / Image" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#00838f;fontStyle=1;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="720" y="540" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="label_data" value="Data / RAG" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#388e3c;fontStyle=1;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="980" y="530" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="label_auto" value="Automation" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#0d47a1;fontStyle=1;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1400" y="180" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="label_infra" value="Infrastructure" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#37474f;fontStyle=1;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1400" y="380" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="label_obs" value="Observability" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#1b5e20;fontStyle=1;fontSize=11" vertex="1" parent="1">
+          <mxGeometry x="1580" y="180" width="90" height="20" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

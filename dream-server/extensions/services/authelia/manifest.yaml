@@ -1,0 +1,34 @@
+schema_version: dream.services.v1
+
+compatibility:
+  dream_min: "2.0.0"
+
+service:
+  id: authelia
+  name: Authelia (Authentication)
+  container_name: dream-authelia
+  host_env: AUTHELIA_HOST
+  default_host: authelia
+  port: 9091
+  external_port_env: AUTHELIA_PORT
+  external_port_default: 9091
+  health: /api/health
+  ui_path: /
+  type: docker
+  gpu_backends: [cpu, none]
+  compose_file: compose.yaml
+  category: core
+  depends_on: []
+  env_vars:
+    - key: AUTHELIA_JWT_SECRET
+      required: true
+      secret: true
+      description: JWT secret for Authelia session tokens
+    - key: AUTHELIA_SESSION_SECRET
+      required: true
+      secret: true
+      description: Session encryption secret
+    - key: AUTHELIA_STORAGE_ENCRYPTION_KEY
+      required: true
+      secret: true
+      description: Storage encryption key (min 20 chars)

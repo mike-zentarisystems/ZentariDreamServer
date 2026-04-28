@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Packaging
+# Dream Server Installer â€” Packaging
 # ============================================================================
 # Part of: installers/lib/
 # Purpose: Distro-agnostic package manager abstraction

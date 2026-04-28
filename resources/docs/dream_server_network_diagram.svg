@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1150" viewBox="0 0 1800 1150">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#f8fafc"/><stop offset="1" stop-color="#eef2f7"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.13"/></filter>
+    <marker id="arrow" markerWidth="13" markerHeight="13" refX="10" refY="6" orient="auto" markerUnits="strokeWidth"><path d="M2,2 L10,6 L2,10 z" fill="#334155"/></marker>
+    <marker id="arrowBlue" markerWidth="13" markerHeight="13" refX="10" refY="6" orient="auto" markerUnits="strokeWidth"><path d="M2,2 L10,6 L2,10 z" fill="#2563eb"/></marker>
+    <style>
+      .title{font:700 44px Inter,Segoe UI,Arial,sans-serif;fill:#0f172a}.subtitle{font:400 19px Inter,Segoe UI,Arial,sans-serif;fill:#475569}.label{font:700 18px Inter,Segoe UI,Arial,sans-serif;fill:#0f172a}.small{font:500 13px Inter,Segoe UI,Arial,sans-serif;fill:#475569}.tiny{font:500 11px Inter,Segoe UI,Arial,sans-serif;fill:#64748b}.group-title{font:700 18px Inter,Segoe UI,Arial,sans-serif;fill:#334155}.port{font:700 12px Inter,Segoe UI,Arial,sans-serif;fill:#2563eb}.box{fill:white;stroke:#d8dee9;stroke-width:1.5;rx:18;filter:url(#shadow)}.group{fill:#ffffff;stroke:#cbd5e1;stroke-width:2;rx:26;filter:url(#shadow)}.aws{fill:#ff9900}.core{fill:#e0f2fe;stroke:#0284c7}.gateway{fill:#fef3c7;stroke:#d97706}.agent{fill:#ede9fe;stroke:#7c3aed}.data{fill:#dcfce7;stroke:#16a34a}.media{fill:#fae8ff;stroke:#c026d3}.obs{fill:#fee2e2;stroke:#dc2626}.dev{fill:#e2e8f0;stroke:#475569}.line{stroke:#334155;stroke-width:2.4;fill:none;marker-end:url(#arrow)}.blueLine{stroke:#2563eb;stroke-width:3;fill:none;marker-end:url(#arrowBlue)}.dashLine{stroke:#64748b;stroke-width:2.2;fill:none;stroke-dasharray:8 8;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1800" height="1150" fill="url(#bg)"/>
+  <text x="70" y="72" class="title">Dream Server, Local AI Platform Network Architecture</text>
+  <text x="72" y="108" class="subtitle">AWS-style web-ready diagram for a localhost-only Docker Compose AI stack with local inference, optional hybrid routing, agents, RAG, voice, media generation, privacy, and observability.</text>
+  <rect x="1450" y="40" width="280" height="88" rx="18" fill="#0f172a" filter="url(#shadow)"/>
+  <text x="1480" y="76" font-family="Inter,Segoe UI,Arial" font-size="18" font-weight="700" fill="#fff">Access Boundary</text>
+  <text x="1480" y="104" font-family="Inter,Segoe UI,Arial" font-size="14" fill="#cbd5e1">127.0.0.1 localhost only</text>
+
+  <!-- User Access -->
+  <rect x="55" y="190" width="230" height="170" class="group"/>
+  <text x="83" y="224" class="group-title">User Access</text>
+  <rect x="95" y="252" width="150" height="72" class="box"/>
+  <circle cx="125" cy="288" r="18" fill="#2563eb"/><text x="119" y="295" font-size="20" font-family="Arial" fill="#fff">⌘</text>
+  <text x="155" y="282" class="label">Browser</text><text x="155" y="304" class="small">Local UI/API</text>
+
+  <!-- UI Layer -->
+  <rect x="350" y="160" width="330" height="260" class="group"/>
+  <text x="378" y="196" class="group-title">UI & Control Plane</text>
+  <rect x="385" y="225" width="260" height="58" class="box core"/><text x="415" y="252" class="label">Open WebUI</text><text x="565" y="252" class="port">:3000</text><text x="415" y="273" class="small">Primary chat interface</text>
+  <rect x="385" y="300" width="260" height="58" class="box core"/><text x="415" y="327" class="label">Dashboard</text><text x="565" y="327" class="port">:3001</text><text x="415" y="348" class="small">Control center</text>
+  <rect x="385" y="375" width="260" height="58" class="box core"/><text x="415" y="402" class="label">Dashboard API</text><text x="565" y="402" class="port">:3002</text><text x="415" y="423" class="small">Feature + health API</text>
+
+  <!-- Gateway and Inference -->
+  <rect x="765" y="155" width="330" height="250" class="group"/>
+  <text x="793" y="191" class="group-title">Model Gateway</text>
+  <rect x="805" y="225" width="250" height="70" class="box gateway"/><text x="835" y="254" class="label">LiteLLM</text><text x="980" y="254" class="port">:4000</text><text x="835" y="276" class="small">OpenAI-compatible proxy</text>
+  <rect x="805" y="320" width="250" height="58" rx="18" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/><text x="835" y="347" class="label">Hybrid Mode</text><text x="835" y="369" class="small">Local first, cloud fallback</text>
+
+  <rect x="1180" y="145" width="360" height="270" class="group"/>
+  <text x="1208" y="181" class="group-title">Inference Layer</text>
+  <rect x="1220" y="222" width="280" height="78" class="box core"/><text x="1252" y="252" class="label">llama-server</text><text x="1422" y="252" class="port">:8080</text><text x="1252" y="274" class="small">GGUF LLM inference</text>
+  <rect x="1220" y="325" width="280" height="55" rx="16" fill="#eef6ff" stroke="#93c5fd"/><text x="1252" y="349" class="label">GPU Backend Overlay</text><text x="1252" y="370" class="small">NVIDIA, AMD, Apple, Intel, CPU</text>
+
+  <!-- RAG/Search -->
+  <rect x="350" y="500" width="405" height="290" class="group"/>
+  <text x="378" y="536" class="group-title">RAG, Search & Research</text>
+  <rect x="385" y="565" width="160" height="58" class="box data"/><text x="414" y="592" class="label">Qdrant</text><text x="483" y="592" class="port">:6333</text><text x="414" y="613" class="small">Vector DB</text>
+  <rect x="565" y="565" width="160" height="58" class="box data"/><text x="594" y="592" class="label">Embeddings</text><text x="660" y="592" class="port">:8090</text><text x="594" y="613" class="small">TEI vectors</text>
+  <rect x="385" y="650" width="160" height="58" class="box data"/><text x="414" y="677" class="label">SearXNG</text><text x="484" y="677" class="port">:8888</text><text x="414" y="698" class="small">Metasearch</text>
+  <rect x="565" y="650" width="160" height="58" class="box data"/><text x="594" y="677" class="label">Perplexica</text><text x="660" y="677" class="port">:3004</text><text x="594" y="698" class="small">Deep research</text>
+
+  <!-- Agents -->
+  <rect x="825" y="500" width="355" height="290" class="group"/>
+  <text x="853" y="536" class="group-title">Agents & Automation</text>
+  <rect x="865" y="565" width="260" height="58" class="box agent"/><text x="895" y="592" class="label">OpenClaw</text><text x="1045" y="592" class="port">:7860</text><text x="895" y="613" class="small">Agent framework</text>
+  <rect x="865" y="640" width="260" height="58" class="box agent"/><text x="895" y="667" class="label">APE Policy Engine</text><text x="1045" y="667" class="port">:7890</text><text x="895" y="688" class="small">Tool allow/deny rules</text>
+  <rect x="865" y="715" width="260" height="58" class="box agent"/><text x="895" y="742" class="label">n8n</text><text x="1045" y="742" class="port">:5678</text><text x="895" y="763" class="small">Workflow automation</text>
+
+  <!-- Voice Media -->
+  <rect x="1250" y="500" width="370" height="290" class="group"/>
+  <text x="1278" y="536" class="group-title">Voice & Media</text>
+  <rect x="1290" y="565" width="285" height="58" class="box media"/><text x="1320" y="592" class="label">Whisper STT</text><text x="1495" y="592" class="port">:9000</text><text x="1320" y="613" class="small">Speech-to-text</text>
+  <rect x="1290" y="640" width="285" height="58" class="box media"/><text x="1320" y="667" class="label">Kokoro TTS</text><text x="1495" y="667" class="port">:8880</text><text x="1320" y="688" class="small">Text-to-speech</text>
+  <rect x="1290" y="715" width="285" height="58" class="box media"/><text x="1320" y="742" class="label">ComfyUI</text><text x="1495" y="742" class="port">:8188</text><text x="1320" y="763" class="small">SDXL image generation</text>
+
+  <!-- Privacy Observability Dev -->
+  <rect x="350" y="865" width="660" height="200" class="group"/>
+  <text x="378" y="901" class="group-title">Privacy, Usage & Observability</text>
+  <rect x="385" y="930" width="180" height="58" class="box obs"/><text x="412" y="957" class="label">Privacy Shield</text><text x="490" y="957" class="port">:8085</text><text x="412" y="978" class="small">PII protection</text>
+  <rect x="590" y="930" width="180" height="58" class="box obs"/><text x="617" y="957" class="label">Token Spy</text><text x="695" y="957" class="port">:3005</text><text x="617" y="978" class="small">Usage monitor</text>
+  <rect x="795" y="930" width="180" height="58" class="box obs"/><text x="822" y="957" class="label">Langfuse</text><text x="900" y="957" class="port">:3006</text><text x="822" y="978" class="small">LLM tracing</text>
+
+  <rect x="1095" y="865" width="525" height="200" class="group"/>
+  <text x="1123" y="901" class="group-title">Developer & Lifecycle</text>
+  <rect x="1130" y="930" width="180" height="58" class="box dev"/><text x="1158" y="957" class="label">OpenCode</text><text x="1235" y="957" class="port">:3003</text><text x="1158" y="978" class="small">Web IDE</text>
+  <rect x="1335" y="930" width="240" height="58" class="box dev"/><text x="1362" y="957" class="label">dream-cli</text><text x="1362" y="978" class="small">Compose resolver + lifecycle</text>
+
+  <!-- Connection Lines -->
+  <path class="blueLine" d="M245 288 C300 288 325 254 385 254"/>
+  <path class="blueLine" d="M245 300 C305 315 330 329 385 329"/>
+  <path class="line" d="M645 254 C715 254 735 260 805 260"/>
+  <path class="line" d="M1055 260 C1115 260 1150 260 1220 260"/>
+  <path class="line" d="M645 404 C715 404 735 350 805 350"/>
+  <path class="line" d="M515 565 C520 500 775 465 930 295"/>
+  <path class="line" d="M645 275 C720 420 760 575 865 594"/>
+  <path class="line" d="M1125 594 C1170 510 1195 365 1220 282"/>
+  <path class="line" d="M1125 669 C1170 648 1220 650 1290 669"/>
+  <path class="line" d="M1125 595 C1180 625 1220 679 1290 744"/>
+  <path class="line" d="M545 679 C655 679 755 603 865 603"/>
+  <path class="line" d="M725 679 C770 679 820 680 865 680"/>
+  <path class="line" d="M645 254 C790 455 1040 550 1290 594"/>
+  <path class="line" d="M645 254 C790 500 1040 620 1290 669"/>
+  <path class="line" d="M645 254 C790 570 1050 700 1290 744"/>
+  <path class="dashLine" d="M475 930 C650 840 775 760 865 669"/>
+  <path class="dashLine" d="M680 930 C810 835 920 770 995 715"/>
+  <path class="dashLine" d="M885 930 C935 760 1020 520 1220 300"/>
+  <path class="dashLine" d="M1455 930 C1460 840 1430 800 1430 773"/>
+  <path class="dashLine" d="M1455 930 C1395 810 1310 480 1360 380"/>
+
+  <!-- Legend -->
+  <rect x="70" y="900" width="210" height="148" rx="18" fill="#fff" stroke="#cbd5e1" filter="url(#shadow)"/>
+  <text x="95" y="930" class="label">Legend</text>
+  <line x1="95" y1="958" x2="155" y2="958" class="blueLine"/><text x="170" y="963" class="small">User access</text>
+  <line x1="95" y1="990" x2="155" y2="990" class="line"/><text x="170" y="995" class="small">Service call</text>
+  <line x1="95" y1="1022" x2="155" y2="1022" class="dashLine"/><text x="170" y="1027" class="small">Telemetry/control</text>
+
+  <text x="70" y="1110" class="tiny">Generated from ARCHITECTURE.md v2.4.0. Services bind to localhost by default. Optional hybrid mode routes through LiteLLM for cloud fallback.</text>
+</svg>

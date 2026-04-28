@@ -25,7 +25,7 @@ load_env_file "$DREAM_DIR/.env"
 SERVICE_HOST="${SERVICE_HOST:-localhost}"
 
 # Auto-detect backend from .env or hardware probing.
-# Priority: .env setting → nvidia-smi → AMD sysfs (any card).
+# Priority: .env setting â†’ nvidia-smi â†’ AMD sysfs (any card).
 # On dual-GPU systems (AMD iGPU + NVIDIA dGPU) we must prefer
 # NVIDIA when present, since it is always the inference target.
 detect_backend() {
@@ -53,7 +53,7 @@ detect_backend() {
         fi
     fi
 
-    # 3. Probe AMD sysfs — scan all DRM cards, not just card1.
+    # 3. Probe AMD sysfs â€” scan all DRM cards, not just card1.
     for card_dir in /sys/class/drm/card*/device; do
         [[ -d "$card_dir" ]] || continue
         if [[ "$(cat "$card_dir/vendor" 2>/dev/null)" == "0x1002" ]]; then
@@ -62,7 +62,7 @@ detect_backend() {
         fi
     done
 
-    # 4. No GPU detected — default to cpu.
+    # 4. No GPU detected â€” default to cpu.
     echo "cpu"
 }
 
@@ -82,9 +82,9 @@ log() {
     echo -e "$1"
     echo -e "$1" | sed $'s/\033\\[[0-9;]*m//g' >> "$LOG_FILE"
 }
-pass() { log "${GREEN}✓${NC} $1"; PASS=$((PASS+1)); }
-fail() { log "${RED}✗${NC} $1"; FAIL=$((FAIL+1)); }
-warn() { log "${YELLOW}⚠${NC} $1"; WARN=$((WARN+1)); }
+pass() { log "${GREEN}âœ“${NC} $1"; PASS=$((PASS+1)); }
+fail() { log "${RED}âœ—${NC} $1"; FAIL=$((FAIL+1)); }
+warn() { log "${YELLOW}âš ${NC} $1"; WARN=$((WARN+1)); }
 
 echo "" > "$LOG_FILE"
 log "========================================"
@@ -103,7 +103,7 @@ if command -v docker &> /dev/null; then
     if docker info &> /dev/null; then
         pass "Docker daemon running"
     else
-        fail "Docker daemon not running — start with: sudo systemctl start docker"
+        fail "Docker daemon not running â€” start with: sudo systemctl start docker"
     fi
 else
     fail "Docker not installed"
@@ -120,7 +120,7 @@ else
 fi
 log ""
 
-# 3. GPU check — backend-aware
+# 3. GPU check â€” backend-aware
 log "[3/8] Checking GPU..."
 if [[ "$BACKEND" == "amd" ]]; then
     # AMD: check sysfs for GPU and driver
@@ -133,7 +133,7 @@ if [[ "$BACKEND" == "amd" ]]; then
             gtt_bytes=$(cat "$card_dir/mem_info_gtt_total" 2>/dev/null || echo "0")
             gtt_gb=$(( gtt_bytes / 1073741824 ))
             if lsmod 2>/dev/null | grep -q amdgpu; then
-                pass "AMD GPU detected ($device_id) — ${gtt_gb}GB GTT, amdgpu driver loaded"
+                pass "AMD GPU detected ($device_id) â€” ${gtt_gb}GB GTT, amdgpu driver loaded"
             else
                 warn "AMD GPU detected ($device_id) but amdgpu driver not loaded"
             fi
@@ -141,7 +141,7 @@ if [[ "$BACKEND" == "amd" ]]; then
             if [[ -c /dev/kfd ]]; then
                 pass "ROCm device /dev/kfd accessible"
             else
-                warn "/dev/kfd not found — ROCm containers may fail"
+                warn "/dev/kfd not found â€” ROCm containers may fail"
             fi
             if [[ -d /dev/dri ]]; then
                 pass "AMD GPU device nodes available (/dev/dri)"
@@ -165,16 +165,16 @@ elif [[ "$BACKEND" == "nvidia" ]]; then
             if docker info 2>/dev/null | grep -q "nvidia"; then
                 pass "NVIDIA Docker runtime available"
             else
-                warn "NVIDIA Docker runtime not configured — GPU containers may fail"
+                warn "NVIDIA Docker runtime not configured â€” GPU containers may fail"
             fi
         else
             warn "nvidia-smi found but no GPU detected"
         fi
     else
-        warn "nvidia-smi not found — NVIDIA GPU features unavailable"
+        warn "nvidia-smi not found â€” NVIDIA GPU features unavailable"
     fi
 else
-    pass "CPU mode — no GPU runtime required"
+    pass "CPU mode â€” no GPU runtime required"
 fi
 log ""
 
@@ -182,7 +182,7 @@ log ""
 # OLLAMA_PORT controls the external port for llama-server.
 # Canonical default is 8080 (config/ports.json, docker-compose.base.yml).
 # 11434 is only used on Strix Halo AMD installs where phase 06 writes
-# OLLAMA_PORT=11434 to .env automatically — it will be picked up via the
+# OLLAMA_PORT=11434 to .env automatically â€” it will be picked up via the
 # ${OLLAMA_PORT:-...} expansion below, so the fallback should be 8080.
 log "[4/8] Checking LLM endpoint..."
 LLM_PORT="${OLLAMA_PORT:-${LLAMA_SERVER_PORT:-8080}}"
@@ -206,7 +206,7 @@ if [ "$LLM_FOUND" = false ]; then
     if docker ps --format '{{.Names}}' 2>/dev/null | grep -qi "${LLM_SERVICE_NAME}"; then
         warn "$LLM_SERVICE_NAME container running but not responding yet (model may still be loading)"
     else
-        fail "No LLM endpoint found — checked: ${LLM_ENDPOINTS[*]}"
+        fail "No LLM endpoint found â€” checked: ${LLM_ENDPOINTS[*]}"
         warn "Start $LLM_SERVICE_NAME with: $LLM_START_CMD"
     fi
 fi
@@ -226,7 +226,7 @@ for ENDPOINT in "${WHISPER_ENDPOINTS[@]}"; do
 done
 
 if [ "$WHISPER_FOUND" = false ]; then
-    warn "Whisper STT not found — voice input will be unavailable"
+    warn "Whisper STT not found â€” voice input will be unavailable"
 fi
 log ""
 
@@ -244,7 +244,7 @@ for ENDPOINT in "${TTS_ENDPOINTS[@]}"; do
 done
 
 if [ "$TTS_FOUND" = false ]; then
-    warn "TTS not found — voice output will be unavailable"
+    warn "TTS not found â€” voice output will be unavailable"
 fi
 log ""
 
@@ -262,11 +262,11 @@ for ENDPOINT in "${EMBEDDING_ENDPOINTS[@]}"; do
 done
 
 if [ "$EMBEDDING_FOUND" = false ]; then
-    warn "Embeddings not found — RAG features will be unavailable"
+    warn "Embeddings not found â€” RAG features will be unavailable"
 fi
 log ""
 
-# 8. Dashboard check (replaces LiveKit — more useful for all backends)
+# 8. Dashboard check (replaces LiveKit â€” more useful for all backends)
 log "[8/8] Checking Dashboard..."
 DASHBOARD_ENDPOINTS=("http://${SERVICE_HOST}:3001" "http://localhost:3001")
 DASHBOARD_FOUND=false
@@ -288,16 +288,16 @@ log ""
 log "========================================"
 log "Pre-flight Summary"
 log "========================================"
-log "$(printf "${GREEN}✓${NC} Passed: %d" "$PASS")"
-log "$(printf "${RED}✗${NC} Failed: %d" "$FAIL")"
-log "$(printf "${YELLOW}⚠${NC} Warnings: %d" "$WARN")"
+log "$(printf "${GREEN}âœ“${NC} Passed: %d" "$PASS")"
+log "$(printf "${RED}âœ—${NC} Failed: %d" "$FAIL")"
+log "$(printf "${YELLOW}âš ${NC} Warnings: %d" "$WARN")"
 log ""
 
 if [ $FAIL -eq 0 ]; then
-    pass "Pre-flight PASSED — Dream Server is ready!"
+    pass "Pre-flight PASSED â€” Dream Server is ready!"
     EXIT_CODE=0
 else
-    fail "Pre-flight FAILED — fix issues above before proceeding"
+    fail "Pre-flight FAILED â€” fix issues above before proceeding"
     EXIT_CODE=1
 fi
 

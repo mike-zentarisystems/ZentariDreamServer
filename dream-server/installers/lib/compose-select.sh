@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Compose Selection
+# Dream Server Installer â€” Compose Selection
 # ============================================================================
 # Part of: installers/lib/
 # Purpose: Resolve which docker-compose overlay files to use based on tier,
@@ -8,7 +8,7 @@
 #
 # Expects: SCRIPT_DIR, TIER, GPU_BACKEND, CAP_COMPOSE_OVERLAYS, LOG_FILE,
 #          GPU_COUNT, log(), warn()
-# Provides: resolve_compose_config() → sets COMPOSE_FILE, COMPOSE_FLAGS
+# Provides: resolve_compose_config() â†’ sets COMPOSE_FILE, COMPOSE_FLAGS
 #
 # Modder notes:
 #   Add new compose overlay mappings or backends here.

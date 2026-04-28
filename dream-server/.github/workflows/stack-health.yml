@@ -1,0 +1,75 @@
+name: DreamServer Stack Health
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  health-check:
+    name: Check All Services
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      DREAM_BASE_URL: ${{ secrets.DREAM_BASE_URL }}
+      DASHBOARD_API_KEY: ${{ secrets.DASHBOARD_API_KEY }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check DreamServer services
+        run: |
+          services=(
+            "open-webui:3000:/"
+            "dashboard:3001:/"
+            "llama-server:8080:/health"
+            "hermes-agent:8642:/health"
+            "n8n:5678:/healthz"
+            "langfuse:3006:/api/public/health"
+            "qdrant:6333:/healthz"
+            "uptime-kuma:3008:/"
+            "baserow:8110:/api/_health/"
+          )
+
+          failed=0
+          for entry in "${services[@]}"; do
+            name="${entry%%:*}"
+            rest="${entry#*:}"
+            port="${rest%%:*}"
+            path="${rest#*:}"
+            url="${DREAM_BASE_URL}:${port}${path}"
+
+            echo -n "Checking ${name}... "
+            if curl -fsS --max-time 10 "${url}" > /dev/null 2>&1; then
+              echo "OK"
+            else
+              echo "FAILED (${url})"
+              failed=$((failed + 1))
+            fi
+          done
+
+          if [ $failed -gt 0 ]; then
+            echo "::error::${failed} service(s) failed health checks"
+            exit 1
+          fi
+
+      - name: Check Prometheus targets
+        run: |
+          targets_url="${DREAM_BASE_URL}:9090/api/v1/targets"
+          response=$(curl -fsS --max-time 10 "${targets_url}")
+          down_count=$(echo "$response" | jq '[.data.activeTargets[] | select(.health=="down")] | length')
+          if [ "$down_count" -gt 0 ]; then
+            echo "::warning::${down_count} Prometheus scrape target(s) are DOWN"
+            echo "$response" | jq '.data.activeTargets[] | select(.health=="down") | {job: .labels.job, health: .health}'
+          else
+            echo "All Prometheus targets healthy"
+          fi

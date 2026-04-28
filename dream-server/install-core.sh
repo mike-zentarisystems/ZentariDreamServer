@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Orchestrator
+# Dream Server Installer â€” Orchestrator
 # ============================================================================
 # Unified installer - voice-enabled by default, uses docker-compose.yml
 # profiles for optional features.
@@ -8,8 +8,8 @@
 #
 # This file sources library modules (pure functions, no side effects) then
 # runs each install phase in order.  Individual modules live under:
-#   installers/lib/      — reusable function libraries
-#   installers/phases/   — sequential install steps (execute on source)
+#   installers/lib/      â€” reusable function libraries
+#   installers/phases/   â€” sequential install steps (execute on source)
 #
 # See each module's header for what it expects and provides.
 # ============================================================================
@@ -57,7 +57,7 @@ interrupt_handler() {
     echo -e "\033[0;33m[!] Press Ctrl+C again within 3 seconds to cancel the install.\033[0m"
 }
 trap interrupt_handler INT
-# Ignore Ctrl+Z (SIGTSTP) entirely — backgrounding the installer breaks things
+# Ignore Ctrl+Z (SIGTSTP) entirely â€” backgrounding the installer breaks things
 trap '' TSTP
 
 #=============================================================================
@@ -90,10 +90,11 @@ DRY_RUN=false
 SKIP_DOCKER=false
 FORCE=false
 TIER=""
-ENABLE_VOICE=true
-ENABLE_WORKFLOWS=true
-ENABLE_RAG=true
-ENABLE_OPENCLAW=true
+ENABLE_HERMES=true
+ENABLE_BASEROW=true
+ENABLE_AUTHELIA=true
+ENABLE_CADDY=true
+ENABLE_MONITORING=true
 ENABLE_COMFYUI=true
 ENABLE_DREAMFORGE=true
 # Langfuse (LLM observability) defaults OFF on all tiers because its
@@ -120,17 +121,18 @@ Options:
     --force           Overwrite existing installation
     --tier N          Force specific tier (1-4) instead of auto-detect
     --cloud           Cloud mode: skip GPU detection, use LiteLLM + cloud APIs
-    --voice           Enable voice services (Whisper + Kokoro)
-    --workflows       Enable n8n workflow automation
-    --rag             Enable RAG with Qdrant vector database
-    --openclaw        Enable OpenClaw AI agent framework
-    --comfyui         Enable ComfyUI image generation
-    --no-comfyui      Disable ComfyUI image generation (saves ~34GB)
-    --dreamforge      Enable DreamForge agent system (default)
-    --no-dreamforge   Disable DreamForge
-    --langfuse        Enable Langfuse LLM observability (off by default)
-    --no-langfuse     Explicitly disable Langfuse (for --all overrides)
-    --all             Enable all optional services (including Langfuse)
+    --hermes           Enable Hermes Agent (Nous Research autonomous agent)
+    --baserow          Enable Baserow (standard database)
+    --authelia         Enable Authelia (SSO/MFA)
+    --caddy            Enable Caddy (Reverse Proxy)
+    --monitoring       Enable Monitoring (Prometheus + Grafana)
+    --comfyui          Enable ComfyUI image generation
+    --no-comfyui       Disable ComfyUI image generation (saves ~34GB)
+    --dreamforge       Enable DreamForge agent system (default)
+    --no-dreamforge    Disable DreamForge
+    --langfuse         Enable Langfuse LLM observability (off by default)
+    --no-langfuse      Explicitly disable Langfuse (for --all overrides)
+    --all              Enable all optional services (including Langfuse)
     --non-interactive Run without prompts (use defaults or flags)
     --offline         M1 mode: Configure for fully offline/air-gapped operation
     --lan             Bind services to 0.0.0.0 for LAN access (headless servers)
@@ -167,19 +169,18 @@ while [[ $# -gt 0 ]]; do
         --force) FORCE=true; shift ;;
         --tier) TIER="$2"; shift 2 ;;
         --cloud) DREAM_MODE="cloud"; shift ;;
-        --voice) ENABLE_VOICE=true; shift ;;
-        --workflows) ENABLE_WORKFLOWS=true; shift ;;
-        --rag) ENABLE_RAG=true; shift ;;
-        --openclaw) ENABLE_OPENCLAW=true; shift ;;
+        --hermes) ENABLE_HERMES=true; shift ;;
+        --baserow) ENABLE_BASEROW=true; shift ;;
+        --authelia) ENABLE_AUTHELIA=true; shift ;;
+        --caddy) ENABLE_CADDY=true; shift ;;
+        --monitoring) ENABLE_MONITORING=true; shift ;;
         --comfyui) ENABLE_COMFYUI=true; shift ;;
         --no-comfyui) ENABLE_COMFYUI=false; shift ;;
         --dreamforge) ENABLE_DREAMFORGE=true; shift ;;
         --no-dreamforge) ENABLE_DREAMFORGE=false; shift ;;
         --langfuse) ENABLE_LANGFUSE=true; shift ;;
-        # NOTE: with --all, --no-langfuse must appear AFTER --all on the command
-        # line (flag processing is case-loop ordered, matching comfyui/dreamforge).
         --no-langfuse) ENABLE_LANGFUSE=false; shift ;;
-        --all) ENABLE_VOICE=true; ENABLE_WORKFLOWS=true; ENABLE_RAG=true; ENABLE_OPENCLAW=true; ENABLE_COMFYUI=true; ENABLE_DREAMFORGE=true; ENABLE_LANGFUSE=true; shift ;;
+        --all) ENABLE_VOICE=true; ENABLE_WORKFLOWS=true; ENABLE_RAG=true; ENABLE_HERMES=true; ENABLE_BASEROW=true; ENABLE_AUTHELIA=true; ENABLE_CADDY=true; ENABLE_MONITORING=true; ENABLE_COMFYUI=true; ENABLE_DREAMFORGE=true; ENABLE_LANGFUSE=true; shift ;;
         --non-interactive) INTERACTIVE=false; shift ;;
         --offline) OFFLINE_MODE=true; shift ;;
         --lan) BIND_ADDRESS="0.0.0.0"; shift ;;
@@ -200,7 +201,7 @@ detect_pkg_manager
 show_stranger_boot
 [[ "$INTERACTIVE" == "true" ]] && sleep 5
 
-$DRY_RUN && echo -e "${AMB}>>> DRY RUN MODE — I will simulate everything. No changes made. <<<${NC}\n"
+$DRY_RUN && echo -e "${AMB}>>> DRY RUN MODE â€” I will simulate everything. No changes made. <<<${NC}\n"
 
 #=============================================================================
 # Run phases
@@ -218,7 +219,7 @@ INSTALL_PHASE="10-amd-tuning";   source "$SCRIPT_DIR/installers/phases/10-amd-tu
 INSTALL_PHASE="11-services";     source "$SCRIPT_DIR/installers/phases/11-services.sh"
 INSTALL_PHASE="12-health";       source "$SCRIPT_DIR/installers/phases/12-health.sh"
 # Phase 13 is informational (URLs, shortcuts, preflight). It must never fail
-# the install — any error here is cosmetic. Run with set +e to prevent
+# the install â€” any error here is cosmetic. Run with set +e to prevent
 # stray non-zero exit codes (e.g., a crashing privacy-shield health probe)
 # from triggering the cleanup_on_error trap.
 INSTALL_PHASE="13-summary"

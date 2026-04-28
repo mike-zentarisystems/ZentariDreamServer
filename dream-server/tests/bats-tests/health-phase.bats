@@ -33,12 +33,12 @@ setup() {
     export ENABLE_VOICE=false
     export ENABLE_WORKFLOWS=false
     export ENABLE_RAG=false
-    export ENABLE_OPENCLAW=false
+    export ENABLE_HERMES=false
     export ENABLE_COMFYUI=false
     export LLM_MODEL="qwen3.5-9b"
     export WHISPER_PORT=9000
     export TTS_PORT=8880
-    export OPENCLAW_PORT=7860
+    export HERMES_PORT=8642
     export PERPLEXICA_PORT=3004
     export COMFYUI_PORT=8188
 
@@ -77,7 +77,7 @@ teardown() {
         export ENABLE_VOICE=false
         export ENABLE_WORKFLOWS=false
         export ENABLE_RAG=false
-        export ENABLE_OPENCLAW=false
+        export ENABLE_HERMES=false
         export ENABLE_COMFYUI=false
         export LLM_MODEL="qwen3.5-9b"
         export SCRIPT_DIR="'"$SCRIPT_DIR"'"
@@ -109,7 +109,7 @@ teardown() {
     export ENABLE_VOICE=true
     export ENABLE_WORKFLOWS=true
     export ENABLE_RAG=true
-    export ENABLE_OPENCLAW=true
+    export ENABLE_HERMES=true
     export ENABLE_COMFYUI=true
 
     run bash -c '
@@ -118,7 +118,7 @@ teardown() {
         export ENABLE_VOICE=true
         export ENABLE_WORKFLOWS=true
         export ENABLE_RAG=true
-        export ENABLE_OPENCLAW=true
+        export ENABLE_HERMES=true
         export ENABLE_COMFYUI=true
         export LLM_MODEL="qwen3.5-9b"
         export SCRIPT_DIR="'"$SCRIPT_DIR"'"
@@ -143,7 +143,7 @@ teardown() {
     assert_output --partial "Kokoro"
     assert_output --partial "n8n"
     assert_output --partial "Qdrant"
-    assert_output --partial "OpenClaw"
+    assert_output --partial "Hermes Agent"
 }
 
 # ── _check_health failure tracking ──────────────────────────────────────────
@@ -207,7 +207,7 @@ teardown() {
         export ENABLE_VOICE=false
         export ENABLE_WORKFLOWS=false
         export ENABLE_RAG=false
-        export ENABLE_OPENCLAW=false
+        export ENABLE_HERMES=false
         export ENABLE_COMFYUI=false
         export LLM_MODEL="qwen3.5-9b"
 

@@ -1,12 +1,12 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Tier Map
+# Dream Server Installer â€” Tier Map
 # ============================================================================
 # Part of: installers/lib/
 # Purpose: Map hardware tier to model name, GGUF file, URL, and context size
 #
 # Expects: TIER (set by detection phase), error()
-# Provides: resolve_tier_config() → sets TIER_NAME, LLM_MODEL, GGUF_FILE,
+# Provides: resolve_tier_config() â†’ sets TIER_NAME, LLM_MODEL, GGUF_FILE,
 #           GGUF_URL, MAX_CONTEXT
 #
 # Modder notes:
@@ -62,7 +62,7 @@ set_qwen_tier_config() {
             LLM_MODEL_SIZE_MB=0
             ;;
         ARC)
-            # Intel Arc A770 (16 GB) and future Arc B-series (≥12 GB VRAM)
+            # Intel Arc A770 (16 GB) and future Arc B-series (â‰¥12 GB VRAM)
             # llama.cpp SYCL backend: N_GPU_LAYERS=99 offloads all layers to GPU
             TIER_NAME="Intel Arc"
             LLM_MODEL="qwen3.5-9b"
@@ -75,7 +75,7 @@ set_qwen_tier_config() {
             N_GPU_LAYERS=99
             ;;
         ARC_LITE)
-            # Intel Arc A750 (8 GB), A380 (6 GB) — smaller VRAM, lighter model
+            # Intel Arc A750 (8 GB), A380 (6 GB) â€” smaller VRAM, lighter model
             # llama.cpp SYCL backend: N_GPU_LAYERS=99 offloads all layers to GPU
             TIER_NAME="Intel Arc Lite"
             LLM_MODEL="qwen3.5-4b"

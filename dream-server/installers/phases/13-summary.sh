@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Phase 13: Summary & Desktop Shortcut
+# Dream Server Installer â€” Phase 13: Summary & Desktop Shortcut
 # ============================================================================
 # Part of: installers/phases/
 # Purpose: Display URLs, create desktop shortcut, pin to sidebar, write
@@ -8,7 +8,7 @@
 #
 # Expects: DRY_RUN, INSTALL_DIR, SCRIPT_DIR, LOG_FILE, INTERACTIVE,
 #           TIER, TIER_NAME, VERSION, GPU_BACKEND, LLM_MODEL, OFFLINE_MODE,
-#           ENABLE_VOICE, ENABLE_WORKFLOWS, ENABLE_RAG, ENABLE_OPENCLAW,
+#           ENABLE_VOICE, ENABLE_WORKFLOWS, ENABLE_RAG, ENABLE_HERMES,
 #           COMPOSE_FLAGS, SUMMARY_JSON_FILE, PREFLIGHT_REPORT_FILE,
 #           BGRN, GRN, AMB, WHT, NC, DASHBOARD_PORT (:-3001),
 #           CAP_HARDWARE_CLASS_ID (:-unknown), CAP_HARDWARE_CLASS_LABEL (:-Unknown),
@@ -50,7 +50,7 @@ show_success_card "http://localhost:3000" "http://localhost:3001" "$LOCAL_IP"
 # Mark the setup wizard as already completed for fresh installs. The
 # dashboard-api reads this file (container path /data/config/setup-complete.json,
 # mounted from ${INSTALL_DIR}/data) to decide first_run state; without it the
-# wizard reappears on every visit after a fresh install. Non-fatal — if the
+# wizard reappears on every visit after a fresh install. Non-fatal â€” if the
 # write fails, the wizard simply shows once.
 if ! $DRY_RUN; then
     _setup_config_dir="${INSTALL_DIR}/data/config"
@@ -121,27 +121,27 @@ bootline
 echo -e "${BGRN}ALL SERVICES${NC}"
 bootline
 # Core services always shown
-echo "  • Chat UI:       http://localhost:${SERVICE_PORTS[open-webui]:-3000}"
-echo "  • Dashboard:     http://localhost:${SERVICE_PORTS[dashboard]:-3001}"
-echo "  • Perplexica:    http://localhost:${SERVICE_PORTS[perplexica]:-3004}"
-echo "  • ComfyUI:       http://localhost:${SERVICE_PORTS[comfyui]:-8188}"
-echo "  • LLM API:       http://localhost:${SERVICE_PORTS[llama-server]:-11434}/v1  (llama-server)"
-[[ "$ENABLE_OPENCLAW" == "true" ]] && echo "  • OpenClaw:      http://localhost:${SERVICE_PORTS[openclaw]:-7860}"
-systemctl --user is-active opencode-web &>/dev/null && echo "  • OpenCode:      http://localhost:3003"
-[[ "$ENABLE_VOICE" == "true" ]] && echo "  • Whisper STT:   http://localhost:${SERVICE_PORTS[whisper]:-9000}"
-[[ "$ENABLE_VOICE" == "true" ]] && echo "  • TTS (Kokoro):  http://localhost:${SERVICE_PORTS[tts]:-8880}"
-[[ "$ENABLE_WORKFLOWS" == "true" ]] && echo "  • n8n:           http://localhost:${SERVICE_PORTS[n8n]:-5678}"
-[[ "$ENABLE_RAG" == "true" ]] && echo "  • Qdrant:        http://localhost:${SERVICE_PORTS[qdrant]:-6333}"
-[[ "${ENABLE_DREAMFORGE:-}" == "true" ]] && echo "  • DreamForge:    http://localhost:${SERVICE_PORTS[dreamforge]:-3010}"
+echo "  â€¢ Chat UI:       http://localhost:${SERVICE_PORTS[open-webui]:-3000}"
+echo "  â€¢ Dashboard:     http://localhost:${SERVICE_PORTS[dashboard]:-3001}"
+echo "  â€¢ Perplexica:    http://localhost:${SERVICE_PORTS[perplexica]:-3004}"
+echo "  â€¢ ComfyUI:       http://localhost:${SERVICE_PORTS[comfyui]:-8188}"
+echo "  â€¢ LLM API:       http://localhost:${SERVICE_PORTS[llama-server]:-11434}/v1  (llama-server)"
+[[ "$ENABLE_HERMES" == "true" ]] && echo "  â€¢ Hermes Agent:  http://localhost:${SERVICE_PORTS[hermes-agent]:-8642}"
+systemctl --user is-active opencode-web &>/dev/null && echo "  â€¢ OpenCode:      http://localhost:3003"
+[[ "$ENABLE_VOICE" == "true" ]] && echo "  â€¢ Whisper STT:   http://localhost:${SERVICE_PORTS[whisper]:-9000}"
+[[ "$ENABLE_VOICE" == "true" ]] && echo "  â€¢ TTS (Kokoro):  http://localhost:${SERVICE_PORTS[tts]:-8880}"
+[[ "$ENABLE_WORKFLOWS" == "true" ]] && echo "  â€¢ n8n:           http://localhost:${SERVICE_PORTS[n8n]:-5678}"
+[[ "$ENABLE_RAG" == "true" ]] && echo "  â€¢ Qdrant:        http://localhost:${SERVICE_PORTS[qdrant]:-6333}"
+[[ "${ENABLE_DREAMFORGE:-}" == "true" ]] && echo "  â€¢ DreamForge:    http://localhost:${SERVICE_PORTS[dreamforge]:-3010}"
 echo ""
 
 # Configuration summary
 bootline
 echo -e "${BGRN}YOUR CONFIGURATION${NC}"
 bootline
-echo "  • Tier: $TIER ($TIER_NAME)"
-echo "  • Model: $LLM_MODEL"
-echo "  • Install dir: $INSTALL_DIR"
+echo "  â€¢ Tier: $TIER ($TIER_NAME)"
+echo "  â€¢ Model: $LLM_MODEL"
+echo "  â€¢ Install dir: $INSTALL_DIR"
 echo ""
 
 # Quick commands
@@ -191,7 +191,7 @@ if [[ -f "$SCRIPT_DIR/dream-preflight.sh" ]]; then
         ai "  Check with: dream status"
     fi
 else
-    log "Preflight script not found — skipping validation"
+    log "Preflight script not found â€” skipping validation"
 fi
 
 # Extension manifest validation (non-blocking)
@@ -207,7 +207,7 @@ if [[ -f "$SCRIPT_DIR/scripts/validate-manifests.sh" ]]; then
         warn "Extension manifest validation reported issues. See details above."
     fi
 else
-    log "Extension validation script not found — skipping extension checks"
+    log "Extension validation script not found â€” skipping extension checks"
 fi
 
 # Non-core extension runtime check (Docker + optional HTTP health; non-blocking)
@@ -219,7 +219,7 @@ echo ""
 if [[ -f "$SCRIPT_DIR/scripts/extension-runtime-check.sh" ]]; then
     bash "$SCRIPT_DIR/scripts/extension-runtime-check.sh" "$INSTALL_DIR" || true
 else
-    log "extension-runtime-check.sh not found — skipping"
+    log "extension-runtime-check.sh not found â€” skipping"
 fi
 
 #=============================================================================
@@ -310,7 +310,7 @@ if ! $DRY_RUN; then
         _perplexica_status=$(curl -sf --max-time 5 "http://localhost:${SERVICE_PORTS[perplexica]:-3004}/api/config" 2>>"$LOG_FILE" | \
             "$PYTHON_CMD" -c "import sys,json;d=json.load(sys.stdin);print('ok' if d['values'].get('setupComplete') else 'needed')" 2>>"$LOG_FILE" || echo "skip")
         if [[ "$_perplexica_status" == "needed" ]]; then
-            ai_warn "Perplexica config incomplete — running auto-setup..."
+            ai_warn "Perplexica config incomplete â€” running auto-setup..."
             if [[ -x "$INSTALL_DIR/scripts/repair/repair-perplexica.sh" ]]; then
                 bash "$INSTALL_DIR/scripts/repair/repair-perplexica.sh" \
                     "http://localhost:${SERVICE_PORTS[perplexica]:-3004}" \
@@ -325,13 +325,13 @@ if ! $DRY_RUN; then
     if [[ "${GPU_BACKEND:-}" == "amd" ]]; then
         if ! groups 2>/dev/null | grep -qE "\b(render|video)\b"; then
             echo ""
-            echo -e "${AMB}┌──────────────────────────────────────────────────────────────┐${NC}"
-            echo -e "${AMB}│  AMD GPU: user not in render/video groups                    │${NC}"
-            echo -e "${AMB}│  GPU-accelerated services (ComfyUI, ROCm) may not work.      │${NC}"
-            echo -e "${AMB}│                                                              │${NC}"
-            echo -e "${AMB}│  Fix: sudo usermod -aG render,video \$USER                    │${NC}"
-            echo -e "${AMB}│  Then log out and back in.                                   │${NC}"
-            echo -e "${AMB}└──────────────────────────────────────────────────────────────┘${NC}"
+            echo -e "${AMB}â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”${NC}"
+            echo -e "${AMB}â”‚  AMD GPU: user not in render/video groups                    â”‚${NC}"
+            echo -e "${AMB}â”‚  GPU-accelerated services (ComfyUI, ROCm) may not work.      â”‚${NC}"
+            echo -e "${AMB}â”‚                                                              â”‚${NC}"
+            echo -e "${AMB}â”‚  Fix: sudo usermod -aG render,video \$USER                    â”‚${NC}"
+            echo -e "${AMB}â”‚  Then log out and back in.                                   â”‚${NC}"
+            echo -e "${AMB}â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜${NC}"
         fi
     fi
 fi
@@ -341,16 +341,16 @@ signal "Broadcast stable. You're free now."
 echo ""
 DASHBOARD_PORT="${SERVICE_PORTS[dashboard]:-3001}"
 WEBUI_PORT="${SERVICE_PORTS[open-webui]:-3000}"
-OPENCLAW_PORT="${SERVICE_PORTS[openclaw]:-7860}"
+HERMES_PORT="${SERVICE_PORTS[hermes-agent]:-8642}"
 LOCAL_IP=$(hostname -I 2>/dev/null | awk '{print $1}' || echo "")
-echo -e "${GRN}──────────────────────────────────────────────────────────────────────────────${NC}"
+echo -e "${GRN}â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€${NC}"
 echo -e "${BGRN}  YOUR DREAM SERVER IS LIVE${NC}"
-echo -e "${GRN}──────────────────────────────────────────────────────────────────────────────${NC}"
+echo -e "${GRN}â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€${NC}"
 echo ""
 echo -e "  ${BGRN}Dashboard${NC}    ${WHT}http://localhost:${DASHBOARD_PORT}${NC}"
 echo -e "  ${BGRN}Chat${NC}         ${WHT}http://localhost:${WEBUI_PORT}${NC}"
-[[ "$ENABLE_OPENCLAW" == "true" ]] && \
-echo -e "  ${BGRN}OpenClaw${NC}     ${WHT}http://localhost:${OPENCLAW_PORT}${NC}"
+[[ "$ENABLE_HERMES" == "true" ]] && \
+echo -e "  ${BGRN}Hermes${NC}      ${WHT}http://localhost:${HERMES_PORT}${NC}"
 systemctl --user is-active opencode-web &>/dev/null && \
 echo -e "  ${BGRN}OpenCode${NC}     ${WHT}http://localhost:3003${NC}"
 echo ""
@@ -364,10 +364,10 @@ if [[ -n "$LOCAL_IP" ]]; then
     fi
 fi
 echo ""
-echo -e "  Start here → ${WHT}http://localhost:${DASHBOARD_PORT}${NC}"
+echo -e "  Start here â†’ ${WHT}http://localhost:${DASHBOARD_PORT}${NC}"
 echo -e "  The Dashboard shows all services, GPU status, and quick links."
 echo ""
-echo -e "${GRN}──────────────────────────────────────────────────────────────────────────────${NC}"
+echo -e "${GRN}â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€${NC}"
 echo ""
 
 if [[ -n "$SUMMARY_JSON_FILE" ]]; then

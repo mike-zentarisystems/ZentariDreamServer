@@ -34,7 +34,7 @@ Utility scripts for diagnostics, testing, validation, and operations.
 | `mode-switch.sh` | Switch deployment modes | Yes |
 | `upgrade-model.sh` | Upgrade to a different model | Yes |
 | `migrate-config.sh` | Migrate config between versions | No |
-| `session-cleanup.sh` | OpenClaw session lifecycle | Yes |
+| `session-cleanup.sh` | Hermes Agent session lifecycle | Yes |
 | `pre-download.sh` | Pre-download models for offline use | No |
 | `llm-cold-storage.sh` | Archive/restore models | No |
 
@@ -59,7 +59,6 @@ Utility scripts for diagnostics, testing, validation, and operations.
 
 | Unit | Description |
 |------|-------------|
-| `openclaw-session-cleanup.service/.timer` | Periodic OpenClaw session cleanup |
 | `memory-shepherd-memory.service/.timer` | Agent memory lifecycle management |
 | `memory-shepherd-workspace.service/.timer` | Agent workspace maintenance |
 

@@ -5,7 +5,7 @@
 #
 # Usage: ./health-check.sh [--json] [--quiet]
 
-# ── Bash 4+ guard ─────────────────────────────────────────────────────────────
+# â”€â”€ Bash 4+ guard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # service-registry.sh requires associative arrays (declare -A) which need Bash 4+.
 # macOS ships Bash 3.2; if running there, re-exec under Homebrew bash.
 if [ "${BASH_VERSINFO[0]}" -lt 4 ]; then
@@ -53,7 +53,7 @@ else
     GREEN='\033[0;32m' RED='\033[0;31m' YELLOW='\033[1;33m' CYAN='\033[0;36m' NC='\033[0m'
 fi
 
-# Track results (indexed arrays — Bash 3.2 compatible as defense-in-depth)
+# Track results (indexed arrays â€” Bash 3.2 compatible as defense-in-depth)
 declare -a RESULT_KEYS=()
 declare -a RESULT_VALS=()
 CRITICAL_FAIL=false
@@ -90,9 +90,9 @@ _now_ms() {
     python3 -c 'import time; print(int(time.time() * 1000))' 2>/dev/null || echo "$(date +%s)000"
 }
 
-# ── Test functions ──────────────────────────────────────────────────────────
+# â”€â”€ Test functions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-# llama-server: critical path — performs an actual inference test
+# llama-server: critical path â€” performs an actual inference test
 test_llm() {
     local start
     start=$(_now_ms)
@@ -230,7 +230,7 @@ check_service() {
     local sid="$1"
     local name="${SERVICE_NAMES[$sid]:-$sid}"
     if test_service "$sid" 2>/dev/null; then
-        log "  ${GREEN}✓${NC} $name - healthy"
+        log "  ${GREEN}âœ“${NC} $name - healthy"
         return 0
     else
         log "  ${YELLOW}!${NC} $name - not responding"
@@ -254,24 +254,24 @@ check_service_async() {
     fi
 }
 
-# ── Run tests ───────────────────────────────────────────────────────────────
+# â”€â”€ Run tests â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 # Create temp dir for parallel results
 TEMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TEMP_DIR"' EXIT
 
-log "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+log "${CYAN}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
 log "${CYAN}  Dream Server Health Check${NC}"
-log "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+log "${CYAN}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
 log ""
 
 log "${CYAN}Core Services:${NC}"
 
-# llama-server (critical — does inference test, not just health)
+# llama-server (critical â€” does inference test, not just health)
 if test_llm 2>/dev/null; then
-    log "  ${GREEN}✓${NC} llama-server - inference working ($(result_get "llm_latency")ms)"
+    log "  ${GREEN}âœ“${NC} llama-server - inference working ($(result_get "llm_latency")ms)"
 else
-    log "  ${RED}✗${NC} llama-server - CRITICAL: inference failed"
+    log "  ${RED}âœ—${NC} llama-server - CRITICAL: inference failed"
 fi
 
 # Launch all other core services in parallel
@@ -302,7 +302,7 @@ for sid in "${CORE_SIDS[@]}"; do
         IFS=':' read -r status sid_check container_state <<< "$result"
 
         if [[ "$status" == "ok" ]]; then
-            log "  ${GREEN}✓${NC} $name - healthy"
+            log "  ${GREEN}âœ“${NC} $name - healthy"
         else
             # Use container state for better error message
             case "$container_state" in
@@ -356,7 +356,7 @@ for sid in "${EXT_SIDS[@]}"; do
         IFS=':' read -r status sid_check container_state <<< "$result"
 
         if [[ "$status" == "ok" ]]; then
-            log "  ${GREEN}✓${NC} $name - healthy"
+            log "  ${GREEN}âœ“${NC} $name - healthy"
         else
             # Use container state for better error message
             case "$container_state" in
@@ -385,16 +385,16 @@ log "${CYAN}System Resources:${NC}"
 
 # GPU
 if test_gpu 2>/dev/null; then
-    status_icon="${GREEN}✓${NC}"
+    status_icon="${GREEN}âœ“${NC}"
     [ "$(result_get "gpu")" = "warn" ] && status_icon="${YELLOW}!${NC}"
-    log "  ${status_icon} GPU - $(result_get "gpu_mem_used")/$(result_get "gpu_mem_total") MiB, $(result_get "gpu_util")% util, $(result_get "gpu_temp")°C"
+    log "  ${status_icon} GPU - $(result_get "gpu_mem_used")/$(result_get "gpu_mem_total") MiB, $(result_get "gpu_util")% util, $(result_get "gpu_temp")Â°C"
 else
     log "  ${YELLOW}?${NC} GPU - status unavailable"
 fi
 
 # Disk
 if test_disk 2>/dev/null; then
-    status_icon="${GREEN}✓${NC}"
+    status_icon="${GREEN}âœ“${NC}"
     [ "$(result_get "disk")" = "warn" ] && status_icon="${YELLOW}!${NC}"
     log "  ${status_icon} Disk - $(result_get "disk_usage")% used"
 else

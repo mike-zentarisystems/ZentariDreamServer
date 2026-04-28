@@ -14,10 +14,10 @@ NC='\033[0m'
 PASSED=0
 FAILED=0
 
-pass() { echo -e "${GREEN}✓${NC} $1"; ((PASSED++)) || true; }
-fail() { echo -e "${RED}✗${NC} $1"; ((FAILED++)) || true; }
+pass() { echo -e "${GREEN}âœ“${NC} $1"; ((PASSED++)) || true; }
+fail() { echo -e "${RED}âœ—${NC} $1"; ((FAILED++)) || true; }
 
-echo -e "${BLUE}━━━ Dream Doctor Command Tests ━━━${NC}"
+echo -e "${BLUE}â”â”â” Dream Doctor Command Tests â”â”â”${NC}"
 echo ""
 
 # Test 1: cmd_doctor function exists
@@ -180,16 +180,16 @@ else
 fi
 
 echo ""
-echo -e "${BLUE}━━━ Test Summary ━━━${NC}"
+echo -e "${BLUE}â”â”â” Test Summary â”â”â”${NC}"
 echo ""
 echo -e "  ${GREEN}Passed:${NC} $PASSED"
 [[ $FAILED -gt 0 ]] && echo -e "  ${RED}Failed:${NC} $FAILED"
 echo ""
 
 if [[ $FAILED -eq 0 ]]; then
-    echo -e "${GREEN}✓ All tests passed${NC}"
+    echo -e "${GREEN}âœ“ All tests passed${NC}"
     exit 0
 else
-    echo -e "${RED}✗ Some tests failed${NC}"
+    echo -e "${RED}âœ— Some tests failed${NC}"
     exit 1
 fi

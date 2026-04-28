@@ -2,7 +2,7 @@ schema_version: dream.templates.v1
 template:
   id: no-code-ai-builder
   name: No-Code AI Builder
-  description: "Visual LLM workflow builders, vector memory, and a local database — build AI apps without writing code."
+  description: "Visual LLM workflow builders, vector memory, and a local database â€” build AI apps without writing code."
   icon: Blocks
   tags: [no-code, workflows, visual]
   services: [flowise, langflow, n8n, chromadb, baserow]

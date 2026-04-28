@@ -216,9 +216,20 @@ extensions/services/
 ```
 
 ```bash
-dream enable my-service    # Enable an extension
-dream disable my-service   # Disable it
-dream list                 # See all services and status
+dream list                       # See available services and status
+dream logs llm                   # Watch llama-server logs (alias: llm)
+dream logs stt                   # Watch Whisper logs (alias: stt)
+dream restart whisper            # Restart a service
+dream enable n8n                 # Enable an extension
+dream disable comfyui            # Disable an extension
+dream stop                       # Stop everything
+dream start                      # Start everything
+dream glances web                 # Launch Glances system monitoring (http://localhost:61208)
+
+# Management scripts
+./scripts/session-cleanup.sh             # Clean up bloated agent sessions
+./scripts/llm-cold-storage.sh --status   # Check model hot/cold storage
+dream mode status                        # Show current mode
 ```
 
 Full guide: [docs/EXTENSIONS.md](docs/EXTENSIONS.md)

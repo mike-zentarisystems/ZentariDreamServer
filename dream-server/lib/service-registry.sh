@@ -1,5 +1,5 @@
 #!/bin/bash
-# Service Registry — loads extension manifests and provides lookup functions.
+# Service Registry â€” loads extension manifests and provides lookup functions.
 # Source this file: . "$SCRIPT_DIR/lib/service-registry.sh"
 
 EXTENSIONS_DIR="${SCRIPT_DIR:-$(pwd)}/extensions/services"
@@ -14,7 +14,7 @@ _SR_CACHE_HITS=0
 _SR_CACHE_MISSES=0
 
 # Bash 4+ required for associative arrays used throughout the service registry.
-# macOS ships Bash 3.2 — users must install a modern shell (e.g. via Homebrew).
+# macOS ships Bash 3.2 â€” users must install a modern shell (e.g. via Homebrew).
 if (( BASH_VERSINFO[0] < 4 )); then
     echo "ERROR: service-registry.sh requires Bash 4.0+ (current: $BASH_VERSION)" >&2
     echo "  macOS ships Bash 3.2 due to licensing. Install a modern version:" >&2
@@ -24,18 +24,18 @@ if (( BASH_VERSINFO[0] < 4 )); then
 fi
 
 # Associative arrays (bash 4+)
-declare -A SERVICE_ALIASES      # alias → service_id
-declare -A SERVICE_CONTAINERS   # service_id → container_name
-declare -A SERVICE_COMPOSE      # service_id → compose file path
-declare -A SERVICE_CATEGORIES   # service_id → core|recommended|optional
-declare -A SERVICE_DEPENDS      # service_id → space-separated dependency IDs
-declare -A SERVICE_HEALTH       # service_id → health endpoint path
-declare -A SERVICE_HEALTH_TIMEOUTS  # service_id → health check timeout in seconds
-declare -A SERVICE_PORTS        # service_id → external port (what the user hits on localhost)
-declare -A SERVICE_PORT_ENVS    # service_id → env var name for the external port
-declare -A SERVICE_NAMES        # service_id → display name
-declare -A SERVICE_SETUP_HOOKS  # service_id → absolute path to setup script
-declare -A SERVICE_GPU_BACKENDS # service_id → space-separated GPU backends (amd, nvidia, apple, cpu)
+declare -A SERVICE_ALIASES      # alias â†’ service_id
+declare -A SERVICE_CONTAINERS   # service_id â†’ container_name
+declare -A SERVICE_COMPOSE      # service_id â†’ compose file path
+declare -A SERVICE_CATEGORIES   # service_id â†’ core|recommended|optional
+declare -A SERVICE_DEPENDS      # service_id â†’ space-separated dependency IDs
+declare -A SERVICE_HEALTH       # service_id â†’ health endpoint path
+declare -A SERVICE_HEALTH_TIMEOUTS  # service_id â†’ health check timeout in seconds
+declare -A SERVICE_PORTS        # service_id â†’ external port (what the user hits on localhost)
+declare -A SERVICE_PORT_ENVS    # service_id â†’ env var name for the external port
+declare -A SERVICE_NAMES        # service_id â†’ display name
+declare -A SERVICE_SETUP_HOOKS  # service_id â†’ absolute path to setup script
+declare -A SERVICE_GPU_BACKENDS # service_id â†’ space-separated GPU backends (amd, nvidia, apple, cpu)
 declare -a SERVICE_IDS          # ordered list of all service IDs
 
 sr_load() {
@@ -131,7 +131,7 @@ for service_dir in _all_service_dirs:
             continue
         _seen_ids.add(sid)
 
-        # Validate service ID — must be safe for use as bash associative array key
+        # Validate service ID â€” must be safe for use as bash associative array key
         if not _re.match(r'^[a-zA-Z0-9_-]+$', sid):
             print(f'# SKIP: invalid service id: {sid!r}', file=sys.stderr)
             continue
@@ -157,7 +157,7 @@ for service_dir in _all_service_dirs:
             if full.exists():
                 compose_path = str(full)
 
-        # Emit sourceable lines — all values escaped for safe double-quoting
+        # Emit sourceable lines â€” all values escaped for safe double-quoting
         print(f'SERVICE_IDS+=("{_esc(sid)}")')
         print(f'SERVICE_ALIASES["{_esc(sid)}"]="{_esc(sid)}"')
         for a in valid_aliases:
@@ -212,7 +212,7 @@ PYEOF
 
 # Update SERVICE_PORTS with actual values from environment variables.
 # Call AFTER sr_load + load_env_file so the env vars are populated.
-# Uses SERVICE_PORT_ENVS (e.g. llama-server → OLLAMA_PORT) to resolve
+# Uses SERVICE_PORT_ENVS (e.g. llama-server â†’ OLLAMA_PORT) to resolve
 # the env var name, then indirect expansion to get its value.
 sr_resolve_ports() {
     for _sid in "${SERVICE_IDS[@]}"; do

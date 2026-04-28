@@ -1,9 +1,9 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — UI (CRT Theme)
+# Dream Server Installer â€” UI (CRT Theme)
 # ============================================================================
 # Part of: installers/lib/
-# Purpose: All CRT terminal UI functions — typing effects, spinners, phase
+# Purpose: All CRT terminal UI functions â€” typing effects, spinners, phase
 #          screens, boot splash, lore messages, hardware/tier display boxes,
 #          install menu, success card
 #
@@ -20,7 +20,7 @@
 #   Dead code removed: subline() and progress_bar() were never called.
 # ============================================================================
 
-DIVIDER="──────────────────────────────────────────────────────────────────────────────"
+DIVIDER="â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 
 # Typing effect with block cursor
 type_line() {
@@ -46,7 +46,7 @@ type_line() {
   printf '%b\n' "$NC"
 }
 
-# Dramatic typing — dots then text
+# Dramatic typing â€” dots then text
 type_line_dramatic() {
   local s="$1"
   local color="${2:-$GRN}"
@@ -78,7 +78,7 @@ type_line_dramatic() {
 # Static noise transition line
 static_line() {
   if [[ "$INTERACTIVE" != "true" ]]; then return; fi
-  local chars='░▒▓█'
+  local chars='â–‘â–’â–“â–ˆ'
   local width=63
   local i
   printf "  "
@@ -92,13 +92,13 @@ static_line() {
 bootline() { echo -e "${GRN}${DIVIDER}${NC}"; }
 
 # "AI narrator" voice
-ai()       { echo -e "  ${GRN}▸${NC} $1" | tee -a "$LOG_FILE"; }
-ai_ok()    { echo -e "  ${BGRN}✓${NC} $1" | tee -a "$LOG_FILE"; }
-ai_warn()  { echo -e "  ${AMB}⚠${NC} $1" | tee -a "$LOG_FILE"; }
-ai_bad()   { echo -e "  ${RED}✗${NC} $1" | tee -a "$LOG_FILE"; }
+ai()       { echo -e "  ${GRN}â–¸${NC} $1" | tee -a "$LOG_FILE"; }
+ai_ok()    { echo -e "  ${BGRN}âœ“${NC} $1" | tee -a "$LOG_FILE"; }
+ai_warn()  { echo -e "  ${AMB}âš ${NC} $1" | tee -a "$LOG_FILE"; }
+ai_bad()   { echo -e "  ${RED}âœ—${NC} $1" | tee -a "$LOG_FILE"; }
 
 # Little signal flourish (tasteful)
-signal()   { echo -e "  ${GRN}░▒▓█▓▒░${NC} $1" | tee -a "$LOG_FILE"; }
+signal()   { echo -e "  ${GRN}â–‘â–’â–“â–ˆâ–“â–’â–‘${NC} $1" | tee -a "$LOG_FILE"; }
 
 # Consistent section header
 chapter() {
@@ -116,7 +116,7 @@ show_phase() {
   ts=$(date '+%H:%M:%S')
   echo ""
   bootline
-  echo -e "${BGRN}DREAMGATE SEQUENCE [${ts}]${NC}  ${GRN}PHASE ${phase}/${total} — ${name}${NC}"
+  echo -e "${BGRN}DREAMGATE SEQUENCE [${ts}]${NC}  ${GRN}PHASE ${phase}/${total} â€” ${name}${NC}"
   [[ -n "$estimate" ]] && echo -e "${AMB}EST. TIME:${NC} ${estimate}"
   bootline
 }
@@ -148,7 +148,7 @@ show_stranger_boot() {
   echo ""
 }
 
-# Lore messages — shown during long waits
+# Lore messages â€” shown during long waits
 LORE_MESSAGES=(
   "Your AI runs on your hardware. No one else's."
   "No API keys expire. No rate limits apply."
@@ -170,12 +170,12 @@ LORE_MESSAGES=(
 spin_task() {
   local pid=$1
   local msg=$2
-  local spin='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+  local spin='â ‹â ™â ¹â ¸â ¼â ´â ¦â §â ‡â '
   local i=0
   local elapsed=0
   local lore_idx=0
 
-  printf "  ${GRN}⠋${NC} [00:00] %s " "$msg"
+  printf "  ${GRN}â ‹${NC} [00:00] %s " "$msg"
   while kill -0 "$pid" 2>/dev/null; do
     local mm=$((elapsed / 60))
     local ss=$((elapsed % 60))
@@ -184,7 +184,7 @@ spin_task() {
     elapsed=$((elapsed + 1))
     # Show lore every 8 seconds
     if (( elapsed > 0 && elapsed % 8 == 0 )); then
-      printf "\n  ${DGRN}  « %s »${NC}\n" "${LORE_MESSAGES[$lore_idx]}"
+      printf "\n  ${DGRN}  Â« %s Â»${NC}\n" "${LORE_MESSAGES[$lore_idx]}"
       lore_idx=$(( (lore_idx + 1) % ${#LORE_MESSAGES[@]} ))
     fi
     sleep 1
@@ -206,7 +206,7 @@ pull_with_progress() {
 
   for attempt in $(seq 1 $max_attempts); do
     if [[ $attempt -gt 1 ]]; then
-      printf "  ${AMB}⟳${NC} [$count/$total] Retry attempt $attempt of $max_attempts for $label\n"
+      printf "  ${AMB}âŸ³${NC} [$count/$total] Retry attempt $attempt of $max_attempts for $label\n"
       # Exponential backoff: 2s, 5s, 10s
       local backoff=$((2 * (2 ** (attempt - 2)) + (attempt - 2)))
       sleep "$backoff"
@@ -224,12 +224,12 @@ pull_with_progress() {
       if $DOCKER_CMD inspect "$img" >/dev/null 2>&1; then
         cat "$attempt_log" >> "$LOG_FILE" 2>&1 || true
         rm -f "$attempt_log"
-        printf "\r  ${BGRN}✓${NC} [$count/$total] %-60s\n" "$label"
+        printf "\r  ${BGRN}âœ“${NC} [$count/$total] %-60s\n" "$label"
         return 0
       else
         cat "$attempt_log" >> "$LOG_FILE" 2>&1 || true
         rm -f "$attempt_log"
-        printf "\r  ${RED}✗${NC} [$count/$total] %-60s (image validation failed)\n" "$label"
+        printf "\r  ${RED}âœ—${NC} [$count/$total] %-60s (image validation failed)\n" "$label"
         continue
       fi
     else
@@ -238,24 +238,24 @@ pull_with_progress() {
       # Check for non-retryable errors
       if grep -qiE 'unauthorized|denied|not[[:space:]-]?found|\b404\b|no space left on device|cannot connect to the docker daemon|is the docker daemon running' "$attempt_log"; then
         rm -f "$attempt_log"
-        printf "\r  ${RED}✗${NC} [$count/$total] %-60s (non-retryable error)\n" "$label"
+        printf "\r  ${RED}âœ—${NC} [$count/$total] %-60s (non-retryable error)\n" "$label"
         return 1
       fi
 
       # Check for timeout
       if grep -qiE 'timeout|timed out' "$attempt_log" || ! kill -0 "$pull_pid" 2>/dev/null; then
         rm -f "$attempt_log"
-        printf "\r  ${RED}✗${NC} [$count/$total] %-60s (network timeout on attempt $attempt)\n" "$label"
+        printf "\r  ${RED}âœ—${NC} [$count/$total] %-60s (network timeout on attempt $attempt)\n" "$label"
         continue
       fi
 
       rm -f "$attempt_log"
-      printf "\r  ${RED}✗${NC} [$count/$total] %-60s (attempt $attempt failed)\n" "$label"
+      printf "\r  ${RED}âœ—${NC} [$count/$total] %-60s (attempt $attempt failed)\n" "$label"
     fi
   done
 
   # All attempts failed
-  printf "  ${RED}✗${NC} [$count/$total] Failed after $max_attempts attempts: $label\n"
+  printf "  ${RED}âœ—${NC} [$count/$total] Failed after $max_attempts attempts: $label\n"
   return 1
 }
 
@@ -265,7 +265,7 @@ check_service() {
   local url=$2
   local max_attempts=${3:-30}
   local timeout=${4:-10}  # Timeout per request (default 10s)
-  local spin='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+  local spin='â ‹â ™â ¹â ¸â ¼â ´â ¦â §â ‡â '
   local i=0
   local lore_idx=$(( RANDOM % ${#LORE_MESSAGES[@]} ))
   local elapsed=0
@@ -285,9 +285,9 @@ check_service() {
     fi
 
     # Add timeout to prevent indefinite hangs
-    # Capture exit code directly — an if/then would consume it (always 0)
+    # Capture exit code directly â€” an if/then would consume it (always 0)
     timeout "$timeout" curl -sf "$url" > /dev/null 2>&1 && {
-      printf "\r  ${BGRN}✓${NC} %-55s\n" "$name online"
+      printf "\r  ${BGRN}âœ“${NC} %-55s\n" "$name online"
       return 0
     }
 
@@ -298,7 +298,7 @@ check_service() {
     # and transient startup errors (56 = recv error, 52 = empty reply)
     if [[ $curl_exit -eq 124 ]]; then
       # Timeout - service may be overloaded or slow
-      printf "\r  ${AMB}⟳${NC} Linking %-20s [%ds] (timeout, retrying) " "$name" "$elapsed"
+      printf "\r  ${AMB}âŸ³${NC} Linking %-20s [%ds] (timeout, retrying) " "$name" "$elapsed"
     elif [[ $curl_exit -eq 7 ]]; then
       # Connection refused - service not started yet
       printf "\r  ${GRN}%s${NC} Linking %-20s [%ds] " "${spin:$i:1}" "$name" "$elapsed"
@@ -308,26 +308,26 @@ check_service() {
       printf "\r  ${GRN}%s${NC} Linking %-20s [%ds] (starting up) " "${spin:$i:1}" "$name" "$elapsed"
     else
       # Other error (DNS, network, etc.)
-      printf "\r  ${AMB}⟳${NC} Linking %-20s [%ds] (error $curl_exit) " "$name" "$elapsed"
+      printf "\r  ${AMB}âŸ³${NC} Linking %-20s [%ds] (error $curl_exit) " "$name" "$elapsed"
     fi
 
     i=$(( (i + 1) % ${#spin} ))
 
     # Show lore every 16 seconds of elapsed time
     if (( elapsed > 0 && elapsed % 16 == 0 )); then
-      printf "\n  ${DGRN}  « %s »${NC}\n" "${LORE_MESSAGES[$lore_idx]}"
+      printf "\n  ${DGRN}  Â« %s Â»${NC}\n" "${LORE_MESSAGES[$lore_idx]}"
       lore_idx=$(( (lore_idx + 1) % ${#LORE_MESSAGES[@]} ))
     fi
 
     sleep "$backoff"
   done
 
-  printf "\r  ${AMB}⚠${NC} %-55s\n" "$name delayed (may still be starting)"
+  printf "\r  ${AMB}âš ${NC} %-55s\n" "$name delayed (may still be starting)"
   ai_warn "$name not responding yet. I will continue."
   return 1
 }
 
-# Show hardware summary — CRT monospace box
+# Show hardware summary â€” CRT monospace box
 show_hardware_summary() {
     local gpu_name="$1"
     local gpu_vram="$2"
@@ -347,7 +347,7 @@ show_hardware_summary() {
     echo -e "${GRN}+-------------------------------------------------------------+${NC}"
 }
 
-# Show tier recommendation — CRT monospace box
+# Show tier recommendation â€” CRT monospace box
 show_tier_recommendation() {
     local tier=$1
     local model=$2
@@ -369,7 +369,7 @@ show_install_menu() {
     echo ""
     ai "Choose how deep you want to go. I can install everything, or keep it minimal."
     echo ""
-    echo -e "  ${BGRN}[1]${NC} Full Stack ${AMB}(recommended — just press Enter)${NC}"
+    echo -e "  ${BGRN}[1]${NC} Full Stack ${AMB}(recommended â€” just press Enter)${NC}"
     echo "      Chat + Voice + Workflows + Document Q&A + AI Agents"
     echo "      ~16GB download, all features enabled"
     echo ""
@@ -400,7 +400,7 @@ show_install_menu() {
                 0|1)
                     ENABLE_COMFYUI=false
                     log "ComfyUI auto-disabled for Tier $TIER (insufficient RAM/VRAM)"
-                    ai_warn "Image generation (ComfyUI) disabled — your hardware doesn't have enough RAM."
+                    ai_warn "Image generation (ComfyUI) disabled â€” your hardware doesn't have enough RAM."
                     ai "  You can enable it later with: dream enable comfyui"
                     ;;
             esac
@@ -435,7 +435,7 @@ show_install_menu() {
                 0|1)
                     ENABLE_COMFYUI=false
                     log "ComfyUI auto-disabled for Tier $TIER (insufficient RAM/VRAM)"
-                    ai_warn "Image generation (ComfyUI) disabled — your hardware doesn't have enough RAM."
+                    ai_warn "Image generation (ComfyUI) disabled â€” your hardware doesn't have enough RAM."
                     ai "  You can enable it later with: dream enable comfyui"
                     ;;
             esac
@@ -443,7 +443,7 @@ show_install_menu() {
     esac
 }
 
-# Final success card — dramatic "GATEWAY IS OPEN" finale
+# Final success card â€” dramatic "GATEWAY IS OPEN" finale
 show_success_card() {
     local webui_url=$1
     local dashboard_url=$2

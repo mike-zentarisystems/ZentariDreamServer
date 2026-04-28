@@ -1,5 +1,5 @@
 # =============================================================================
-# GPU Overlay Template — Pattern 2: Empty Base with Full GPU Overlay
+# GPU Overlay Template â€” Pattern 2: Empty Base with Full GPU Overlay
 # =============================================================================
 #
 # USE THIS PATTERN WHEN:
@@ -33,12 +33,12 @@
 
 
 # -----------------------------------------------------------------------------
-# compose.yaml — Empty base stub
+# compose.yaml â€” Empty base stub
 # -----------------------------------------------------------------------------
 # This file exists so the registry can detect my-service as enabled.
 # The actual service definition comes from the GPU overlay.
 
-# my-service — GPU-Only Service
+# my-service â€” GPU-Only Service
 # This base stub is merged with a GPU-specific overlay:
 #   compose.amd.yaml    (AMD ROCm)
 #   compose.nvidia.yaml (NVIDIA CUDA)
@@ -48,7 +48,7 @@
 
 
 # -----------------------------------------------------------------------------
-# compose.nvidia.yaml — Full NVIDIA CUDA definition
+# compose.nvidia.yaml â€” Full NVIDIA CUDA definition
 # -----------------------------------------------------------------------------
 # Since the base is empty, this overlay must define EVERYTHING:
 # image, container_name, ports, volumes, healthcheck, deploy, etc.
@@ -67,7 +67,7 @@ services:
       - ./data/my-service/models:/models
       - ./data/my-service/output:/output
 
-    # Shared memory — needed for PyTorch DataLoader workers and large tensors.
+    # Shared memory â€” needed for PyTorch DataLoader workers and large tensors.
     shm_size: '8g'
 
     # NVIDIA GPU reservation via the NVIDIA Container Toolkit.
@@ -89,7 +89,7 @@ services:
 
 
 # -----------------------------------------------------------------------------
-# compose.amd.yaml — Full AMD ROCm definition
+# compose.amd.yaml â€” Full AMD ROCm definition
 # -----------------------------------------------------------------------------
 # AMD requires device passthrough, group membership, and ROCm-specific env vars.
 # This is a separate file because the configuration diverges significantly
@@ -105,7 +105,7 @@ services:
 #     container_name: dream-my-service
 #     restart: unless-stopped
 #
-#     # AMD GPU device passthrough — both DRI (rendering) and KFD (compute).
+#     # AMD GPU device passthrough â€” both DRI (rendering) and KFD (compute).
 #     devices:
 #       - /dev/dri:/dev/dri
 #       - /dev/kfd:/dev/kfd

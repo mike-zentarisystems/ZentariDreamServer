@@ -10,5 +10,5 @@ template:
   estimated_disk_gb: 10
   service_notes:
     open-interpreter: "Requires OPEN_INTERPRETER_API_KEY to be set in .env before first start. Edit dream-server/.env to add your API key."
-    piper-audio: "Neural TTS — pairs with Kokoro (tts) for voice variety"
+    piper-audio: "Neural TTS â€” pairs with Kokoro (tts) for voice variety"
     n8n: "Wire voice intents to external systems"

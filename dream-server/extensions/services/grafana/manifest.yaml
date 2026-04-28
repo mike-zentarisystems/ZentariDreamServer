@@ -1,0 +1,30 @@
+schema_version: dream.services.v1
+
+compatibility:
+  dream_min: "2.0.0"
+
+service:
+  id: grafana
+  name: Grafana (Dashboards)
+  container_name: dream-grafana
+  host_env: GRAFANA_HOST
+  default_host: grafana
+  port: 3000
+  external_port_env: GRAFANA_PORT
+  external_port_default: 3007
+  health: /api/health
+  ui_path: /
+  type: docker
+  gpu_backends: [cpu, none]
+  compose_file: compose.yaml
+  category: core
+  depends_on: [prometheus]
+  env_vars:
+    - key: GRAFANA_PORT
+      required: false
+      secret: false
+      description: External port for Grafana UI (default 3007)
+    - key: GRAFANA_ADMIN_PASSWORD
+      required: true
+      secret: true
+      description: Grafana admin password

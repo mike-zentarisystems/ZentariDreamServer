@@ -1,4 +1,4 @@
-# Dream Server — Core Service Definitions
+# Dream Server â€” Core Service Definitions
 # Extension services live in extensions/services/*/compose.yaml
 # GPU overlays layered on top:
 #   docker compose -f docker-compose.base.yml -f docker-compose.amd.yml up -d
@@ -17,7 +17,7 @@ x-logging: &default-logging
 
 services:
   # ============================================
-  # LLM Inference — llama-server (GPU-agnostic stub)
+  # LLM Inference â€” llama-server (GPU-agnostic stub)
   # Image and GPU config provided by overlay
   # Serves OpenAI-compatible API on port 8080
   # ============================================
@@ -75,13 +75,13 @@ services:
       OPENAI_API_BASE_URL: "${LLM_API_URL:-http://llama-server:8080}/v1"
       OPENAI_API_KEY: ""
       WEBUI_AUTH: "${WEBUI_AUTH:-true}"
-      WEBUI_SECRET_KEY: "${WEBUI_SECRET:?WEBUI_SECRET must be set — run the installer or add it to .env}"
+      WEBUI_SECRET_KEY: "${WEBUI_SECRET:?WEBUI_SECRET must be set â€” run the installer or add it to .env}"
       ENABLE_WEB_SEARCH: "true"
       WEB_SEARCH_ENGINE: "searxng"
       SEARXNG_QUERY_URL: "http://searxng:8080/search?q=<query>&format=json"
       ENABLE_SEARCH_QUERY_GENERATION: "true"
       WEB_SEARCH_RESULT_COUNT: "5"
-      # ── ComfyUI Image Generation (SDXL Lightning 4-step) ──
+      # â”€â”€ ComfyUI Image Generation (SDXL Lightning 4-step) â”€â”€
       # Default OFF in base: ComfyUI ships only on GPU backends (amd/nvidia per
       # comfyui/manifest.yaml). The amd and nvidia overlays re-assert this as
       # ${...:-true} so image-gen is on for GPU users by default. CPU/Apple
@@ -108,12 +108,12 @@ services:
         {"type":"steps","key":"steps","node_ids":["3"]},
         {"type":"seed","key":"seed","node_ids":["3"]},
         {"type":"n","key":"batch_size","node_ids":["5"]}]
-      # ── Speech-to-Text (Whisper) ──
+      # â”€â”€ Speech-to-Text (Whisper) â”€â”€
       AUDIO_STT_ENGINE: "openai"
       AUDIO_STT_OPENAI_API_BASE_URL: "http://whisper:8000/v1"
       AUDIO_STT_OPENAI_API_KEY: ""
       AUDIO_STT_MODEL: "${AUDIO_STT_MODEL:-Systran/faster-whisper-base}"
-      # ── Text-to-Speech (Kokoro) ──
+      # â”€â”€ Text-to-Speech (Kokoro) â”€â”€
       AUDIO_TTS_ENGINE: "openai"
       AUDIO_TTS_OPENAI_API_BASE_URL: "http://tts:8880/v1"
       AUDIO_TTS_OPENAI_API_KEY: ""
@@ -172,7 +172,7 @@ services:
       - N8N_URL=${N8N_URL:-http://n8n:5678}
       - DASHBOARD_API_KEY=${DASHBOARD_API_KEY:-}
       - DREAM_AGENT_KEY=${DREAM_AGENT_KEY:-}
-      - OPENCLAW_TOKEN=${OPENCLAW_TOKEN:-}
+      - HERMES_API_KEY=${HERMES_API_KEY:-}
       - TOKEN_SPY_URL=${TOKEN_SPY_URL:-http://token-spy:8080}
       - TOKEN_SPY_API_KEY=${TOKEN_SPY_API_KEY:-}
     volumes:

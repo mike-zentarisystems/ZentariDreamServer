@@ -1,14 +1,14 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Phase 12: Health Checks
+# Dream Server Installer â€” Phase 12: Health Checks
 # ============================================================================
 # Part of: installers/phases/
 # Purpose: Verify all services are responding, configure Perplexica,
 #          pre-download STT model
 #
 # Expects: DRY_RUN, GPU_BACKEND, ENABLE_VOICE, ENABLE_WORKFLOWS, ENABLE_RAG,
-#           ENABLE_OPENCLAW, LLM_MODEL, LOG_FILE, BGRN, AMB, NC,
-#           WHISPER_PORT, TTS_PORT, OPENCLAW_PORT,
+#           ENABLE_HERMES, LLM_MODEL, LOG_FILE, BGRN, AMB, NC,
+#           WHISPER_PORT, TTS_PORT, HERMES_PORT,
 #           PERPLEXICA_PORT (:-3004), COMFYUI_PORT (:-8188),
 #           show_phase(), check_service(), ai(), ai_ok(), ai_warn(), signal()
 # Provides: Health check results, Perplexica auto-configuration
@@ -36,7 +36,7 @@ if $DRY_RUN; then
     log "[DRY RUN] Would verify service health:"
     log "[DRY RUN]   - llama-server, Open WebUI, Perplexica, ComfyUI"
     log "[DRY RUN]   - Auto-configure Perplexica for ${LLM_MODEL:-default model}"
-    [[ "$ENABLE_OPENCLAW" == "true" ]] && log "[DRY RUN]   - OpenClaw"
+    [[ "$ENABLE_HERMES" == "true" ]] && log "[DRY RUN]   - Hermes Agent"
     [[ "$ENABLE_VOICE" == "true" ]] && log "[DRY RUN]   - Whisper (STT), Kokoro (TTS), pre-download STT model"
     [[ "$ENABLE_WORKFLOWS" == "true" ]] && log "[DRY RUN]   - n8n"
     [[ "$ENABLE_RAG" == "true" ]] && log "[DRY RUN]   - Qdrant"
@@ -50,7 +50,7 @@ ai "Linking services... standby."
 
 sleep 5
 
-# Health checks are best-effort — track failures but don't let set -e kill the install.
+# Health checks are best-effort â€” track failures but don't let set -e kill the install.
 # Services may need more startup time; we report all failures at the end.
 HEALTH_FAILURES=0
 _check_health() {
@@ -84,7 +84,7 @@ fi
 # Perplexica auto-config: seed chat model + embedding model on first boot.
 # The slim-latest image stores config in a database, not just config.json.
 # We use the /api/config HTTP endpoint to set values after the service starts.
-# Retry up to 5 times with 10s delay — Perplexica may still be starting
+# Retry up to 5 times with 10s delay â€” Perplexica may still be starting
 # (especially if it was stuck in "Created" state and started late).
 if $DOCKER_CMD inspect dream-perplexica &>/dev/null; then
     PERPLEXICA_URL="http://localhost:${SERVICE_PORTS[perplexica]:-3004}"
@@ -148,14 +148,14 @@ post('preferences', {
 post('setupComplete', True)
 print('ok')
 " >> "$LOG_FILE" 2>&1 && \
-            printf "\r  ${BGRN}✓${NC} %-60s\n" "Perplexica configured (model: ${LLM_MODEL})" || \
-            printf "\r  ${AMB}⚠${NC} %-60s\n" "Perplexica config — complete setup at :${PERPLEXICA_PORT:-3004}"
+            printf "\r  ${BGRN}âœ“${NC} %-60s\n" "Perplexica configured (model: ${LLM_MODEL})" || \
+            printf "\r  ${AMB}âš ${NC} %-60s\n" "Perplexica config â€” complete setup at :${PERPLEXICA_PORT:-3004}"
     fi
 fi
 
 # Extension service health checks with adaptive timeouts
 dream_progress 94 "health" "Checking extension services"
-[[ "$ENABLE_OPENCLAW" == "true" ]] && _check_health "OpenClaw" "http://localhost:${SERVICE_PORTS[openclaw]:-7860}${SERVICE_HEALTH[openclaw]:-/}" 150 10
+[[ "$ENABLE_HERMES" == "true" ]] && _check_health "Hermes Agent" "http://localhost:${SERVICE_PORTS[hermes-agent]:-8642}${SERVICE_HEALTH[hermes-agent]:-/health}" 150 10
 systemctl --user is-active opencode-web &>/dev/null && _check_health "OpenCode Web" "http://localhost:3003/" 10 5
 # Whisper: 150 attempts * adaptive backoff = up to ~20 minutes (model download on first start)
 dream_progress 95 "health" "Checking voice services"
@@ -163,7 +163,7 @@ dream_progress 95 "health" "Checking voice services"
 [[ "$ENABLE_VOICE" == "true" ]] && _check_health "Kokoro (TTS)" "http://localhost:${SERVICE_PORTS[tts]:-8880}${SERVICE_HEALTH[tts]:-/health}" 150 10
 
 # Pre-download the Whisper STT model so first transcription is instant.
-# Speaches does NOT auto-download on transcription requests — it returns 404.
+# Speaches does NOT auto-download on transcription requests â€” it returns 404.
 # We must trigger the download explicitly here, verify it completed, and
 # surface a clear recovery command if anything fails.
 if [[ "$ENABLE_VOICE" == "true" ]]; then
@@ -194,11 +194,11 @@ if [[ "$ENABLE_VOICE" == "true" ]]; then
     done
 
     if ! $_stt_api_ready; then
-        printf "\r  ${AMB}⚠${NC} %-60s\n" "STT models API not ready — download manually:"
+        printf "\r  ${AMB}âš ${NC} %-60s\n" "STT models API not ready â€” download manually:"
         printf "      %s\n" "$STT_RECOVERY_CMD"
     # Step 2: skip download if already cached.
     elif curl -sf --max-time 10 "${WHISPER_URL}/v1/models/${STT_MODEL_ENCODED}" &>/dev/null; then
-        printf "\r  ${BGRN}✓${NC} %-60s\n" "STT model already cached (${STT_MODEL})"
+        printf "\r  ${BGRN}âœ“${NC} %-60s\n" "STT model already cached (${STT_MODEL})"
     else
         # Step 3: POST to trigger download. Log stdout/stderr to install log.
         ai "Downloading STT model (${STT_MODEL})..."
@@ -208,9 +208,9 @@ if [[ "$ENABLE_VOICE" == "true" ]]; then
         # Step 4: verify the model is actually cached. POST can return 200
         # even if the download partially fails, so this GET is the real test.
         if curl -sf --max-time 10 "${WHISPER_URL}/v1/models/${STT_MODEL_ENCODED}" &>/dev/null; then
-            printf "\r  ${BGRN}✓${NC} %-60s\n" "STT model cached (${STT_MODEL})"
+            printf "\r  ${BGRN}âœ“${NC} %-60s\n" "STT model cached (${STT_MODEL})"
         else
-            printf "\r  ${AMB}⚠${NC} %-60s\n" "STT model download failed — run manually:"
+            printf "\r  ${AMB}âš ${NC} %-60s\n" "STT model download failed â€” run manually:"
             printf "      %s\n" "$STT_RECOVERY_CMD"
             printf "      %s\n" "See $LOG_FILE for details."
         fi
@@ -222,7 +222,12 @@ dream_progress 96 "health" "Checking workflow and RAG services"
 [[ "$ENABLE_RAG" == "true" ]] && _check_health "Qdrant" "http://localhost:${SERVICE_PORTS[qdrant]:-6333}${SERVICE_HEALTH[qdrant]:-/}" 150 10
 [[ "${ENABLE_DREAMFORGE:-}" == "true" ]] && _check_health "DreamForge" "http://localhost:${SERVICE_PORTS[dreamforge]:-3010}${SERVICE_HEALTH[dreamforge]:-/health}" 150 10
 
-dream_progress 97 "health" "Health checks complete"
+dream_progress 97 "health" "Checking observability services"
+[[ "${ENABLE_LANGFUSE:-}" == "true" ]] && _check_health "Langfuse" "http://localhost:${SERVICE_PORTS[langfuse]:-3006}${SERVICE_HEALTH[langfuse]:-/api/public/health}" 30 10
+[[ "${ENABLE_PROMETHEUS:-}" == "true" ]] && _check_health "Prometheus" "http://localhost:${SERVICE_PORTS[prometheus]:-9090}${SERVICE_HEALTH[prometheus]:-/-/healthy}" 30 10
+[[ "${ENABLE_GRAFANA:-}" == "true" ]] && _check_health "Grafana" "http://localhost:${SERVICE_PORTS[grafana]:-3007}/api/health" 30 10
+
+dream_progress 98 "health" "Health checks complete"
 echo ""
 if [[ "$HEALTH_FAILURES" -gt 0 ]]; then
     ai_warn "${HEALTH_FAILURES} service(s) did not pass health checks."

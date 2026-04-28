@@ -1,6 +1,6 @@
 <div align="center">
 
-# Dream Server
+# Zentari Dream Server
 
 ### Own your AI. One person, one dream, one machine at a time.
 
@@ -141,8 +141,15 @@ See the [macOS Quickstart](dream-server/docs/MACOS-QUICKSTART.md) for details.
 - **Kokoro** — text-to-speech
 
 ### Agents & Automation
-- **OpenClaw** — autonomous AI agent framework
+- **Hermes Agent** — Nous Research autonomous AI agent with Open WebUI multi-backend support
 - **n8n** — workflow automation with 400+ integrations (Slack, email, databases, APIs)
+
+### Ops & Infrastructure
+- **Authelia** — SSO / authentication middleware
+- **Prometheus** — metrics collection
+- **Grafana** — dashboards
+- **Baserow** — self-hosted database and app builder
+- **Caddy** — reverse proxy with automatic HTTPS
 
 ### Knowledge & Search
 - **Qdrant** — vector database for retrieval-augmented generation (RAG)
@@ -155,6 +162,8 @@ See the [macOS Quickstart](dream-server/docs/MACOS-QUICKSTART.md) for details.
 ### Privacy & Ops
 - **Privacy Shield** — PII scrubbing proxy for API calls
 - **Dashboard** — real-time GPU metrics, service health, model management
+- **Authelia** — SSO/authentication for all services
+- **Caddy** — reverse proxy with automatic HTTPS (entry point for all services)
 
 ---
 
@@ -301,8 +310,11 @@ Other tools get you part of the way. Dream Server gets you the whole way.
 | One-command install | Everything, auto-configured | LLM + chat only | LLM only |
 | Hardware auto-detect + model selection | NVIDIA + AMD Strix Halo | No | No |
 | AMD APU unified memory support | ROCm + llama-server | Partial (Vulkan) | No |
-| Autonomous AI agents | OpenClaw | No | No |
+| Autonomous AI agents | Hermes Agent | No | No |
 | Workflow automation | n8n (400+ integrations) | No | No |
+| Auth / SSO | Authelia (built-in) | No | No |
+| Reverse proxy + HTTPS | Caddy (built-in) | No | No |
+| Self-hosted database | Baserow (built-in) | No | No |
 | Voice (STT + TTS) | Whisper + Kokoro | No | No |
 | Image generation | ComfyUI | No | No |
 | RAG pipeline | Qdrant + embeddings | No | No |

@@ -1,0 +1,42 @@
+schema_version: dream.services.v1
+
+compatibility:
+  dream_min: "2.0.0"
+
+service:
+  id: forgejo
+  name: Forgejo (Self-Hosted Git)
+  container_name: dream-forgejo
+  host_env: FORGEJO_HOST
+  default_host: forgejo
+  port: 3000
+  external_port_env: FORGEJO_PORT
+  external_port_default: 3009
+  health: /api/healthz
+  ui_path: /
+  type: docker
+  gpu_backends: [cpu, none]
+  compose_file: compose.yaml
+  category: optional
+  depends_on: []
+  env_vars:
+    - key: FORGEJO_PORT
+      required: false
+      secret: false
+      description: External port for Forgejo web UI (default 3009)
+    - key: FORGEJO_SSH_PORT
+      required: false
+      secret: false
+      description: External port for Forgejo SSH (default 2222)
+    - key: FORGEJO_ADMIN_USER
+      required: true
+      secret: false
+      description: Initial admin username
+    - key: FORGEJO_ADMIN_PASSWORD
+      required: true
+      secret: true
+      description: Initial admin password
+    - key: FORGEJO_ADMIN_EMAIL
+      required: true
+      secret: false
+      description: Initial admin email

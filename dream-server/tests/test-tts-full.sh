@@ -27,15 +27,15 @@ LATENCY=$(( END - START ))
 # Check if we got audio data (MP3 starts with ID3 or empty binary)
 if echo "$RESPONSE" | head -c 10 | xxd | grep -qE "ID3|fffb|5249"; then
   SIZE=$(echo "$RESPONSE" | wc -c)
-  echo "✅ PASS: TTS audio generated (${LATENCY}ms, ${SIZE} bytes)"
+  echo "âœ… PASS: TTS audio generated (${LATENCY}ms, ${SIZE} bytes)"
   exit 0
 else
   # Check for JSON error response
   if echo "$RESPONSE" | grep -q "error"; then
-    echo "❌ FAIL: TTS error response (${LATENCY}ms)"
+    echo "âŒ FAIL: TTS error response (${LATENCY}ms)"
     echo "   Response: ${RESPONSE:0:100}"
   else
-    echo "⚠️  PARTIAL: Response received but may not be valid audio (${LATENCY}ms)"
+    echo "âš ï¸  PARTIAL: Response received but may not be valid audio (${LATENCY}ms)"
     echo "   Preview: ${RESPONSE:0:50}"
   fi
   exit 1

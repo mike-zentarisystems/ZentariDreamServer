@@ -1,4 +1,4 @@
-# Tier 0 memory overlay — reduces memory limits and reservations
+# Tier 0 memory overlay â€” reduces memory limits and reservations
 # for machines with < 8GB RAM. Layered on top of base + GPU overlay.
 #
 # Only overrides services defined in docker-compose.base.yml.
@@ -7,7 +7,7 @@
 #
 # NOTE: Docker Compose v5+ errors if an overlay references a service
 # not defined in any included compose file. Do NOT add optional
-# services here — they may not be in the stack.
+# services here â€” they may not be in the stack.
 
 services:
   llama-server:

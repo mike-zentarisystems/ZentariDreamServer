@@ -1,5 +1,5 @@
 # =============================================================================
-# GPU Overlay Template — Pattern 1: CPU-Base with GPU Tag Swap
+# GPU Overlay Template â€” Pattern 1: CPU-Base with GPU Tag Swap
 # =============================================================================
 #
 # USE THIS PATTERN WHEN:
@@ -30,7 +30,7 @@
 
 
 # -----------------------------------------------------------------------------
-# compose.nvidia.yaml — NVIDIA CUDA overlay
+# compose.nvidia.yaml â€” NVIDIA CUDA overlay
 # -----------------------------------------------------------------------------
 # Only the keys that DIFFER from the CPU base need to appear here.
 # Everything else (container_name, ports, volumes, healthcheck, etc.)
@@ -57,7 +57,7 @@ services:
 
 
 # -----------------------------------------------------------------------------
-# compose.amd.yaml — AMD ROCm overlay (same file, different name)
+# compose.amd.yaml â€” AMD ROCm overlay (same file, different name)
 # -----------------------------------------------------------------------------
 # For AMD GPUs, there is no deploy.resources.devices driver shorthand.
 # Instead, pass the DRI and KFD device nodes directly.
@@ -71,7 +71,7 @@ services:
 #     # Swap the CPU image tag for the ROCm variant.
 #     image: myorg/my-service:latest-rocm
 #
-#     # AMD GPU device passthrough — required for ROCm.
+#     # AMD GPU device passthrough â€” required for ROCm.
 #     devices:
 #       - /dev/dri:/dev/dri
 #       - /dev/kfd:/dev/kfd

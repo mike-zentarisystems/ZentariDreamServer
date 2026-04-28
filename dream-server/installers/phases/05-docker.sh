@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Phase 05: Docker Setup
+# Dream Server Installer â€” Phase 05: Docker Setup
 # ============================================================================
 # Part of: installers/phases/
 # Purpose: Install Docker, Docker Compose, and NVIDIA Container Toolkit
@@ -118,7 +118,7 @@ fi
 # Docker 29.3.x has a bug with /dev/dri device passthrough on AMD GPUs.
 # Containers fail with: "error gathering device information while adding custom device /dev/dri"
 # Pin to 29.2.x until this is resolved upstream.
-# See: https://github.com/moby/moby/issues — device passthrough regression in 29.3.0
+# See: https://github.com/moby/moby/issues â€” device passthrough regression in 29.3.0
 if command -v docker &>/dev/null && ! $DRY_RUN; then
     _docker_ver=$(docker version --format '{{.Server.Version}}' 2>/dev/null || echo "0.0.0")
     if [[ "$_docker_ver" == 29.3.* ]] && [[ "${GPU_BACKEND:-}" == "amd" ]]; then
@@ -342,12 +342,12 @@ _docker_post_install_checks() {
 dream_progress 35 "docker" "Running Docker post-install checks"
 _docker_post_install_checks
 
-# NVIDIA Container Toolkit (skip for AMD — uses /dev/dri + /dev/kfd passthrough)
+# NVIDIA Container Toolkit (skip for AMD â€” uses /dev/dri + /dev/kfd passthrough)
 if [[ $GPU_COUNT -gt 0 && "$GPU_BACKEND" == "nvidia" ]]; then
     dream_progress 36 "docker" "Checking NVIDIA Container Toolkit"
     if command -v nvidia-container-cli &> /dev/null 2>&1; then
         ai_ok "NVIDIA Container Toolkit installed"
-        # Always regenerate CDI spec — driver version may have changed since last run
+        # Always regenerate CDI spec â€” driver version may have changed since last run
         if command -v nvidia-ctk &>/dev/null && ! $DRY_RUN; then
             sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml 2>>"$LOG_FILE" || true
         fi
@@ -414,7 +414,7 @@ if [[ $GPU_COUNT -gt 0 && "$GPU_BACKEND" == "nvidia" ]]; then
         if command -v nvidia-container-cli &> /dev/null 2>&1; then
             ai_ok "NVIDIA Container Toolkit installed"
         else
-            $DRY_RUN && ai_ok "[DRY RUN] Would install NVIDIA Container Toolkit" || error "NVIDIA Container Toolkit installation failed — nvidia-container-cli not found after install."
+            $DRY_RUN && ai_ok "[DRY RUN] Would install NVIDIA Container Toolkit" || error "NVIDIA Container Toolkit installation failed â€” nvidia-container-cli not found after install."
         fi
     fi
 fi

@@ -43,9 +43,9 @@ echo "Total:  $((PASSED+FAILED))"
 echo ""
 
 if [ $FAILED -eq 0 ]; then
-  echo "✅ All M8 tests passed!"
+  echo "âœ… All M8 tests passed!"
   exit 0
 else
-  echo "⚠️  Some tests failed — review output above"
+  echo "âš ï¸  Some tests failed â€” review output above"
   exit 1
 fi

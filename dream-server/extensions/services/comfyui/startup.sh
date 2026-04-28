@@ -1,6 +1,6 @@
 #!/bin/bash
 #=============================================================================
-# startup.sh — ComfyUI Container Entrypoint
+# startup.sh â€” ComfyUI Container Entrypoint
 #
 # Sets up model symlinks from bind-mounted /models into ComfyUI's expected
 # directory structure, links output/input dirs, copies workflow templates,
@@ -23,7 +23,7 @@ for subdir in checkpoints text_encoders diffusion_models vae latent_upscale_mode
 done
 
 #-----------------------------------------------------------------------------
-# Symlink bind-mounted model dirs → ComfyUI's models/ tree
+# Symlink bind-mounted model dirs â†’ ComfyUI's models/ tree
 #-----------------------------------------------------------------------------
 MODEL_TARGET="${COMFYUI_DIR}/models"
 
@@ -54,7 +54,7 @@ for pair in "output:${OUTPUT_MOUNT}" "input:${INPUT_MOUNT}"; do
 done
 
 #-----------------------------------------------------------------------------
-# Copy workflow templates (read-only mount → writable user dir)
+# Copy workflow templates (read-only mount â†’ writable user dir)
 #-----------------------------------------------------------------------------
 if [ -d "$WORKFLOWS_MOUNT" ] && [ "$(ls -A "$WORKFLOWS_MOUNT" 2>/dev/null)" ]; then
     WORKFLOW_DIR="${COMFYUI_DIR}/user/default/workflows"

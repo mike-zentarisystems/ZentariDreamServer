@@ -1,24 +1,22 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Phase 06: Directories & Configuration
+# Dream Server Installer â€” Phase 06: Directories & Configuration
 # ============================================================================
 # Part of: installers/phases/
 # Purpose: Create directories, copy source files, generate .env, configure
-#          OpenClaw, SearXNG, and validate .env schema
+#          Hermes Agent, SearXNG, and validate .env schema
 #
 # Expects: SCRIPT_DIR, INSTALL_DIR, LOG_FILE, DRY_RUN, INTERACTIVE,
 #           TIER, TIER_NAME, VERSION, GPU_BACKEND, SYSTEM_TZ,
 #           LLM_MODEL, MAX_CONTEXT, GGUF_FILE, COMPOSE_FLAGS,
-#           ENABLE_VOICE, ENABLE_WORKFLOWS, ENABLE_RAG, ENABLE_OPENCLAW,
-#           OPENCLAW_CONFIG, OPENCLAW_PROVIDER_NAME_DEFAULT,
-#           OPENCLAW_PROVIDER_URL_DEFAULT, GPU_ASSIGNMENT_JSON,
+#           ENABLE_VOICE, ENABLE_WORKFLOWS, ENABLE_RAG, ENABLE_HERMES,
+#           GPU_ASSIGNMENT_JSON,
 #           COMFYUI_GPU_UUID, WHISPER_GPU_UUID, EMBEDDINGS_GPU_UUID,
 #           LLAMA_SERVER_GPU_UUIDS, LLAMA_ARG_SPLIT_MODE, LLAMA_ARG_TENSOR_SPLIT,
 #           chapter(), ai(), ai_ok(), ai_warn(), log(), warn(), error()
 # Provides: WEBUI_SECRET, N8N_PASS, LITELLM_KEY, LIVEKIT_SECRET,
-#           DASHBOARD_API_KEY, OPENCODE_SERVER_PASSWORD, OPENCLAW_TOKEN,
-#           OPENCLAW_PROVIDER_NAME, OPENCLAW_PROVIDER_URL, OPENCLAW_MODEL,
-#           OPENCLAW_CONTEXT, GPU_ASSIGNMENT_JSON_B64 (in .env)
+#           DASHBOARD_API_KEY, OPENCODE_SERVER_PASSWORD, HERMES_API_KEY,
+#           GPU_ASSIGNMENT_JSON_B64 (in .env)
 #
 # Modder notes:
 #   This is the largest phase. Modify .env generation, add new config files,
@@ -33,7 +31,7 @@ if $DRY_RUN; then
     log "[DRY RUN] Would copy compose files ($COMPOSE_FLAGS) and source tree"
     log "[DRY RUN] Would generate .env with secrets (WEBUI_SECRET, N8N_PASS, LITELLM_KEY, etc.)"
     log "[DRY RUN] Would generate SearXNG config with randomized secret key"
-    [[ "$ENABLE_OPENCLAW" == "true" ]] && log "[DRY RUN] Would configure OpenClaw (model: $LLM_MODEL, config: ${OPENCLAW_CONFIG:-default})"
+    [[ "$ENABLE_HERMES" == "true" ]] && log "[DRY RUN] Would configure Hermes Agent (Nous Research autonomous agent)"
     log "[DRY RUN] Would validate .env against schema"
 else
     # Create directories
@@ -41,7 +39,7 @@ else
     mkdir -p "$INSTALL_DIR"/{config,data,models}
     mkdir -p "$INSTALL_DIR"/data/{open-webui,whisper,tts,n8n,qdrant,models,privacy-shield,dreamforge,ape}
     mkdir -p "$INSTALL_DIR"/data/langfuse/{postgres,clickhouse,redis,minio}
-    mkdir -p "$INSTALL_DIR"/config/{n8n,litellm,openclaw,searxng}
+    mkdir -p "$INSTALL_DIR"/config/{n8n,litellm,hermes-agent,searxng,authelia,caddy,prometheus,grafana}
 
     # Fix ownership of data/config dirs that may have been created by containers
     # (e.g. SearXNG runs as uid 977, ComfyUI data owned by root)
@@ -68,7 +66,7 @@ else
         if [[ -n "$_cant_write" ]]; then
             error "Cannot write to directories (likely container-owned):$_cant_write
 
-Fix with: sudo chown -R \$(id -u):\$(id -g) $INSTALL_DIR/config $INSTALL_DIR/data — then re-run the installer."
+Fix with: sudo chown -R \$(id -u):\$(id -g) $INSTALL_DIR/config $INSTALL_DIR/data â€” then re-run the installer."
         fi
     fi
 
@@ -95,7 +93,7 @@ Fix with: sudo chown -R \$(id -u):\$(id -g) $INSTALL_DIR/config $INSTALL_DIR/dat
         else
             # Fallback: cp -r everything, then remove runtime artifacts
             if ! cp -r "$SCRIPT_DIR"/* "$INSTALL_DIR/" 2>>"$LOG_FILE"; then
-                warn "Source copy incomplete — some files may be missing"
+                warn "Source copy incomplete â€” some files may be missing"
             fi
             if ! cp "$SCRIPT_DIR"/.gitignore "$INSTALL_DIR/" 2>>"$LOG_FILE"; then
                 warn "Failed to copy .gitignore"
@@ -103,7 +101,7 @@ Fix with: sudo chown -R \$(id -u):\$(id -g) $INSTALL_DIR/config $INSTALL_DIR/dat
             rm -rf "$INSTALL_DIR/.git" 2>>"$LOG_FILE" || true
         fi
         # Ensure scripts are executable
-        chmod +x "$INSTALL_DIR"/*.sh "$INSTALL_DIR"/scripts/*.sh "$INSTALL_DIR"/dream-cli 2>>"$LOG_FILE" || warn "Some scripts may not be executable — verify after install"
+        chmod +x "$INSTALL_DIR"/*.sh "$INSTALL_DIR"/scripts/*.sh "$INSTALL_DIR"/dream-cli 2>>"$LOG_FILE" || warn "Some scripts may not be executable â€” verify after install"
         ai_ok "Source files installed"
     else
         log "Running in-place (source == install dir), skipping file copy"
@@ -117,69 +115,21 @@ Fix with: sudo chown -R \$(id -u):\$(id -g) $INSTALL_DIR/config $INSTALL_DIR/dat
         ai_ok "Extensions library copied to data/extensions-library/"
     fi
 
-    # Select tier-appropriate OpenClaw config
-    if [[ "$ENABLE_OPENCLAW" == "true" && -n "$OPENCLAW_CONFIG" ]]; then
-        OPENCLAW_MODEL="$LLM_MODEL"
-        OPENCLAW_CONTEXT=$MAX_CONTEXT
-
-        if [[ -f "$INSTALL_DIR/config/openclaw/$OPENCLAW_CONFIG" ]]; then
-            cp "$INSTALL_DIR/config/openclaw/$OPENCLAW_CONFIG" "$INSTALL_DIR/config/openclaw/openclaw.json"
-        elif [[ -f "$SCRIPT_DIR/config/openclaw/$OPENCLAW_CONFIG" ]]; then
-            cp "$SCRIPT_DIR/config/openclaw/$OPENCLAW_CONFIG" "$INSTALL_DIR/config/openclaw/openclaw.json"
-        else
-            warn "OpenClaw config $OPENCLAW_CONFIG not found, using default"
-            if ! cp "$SCRIPT_DIR/config/openclaw/openclaw.json.example" "$INSTALL_DIR/config/openclaw/openclaw.json" 2>>"$LOG_FILE"; then
-                warn "Failed to copy OpenClaw default config — you may need to create it manually"
-            fi
-        fi
-        # Resolve provider name/URL before any sed replacements that depend on them
-        OPENCLAW_PROVIDER_NAME="${OPENCLAW_PROVIDER_NAME_DEFAULT}"
-        OPENCLAW_PROVIDER_URL="${OPENCLAW_PROVIDER_URL_DEFAULT}"
-
-        # Replace model and provider placeholders to match what the inference backend actually serves
-        # Escape sed special chars in variable values to prevent injection
-        _sed_escape() { printf '%s\n' "$1" | sed 's/[&/\|]/\\&/g'; }
-        _oc_model_esc=$(_sed_escape "$OPENCLAW_MODEL")
-        _oc_prov_esc=$(_sed_escape "$OPENCLAW_PROVIDER_NAME")
-        _sed_i "s|__LLM_MODEL__|${_oc_model_esc}|g" "$INSTALL_DIR/config/openclaw/openclaw.json"
-        _sed_i "s|Qwen/Qwen2.5-[^\"]*|${_oc_model_esc}|g" "$INSTALL_DIR/config/openclaw/openclaw.json"
-        _sed_i "s|local-ollama|${_oc_prov_esc}|g" "$INSTALL_DIR/config/openclaw/openclaw.json"
-        _oc_key_esc=$(_sed_escape "${LITELLM_KEY:-none}")
-        _sed_i "s|__LITELLM_KEY__|${_oc_key_esc}|g" "$INSTALL_DIR/config/openclaw/openclaw.json"
-        log "Installed OpenClaw config: $OPENCLAW_CONFIG -> openclaw.json (model: $OPENCLAW_MODEL)"
-        # Generate OPENCLAW_TOKEN (used by compose env and inject-token.js)
-        OPENCLAW_TOKEN=$(openssl rand -hex 24 2>/dev/null || head -c 24 /dev/urandom | xxd -p)
-        # Note: OpenClaw home dir uses a named Docker volume (openclaw-home).
-        # inject-token.js patches the runtime config at container startup,
-        # so we don't seed files into the volume from the installer.
-        # Create workspace directory (must exist before Docker Compose,
-        # otherwise Docker auto-creates it as root and the container can't write to it)
-        mkdir -p "$INSTALL_DIR/config/openclaw/workspace/memory"
-        # Copy workspace personality files (Todd identity, system knowledge, etc.)
-        # Exclude .git and .openclaw dirs — those are runtime/dev artifacts
-        if [[ -d "$SCRIPT_DIR/config/openclaw/workspace" ]]; then
-            if command -v rsync &>/dev/null; then
-                rsync -a --no-owner --no-group --exclude='.git' --exclude='.openclaw' --exclude='.gitkeep' \
-                    "$SCRIPT_DIR/config/openclaw/workspace/" "$INSTALL_DIR/config/openclaw/workspace/"
-            else
-                cp -r "$SCRIPT_DIR/config/openclaw/workspace"/* "$INSTALL_DIR/config/openclaw/workspace/" 2>/dev/null || true
-                rm -rf "$INSTALL_DIR/config/openclaw/workspace/.git" 2>/dev/null || true
-                rm -rf "$INSTALL_DIR/config/openclaw/workspace/.openclaw" 2>/dev/null || true
-            fi
-            log "Installed OpenClaw workspace files (agent personality)"
-        fi
-        # OpenClaw container runs as node (uid 1000) — fix ownership
-        chown -R 1000:1000 "$INSTALL_DIR/data/openclaw" "$INSTALL_DIR/config/openclaw/workspace" 2>/dev/null || true
+    # Hermes Agent setup â€” configured via environment variables in compose.yaml
+    if [[ "$ENABLE_HERMES" == "true" ]]; then
+        mkdir -p "$INSTALL_DIR/data/hermes-agent"
+        HERMES_API_KEY="${HERMES_API_KEY:-$(openssl rand -hex 24 2>/dev/null || head -c 24 /dev/urandom | xxd -p)}"
+        log "Hermes Agent configured ( Nous Research autonomous agent)"
     fi
 
-    # ── .env merge logic: preserve user-configured values on re-install ──
+    # â”€â”€ .env merge logic: preserve user-configured values on re-install â”€â”€
     dream_progress 40 "directories" "Generating secrets and configuration"
     # If an existing .env exists, read user-editable values so we don't
     # destroy API keys, custom ports, or manually-set secrets.
     _env_existing=""
     if [[ -f "$INSTALL_DIR/.env" ]]; then
         _env_existing="$INSTALL_DIR/.env"
-        log "Found existing .env — preserving user-configured values"
+        log "Found existing .env â€” preserving user-configured values"
     fi
 
     # Safe reader: extract a value from existing .env without sourcing it
@@ -210,6 +160,12 @@ Fix with: sudo chown -R \$(id -u):\$(id -g) $INSTALL_DIR/config $INSTALL_DIR/dat
     QDRANT_API_KEY=$(_env_get QDRANT_API_KEY "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
     OPENCODE_SERVER_PASSWORD=$(_env_get OPENCODE_SERVER_PASSWORD "$(openssl rand -base64 16 2>/dev/null || head -c 16 /dev/urandom | base64)")
     SEARXNG_SECRET=$(_env_get SEARXNG_SECRET "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
+    AUTHELIA_JWT_SECRET=$(_env_get AUTHELIA_JWT_SECRET "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
+    AUTHELIA_SESSION_SECRET=$(_env_get AUTHELIA_SESSION_SECRET "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
+    AUTHELIA_STORAGE_ENCRYPTION_KEY=$(_env_get AUTHELIA_STORAGE_ENCRYPTION_KEY "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
+    BASEROW_SECRET_KEY=$(_env_get BASEROW_SECRET_KEY "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
+    BASEROW_JWT_SIGNING_KEY=$(_env_get BASEROW_JWT_SIGNING_KEY "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
+    GRAFANA_ADMIN_PASSWORD=$(_env_get GRAFANA_ADMIN_PASSWORD "$(openssl rand -hex 16 2>/dev/null || head -c 16 /dev/urandom | xxd -p)")
 
     # Langfuse (LLM Observability). LANGFUSE_ENABLED mirrors the install-time
     # ENABLE_LANGFUSE toggle, falling back to whatever the user had in .env on
@@ -256,7 +212,7 @@ Fix with: sudo chown -R \$(id -u):\$(id -g) $INSTALL_DIR/config $INSTALL_DIR/dat
     # Network binding (--lan sets 0.0.0.0; default is localhost-only)
     BIND_ADDRESS=$(_env_get BIND_ADDRESS "${BIND_ADDRESS:-127.0.0.1}")
 
-    # Whisper STT model — NVIDIA picks the larger turbo model, everyone else
+    # Whisper STT model â€” NVIDIA picks the larger turbo model, everyone else
     # uses base. Phase 12 reads this to pre-download the right file, and
     # Open WebUI reads it to request the same model for transcription.
     if [[ "$GPU_BACKEND" == "nvidia" ]]; then
@@ -279,7 +235,7 @@ Fix with: sudo chown -R \$(id -u):\$(id -g) $INSTALL_DIR/config $INSTALL_DIR/dat
 
     # Generate .env file
     cat > "$INSTALL_DIR/.env" << ENV_EOF
-# Dream Server Configuration — ${TIER_NAME} Edition
+# Dream Server Configuration â€” ${TIER_NAME} Edition
 # Generated by installer v${VERSION} on $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 # Tier: ${TIER} (${TIER_NAME})
 
@@ -353,7 +309,13 @@ QDRANT_PORT=6333
 QDRANT_GRPC_PORT=6334
 EMBEDDINGS_PORT=8090
 LITELLM_PORT=4000
-OPENCLAW_PORT=7860
+HERMES_PORT=8642
+AUTHELIA_PORT=9091
+BASEROW_PORT=8110
+PROMETHEUS_PORT=9090
+GRAFANA_PORT=3007
+CADDY_HTTP_PORT=80
+CADDY_HTTPS_PORT=443
 LANGFUSE_PORT=${LANGFUSE_PORT}
 
 #=== Security (auto-generated, keep secret!) ===
@@ -365,11 +327,17 @@ N8N_PASS=${N8N_PASS}
 LITELLM_KEY=${LITELLM_KEY}
 LIVEKIT_API_KEY=$(_env_get LIVEKIT_API_KEY "$(openssl rand -hex 16 2>/dev/null || head -c 16 /dev/urandom | xxd -p)")
 LIVEKIT_API_SECRET=${LIVEKIT_SECRET}
-OPENCLAW_TOKEN=${OPENCLAW_TOKEN:-$(openssl rand -hex 24 2>/dev/null || head -c 24 /dev/urandom | xxd -p)}
+HERMES_API_KEY=${HERMES_API_KEY:-$(openssl rand -hex 24 2>/dev/null || head -c 24 /dev/urandom | xxd -p)}
 QDRANT_API_KEY=${QDRANT_API_KEY}
 OPENCODE_SERVER_PASSWORD=${OPENCODE_SERVER_PASSWORD}
 SEARXNG_SECRET=${SEARXNG_SECRET}
 DIFY_SECRET_KEY=${DIFY_SECRET_KEY}
+AUTHELIA_JWT_SECRET=${AUTHELIA_JWT_SECRET}
+AUTHELIA_SESSION_SECRET=${AUTHELIA_SESSION_SECRET}
+AUTHELIA_STORAGE_ENCRYPTION_KEY=${AUTHELIA_STORAGE_ENCRYPTION_KEY}
+BASEROW_SECRET_KEY=${BASEROW_SECRET_KEY}
+BASEROW_JWT_SIGNING_KEY=${BASEROW_JWT_SIGNING_KEY}
+GRAFANA_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
 
 #=== Voice Settings ===
 WHISPER_MODEL=base
@@ -404,7 +372,7 @@ LANGFUSE_INIT_PROJECT_ID=${LANGFUSE_INIT_PROJECT_ID}
 LANGFUSE_INIT_USER_EMAIL=${LANGFUSE_INIT_USER_EMAIL}
 LANGFUSE_INIT_USER_PASSWORD=${LANGFUSE_INIT_USER_PASSWORD}
 
-# ── Image Generation ──
+# â”€â”€ Image Generation â”€â”€
 ENABLE_IMAGE_GENERATION=${ENABLE_COMFYUI:-true}
 
 #=== Multi-GPU Settings ===
@@ -424,7 +392,7 @@ ENV_EOF
     ai_ok "Generated secure secrets in .env (permissions: 600)"
 
     # Generate LiteLLM config for Lemonade.
-    # Lemonade exposes models as "extra.<GGUF_FILENAME>" — the wildcard
+    # Lemonade exposes models as "extra.<GGUF_FILENAME>" â€” the wildcard
     # passthrough (openai/*) does NOT work because it forwards the friendly
     # model name verbatim and lemonade returns 404.  Instead, map all
     # requests to the concrete model ID that lemonade actually serves.

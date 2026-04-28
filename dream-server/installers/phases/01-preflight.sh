@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Phase 01: Pre-flight Checks
+# Dream Server Installer â€” Phase 01: Pre-flight Checks
 # ============================================================================
 # Part of: installers/phases/
 # Purpose: Root/OS/tools checks, existing installation detection
@@ -78,16 +78,16 @@ if [[ ! -f "$SCRIPT_DIR/docker-compose.yml" ]] && [[ ! -f "$SCRIPT_DIR/docker-co
     error "No compose files found in $SCRIPT_DIR. Please run from the dream-server directory."
 fi
 
-# Existing installation — update in place (secrets and data are preserved)
+# Existing installation â€” update in place (secrets and data are preserved)
 if [[ -d "$INSTALL_DIR" ]]; then
-    log "Existing installation found at $INSTALL_DIR — updating in place"
+    log "Existing installation found at $INSTALL_DIR â€” updating in place"
     signal "Existing install detected. Secrets and data will be preserved."
 fi
 
 # Filesystem POSIX-permission check.
 # Phase 06 runs `chmod 600 $INSTALL_DIR/.env` to lock down secrets. On exFAT,
 # FAT32, fuseblk (NTFS via ntfs-3g), 9p and DrvFs that chmod is a silent no-op
-# — the secrets file ends up world-readable. Refuse install up front so the
+# â€” the secrets file ends up world-readable. Refuse install up front so the
 # user can pick a POSIX-native path.
 check_install_dir_filesystem() {
     local probe="$INSTALL_DIR"
@@ -116,7 +116,7 @@ re-run, e.g.:  INSTALL_DIR=\"\$HOME/dream-server\" $0"
     log "INSTALL_DIR filesystem: ${INSTALL_FS_TYPE}"
 }
 
-# Docker Desktop file-sharing probe — only meaningful when Docker Desktop
+# Docker Desktop file-sharing probe â€” only meaningful when Docker Desktop
 # is in use (most Linux installs use the native daemon and skip this).
 check_docker_desktop_sharing() {
     command -v docker >/dev/null 2>&1 || return 0

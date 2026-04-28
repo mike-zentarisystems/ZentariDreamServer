@@ -1,0 +1,30 @@
+services:
+  baserow:
+    image: baserow/baserow:1.28
+    container_name: dream-baserow
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - BASEROW_PUBLIC_URL=http://localhost:${BASEROW_PORT:-8110}
+      - SECRET_KEY=${BASEROW_SECRET_KEY:?Set BASEROW_SECRET_KEY in .env}
+      - JWT_SIGNING_KEY=${BASEROW_JWT_SIGNING_KEY:?Set BASEROW_JWT_SIGNING_KEY in .env}
+      - DATABASE_URL=sqlite:////baserow/data/baserow.db
+    volumes:
+      - baserow-data:/baserow/data
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${BASEROW_PORT:-8110}:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/api/_health/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  baserow-data:

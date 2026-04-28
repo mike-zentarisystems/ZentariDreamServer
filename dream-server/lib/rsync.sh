@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server — Rsync Utilities
+# Dream Server â€” Rsync Utilities
 # ============================================================================
 # Part of: lib/
 # Purpose: Shared rsync functions with progress indicators

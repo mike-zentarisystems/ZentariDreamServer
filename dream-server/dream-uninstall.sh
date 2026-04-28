@@ -56,9 +56,9 @@ EOF
 done
 
 echo ""
-echo -e "${RED}╔══════════════════════════════════════════════════╗${NC}"
-echo -e "${RED}║         DREAM SERVER UNINSTALLER                ║${NC}"
-echo -e "${RED}╚══════════════════════════════════════════════════╝${NC}"
+echo -e "${RED}â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—${NC}"
+echo -e "${RED}â•‘         DREAM SERVER UNINSTALLER                â•‘${NC}"
+echo -e "${RED}â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
 echo ""
 
 # Detect install dir
@@ -109,7 +109,7 @@ if command -v docker &>/dev/null; then
 
     log_ok "Docker cleanup complete"
 else
-    log_warn "Docker not found — skipping container cleanup"
+    log_warn "Docker not found â€” skipping container cleanup"
 fi
 
 # 2. Stop and remove systemd user services
@@ -175,9 +175,9 @@ if [[ -f "$OPENCODE_CONFIG" ]] && grep -q "llama-server" "$OPENCODE_CONFIG" 2>/d
 fi
 
 echo ""
-echo -e "${GREEN}╔══════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║     Dream Server has been uninstalled.           ║${NC}"
-echo -e "${GREEN}╚══════════════════════════════════════════════════╝${NC}"
+echo -e "${GREEN}â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—${NC}"
+echo -e "${GREEN}â•‘     Dream Server has been uninstalled.           â•‘${NC}"
+echo -e "${GREEN}â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
 echo ""
 if $KEEP_MODELS; then
     echo "Your models were saved to: $HOME/.dream-server-models-backup"

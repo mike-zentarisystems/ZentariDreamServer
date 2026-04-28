@@ -251,7 +251,7 @@
       "context_length": 131072,
       "quantization": "Q4_K_M",
       "specialty": "Quality",
-      "description": "Successor to Qwen3 30B-A3B. MoE with 131K context — top scores on coding, math, and reasoning benchmarks.",
+      "description": "Successor to Qwen3 30B-A3B. MoE with 131K context â€” top scores on coding, math, and reasoning benchmarks.",
       "tokens_per_sec_estimate": 50,
       "llm_model_name": "qwen3.5-35b-a3b",
       "llama_server_image": null

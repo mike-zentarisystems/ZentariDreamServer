@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Phase 10: AMD System Tuning
+# Dream Server Installer â€” Phase 10: AMD System Tuning
 # ============================================================================
 # Part of: installers/phases/
 # Purpose: AMD APU (Strix Halo) sysctl, modprobe, GRUB, and tuned setup
@@ -38,7 +38,7 @@ elif [[ "$GPU_BACKEND" == "amd" ]] && ! $DRY_RUN; then
         fi
     fi
 
-    # Verify GPU compute devices exist — containers need /dev/kfd and /dev/dri
+    # Verify GPU compute devices exist â€” containers need /dev/kfd and /dev/dri
     if [[ ! -e /dev/kfd ]]; then
         ai "ROCm compute device /dev/kfd not found. Loading kernel module..."
         sudo -n modprobe amdkfd 2>/dev/null || true
@@ -56,7 +56,7 @@ elif [[ "$GPU_BACKEND" == "amd" ]] && ! $DRY_RUN; then
         ai_warn "GPU containers will fail. Try: sudo modprobe amdgpu, or reboot."
     elif [[ ! -e /dev/dri/renderD128 ]]; then
         ai_warn "/dev/dri exists but renderD128 is missing. GPU compute may not work."
-        ai_warn "Check: ls -la /dev/dri/ — you need at least card0/card1 and renderD128."
+        ai_warn "Check: ls -la /dev/dri/ â€” you need at least card0/card1 and renderD128."
     else
         ai_ok "GPU devices verified (/dev/kfd, /dev/dri/renderD128)"
     fi
@@ -64,7 +64,7 @@ elif [[ "$GPU_BACKEND" == "amd" ]] && ! $DRY_RUN; then
     # Management scripts and Memory Shepherd already copied by rsync/cp block above
     [[ -d "$INSTALL_DIR/memory-shepherd" ]] && ai_ok "Memory Shepherd installed"
 
-    # ── Install systemd user timers (session cleanup, session manager, memory shepherd) ──
+    # â”€â”€ Install systemd user timers (session cleanup, session manager, memory shepherd) â”€â”€
     ai "Installing maintenance timers..."
     SYSTEMD_USER_DIR="$HOME/.config/systemd/user"
     mkdir -p "$SYSTEMD_USER_DIR"
@@ -73,7 +73,7 @@ elif [[ "$GPU_BACKEND" == "amd" ]] && ! $DRY_RUN; then
     chmod +x "$INSTALL_DIR/scripts/session-cleanup.sh" \
              "$INSTALL_DIR/memory-shepherd/memory-shepherd.sh" 2>/dev/null || true
 
-    # Copy systemd unit files — skip dream-host-agent.service which was already
+    # Copy systemd unit files â€” skip dream-host-agent.service which was already
     # rendered with path substitutions (__INSTALL_DIR__ etc.) by phase 07.
     if [[ -d "$INSTALL_DIR/scripts/systemd" ]]; then
         for _unit in "$INSTALL_DIR/scripts/systemd"/*.service "$INSTALL_DIR/scripts/systemd"/*.timer; do
@@ -88,7 +88,7 @@ elif [[ "$GPU_BACKEND" == "amd" ]] && ! $DRY_RUN; then
 
     # Reload and enable all timers
     systemctl --user daemon-reload 2>/dev/null || true
-    for timer in openclaw-session-cleanup memory-shepherd-workspace memory-shepherd-memory; do
+    for timer in memory-shepherd-workspace memory-shepherd-memory; do
         systemctl --user enable --now "${timer}.timer" >> "$LOG_FILE" 2>&1 || true
     done
     ai_ok "Maintenance timers enabled (session cleanup, memory shepherd)"
@@ -119,29 +119,29 @@ elif [[ "$GPU_BACKEND" == "amd" ]] && ! $DRY_RUN; then
         fi
     fi
 
-    # ── BIOS recommendation for unified memory APU ──
+    # â”€â”€ BIOS recommendation for unified memory APU â”€â”€
     ai ""
-    ai "╔══════════════════════════════════════════════════════════════════╗"
-    ai "║  BIOS SETUP (one-time, manual step for best performance):      ║"
-    ai "║                                                                ║"
-    ai "║  Set UMA Frame Buffer Size → 512 MB (minimum)                 ║"
-    ai "║                                                                ║"
-    ai "║  This lets Dream Server use your full unified memory pool.     ║"
-    ai "║  Location varies by vendor:                                    ║"
-    ai "║    HP:   Advanced → Display → UMA Frame Buffer Size            ║"
-    ai "║    ASUS: Advanced → AMD CBS → NBIO → GFX → UMA Frame Buffer   ║"
-    ai "║    Lenovo: Advanced → AMD PBS → UMA Frame Buffer Size          ║"
-    ai "╚══════════════════════════════════════════════════════════════════╝"
+    ai "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+    ai "â•‘  BIOS SETUP (one-time, manual step for best performance):      â•‘"
+    ai "â•‘                                                                â•‘"
+    ai "â•‘  Set UMA Frame Buffer Size â†’ 512 MB (minimum)                 â•‘"
+    ai "â•‘                                                                â•‘"
+    ai "â•‘  This lets Dream Server use your full unified memory pool.     â•‘"
+    ai "â•‘  Location varies by vendor:                                    â•‘"
+    ai "â•‘    HP:   Advanced â†’ Display â†’ UMA Frame Buffer Size            â•‘"
+    ai "â•‘    ASUS: Advanced â†’ AMD CBS â†’ NBIO â†’ GFX â†’ UMA Frame Buffer   â•‘"
+    ai "â•‘    Lenovo: Advanced â†’ AMD PBS â†’ UMA Frame Buffer Size          â•‘"
+    ai "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
     ai ""
 
     # Install GTT memory optimization for unified memory APU
-    # Scale GTT allocation based on total RAM — more RAM allows higher % for GPU
+    # Scale GTT allocation based on total RAM â€” more RAM allows higher % for GPU
     total_ram_mb=$(awk '/MemTotal/ {printf "%d", $2/1024}' /proc/meminfo 2>/dev/null || echo "0")
     if [[ "$total_ram_mb" -gt 0 ]]; then
         # Scale GTT percentage based on available RAM to avoid starving the OS
-        #   >= 96GB: 90% (e.g. 128GB → ~115GB GTT, ~13GB for OS — optimal for Strix Halo)
-        #   >= 64GB: 80% (e.g. 64GB → ~51GB GTT, ~13GB for OS)
-        #    < 64GB: 65% (e.g. 32GB → ~21GB GTT, ~11GB for OS — conservative)
+        #   >= 96GB: 90% (e.g. 128GB â†’ ~115GB GTT, ~13GB for OS â€” optimal for Strix Halo)
+        #   >= 64GB: 80% (e.g. 64GB â†’ ~51GB GTT, ~13GB for OS)
+        #    < 64GB: 65% (e.g. 32GB â†’ ~21GB GTT, ~11GB for OS â€” conservative)
         if [[ "$total_ram_mb" -ge 96000 ]]; then
             gtt_pct=90
         elif [[ "$total_ram_mb" -ge 64000 ]]; then
@@ -156,7 +156,7 @@ elif [[ "$GPU_BACKEND" == "amd" ]] && ! $DRY_RUN; then
         page_pool_size=$(( pages_limit / 2 ))
 
         cat > /tmp/dream-gtt-tuning.conf << GTT_EOF
-# /etc/modprobe.d/amdgpu_llm_optimized.conf — GTT memory for LLM inference
+# /etc/modprobe.d/amdgpu_llm_optimized.conf â€” GTT memory for LLM inference
 # Generated by Dream Server installer for ${total_ram_mb}MB total RAM
 # GTT = ${gtt_pct}% of RAM (~${gtt_size}MB), leaving ~$((total_ram_mb - gtt_size))MB for OS/Docker
 options amdgpu gttsize=${gtt_size}
@@ -175,7 +175,7 @@ GTT_EOF
         fi
         rm -f /tmp/dream-gtt-tuning.conf
     else
-        ai_warn "Could not detect total RAM — skipping GTT tuning"
+        ai_warn "Could not detect total RAM â€” skipping GTT tuning"
     fi
 
     # Configure kernel boot parameters for optimal GPU memory access
@@ -257,15 +257,15 @@ GTT_EOF
     # Reboot notice if kernel-level changes were made
     if [[ "${_amd_needs_reboot:-}" == "true" ]]; then
         ai ""
-        ai "╔══════════════════════════════════════════════════════════════════╗"
-        ai "║  REBOOT REQUIRED                                               ║"
-        ai "║                                                                ║"
-        ai "║  GPU memory tuning was installed but requires a reboot to      ║"
-        ai "║  take effect. Dream Server will work now, but GPU-accelerated  ║"
-        ai "║  inference won't use unified memory until you reboot.          ║"
-        ai "║                                                                ║"
-        ai "║  Run: sudo reboot                                             ║"
-        ai "╚══════════════════════════════════════════════════════════════════╝"
+        ai "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+        ai "â•‘  REBOOT REQUIRED                                               â•‘"
+        ai "â•‘                                                                â•‘"
+        ai "â•‘  GPU memory tuning was installed but requires a reboot to      â•‘"
+        ai "â•‘  take effect. Dream Server will work now, but GPU-accelerated  â•‘"
+        ai "â•‘  inference won't use unified memory until you reboot.          â•‘"
+        ai "â•‘                                                                â•‘"
+        ai "â•‘  Run: sudo reboot                                             â•‘"
+        ai "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
         ai ""
     fi
 fi

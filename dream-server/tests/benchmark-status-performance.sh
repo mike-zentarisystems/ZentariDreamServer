@@ -19,7 +19,7 @@ _now_ms() {
     python3 -c 'import time; print(int(time.time() * 1000))' 2>/dev/null || echo "$(date +%s)000"
 }
 
-echo -e "${BLUE}━━━ Dream Status Performance Benchmark ━━━${NC}"
+echo -e "${BLUE}â”â”â” Dream Status Performance Benchmark â”â”â”${NC}"
 echo ""
 
 # Check if dream-cli exists
@@ -41,7 +41,7 @@ setup_mock_services() {
     done
 
     sleep 2
-    echo -e "${GREEN}✓${NC} Mock services started"
+    echo -e "${GREEN}âœ“${NC} Mock services started"
 }
 
 cleanup_mock_services() {
@@ -53,7 +53,7 @@ cleanup_mock_services() {
         done < /tmp/benchmark-mock-pids.txt
         rm -f /tmp/benchmark-mock-pids.txt
     fi
-    echo -e "${GREEN}✓${NC} Cleanup complete"
+    echo -e "${GREEN}âœ“${NC} Cleanup complete"
 }
 
 trap cleanup_mock_services EXIT
@@ -125,7 +125,7 @@ done
 par_avg=$((par_total / 3))
 
 echo ""
-echo -e "${BLUE}━━━ Results ━━━${NC}"
+echo -e "${BLUE}â”â”â” Results â”â”â”${NC}"
 echo ""
 printf "  Sequential average: %6dms\n" $seq_avg
 printf "  Parallel average:   %6dms\n" $par_avg

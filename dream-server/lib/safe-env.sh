@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # ============================================================================
-# Dream Server — Safe environment loading (no eval)
+# Dream Server â€” Safe environment loading (no eval)
 # ============================================================================
 # Scripts that need to load .env should use load_env_file from this script.
-# Do not use eval or "export $(grep ... .env | xargs)" — they allow injection.
+# Do not use eval or "export $(grep ... .env | xargs)" â€” they allow injection.
 #
-# - load_env_file <path>  — parse a .env file and export vars (safe keys, no eval)
-# - load_env_from_output  — parse KEY="value" lines from stdin (for script output)
+# - load_env_file <path>  â€” parse a .env file and export vars (safe keys, no eval)
+# - load_env_from_output  â€” parse KEY="value" lines from stdin (for script output)
 # ============================================================================
 
 # Load a .env file safely: comments and empty lines skipped; key names must be

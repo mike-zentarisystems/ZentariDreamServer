@@ -1,4 +1,4 @@
-# ComfyUI — Image Generation
+# ComfyUI â€” Image Generation
 # This base stub is merged with a GPU-specific overlay:
 #   compose.amd.yaml   (AMD ROCm, gfx1151)
 #   compose.nvidia.yaml (NVIDIA CUDA)

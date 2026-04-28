@@ -37,9 +37,9 @@ if [[ -x "$PROJECT_DIR/scripts/resolve-compose-stack.sh" ]]; then
 fi
 
 echo ""
-echo "╔═══════════════════════════════════════════╗"
-echo "║     Dream Server Validation Test          ║"
-echo "╚═══════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘     Dream Server Validation Test          â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
 PASSED=0
@@ -51,29 +51,29 @@ check() {
     printf "  %-30s " "$name..."
     # Run fixed command string via bash -c (no eval)
     if bash -c "$cmd" > /dev/null 2>&1; then
-        echo -e "${GREEN}✓ PASS${NC}"
+        echo -e "${GREEN}âœ“ PASS${NC}"
         ((PASSED++))
     else
-        echo -e "${RED}✗ FAIL${NC}"
+        echo -e "${RED}âœ— FAIL${NC}"
         ((FAILED++))
     fi
 }
 
 echo "1. Container Status"
-echo "───────────────────"
+echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 check "llama-server running" "docker compose $COMPOSE_FLAGS ps llama-server 2>/dev/null | grep -qE 'Up|running'"
 check "Open WebUI running" "docker compose $COMPOSE_FLAGS ps open-webui 2>/dev/null | grep -qE 'Up|running'"
 
 echo ""
 echo "2. Health Endpoints"
-echo "───────────────────"
+echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 check "llama-server health" "curl -sf --max-time 10 http://localhost:${LLM_PORT}${LLM_HEALTH}"
 check "llama-server models" "curl -sf --max-time 10 http://localhost:${LLM_PORT}/v1/models | grep -q model"
 check "WebUI reachable" "curl -sf --max-time 10 http://localhost:${WEBUI_PORT}${WEBUI_HEALTH} -o /dev/null"
 
 echo ""
 echo "3. Inference Test"
-echo "─────────────────"
+echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 printf "  %-30s " "Chat completion..."
 RESPONSE=$(curl -sf --max-time 30 "http://localhost:${LLM_PORT}/v1/chat/completions" \
     -H "Content-Type: application/json" \
@@ -84,17 +84,17 @@ RESPONSE=$(curl -sf --max-time 30 "http://localhost:${LLM_PORT}/v1/chat/completi
     }' 2>/dev/null)
 
 if echo "$RESPONSE" | grep -q "content"; then
-    echo -e "${GREEN}✓ PASS${NC}"
+    echo -e "${GREEN}âœ“ PASS${NC}"
     ((PASSED++))
 else
-    echo -e "${RED}✗ FAIL${NC}"
+    echo -e "${RED}âœ— FAIL${NC}"
     ((FAILED++))
 fi
 
 # Check optional services
 echo ""
 echo "4. Optional Services (if enabled)"
-echo "──────────────────────────────────"
+echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 
 SCRIPT_DIR_REG="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 . "$SCRIPT_DIR_REG/lib/service-registry.sh"
@@ -121,21 +121,21 @@ for sid in "${SERVICE_IDS[@]}"; do
     if docker compose $COMPOSE_FLAGS ps "$sid" 2>/dev/null | grep -qE "Up|running"; then
         check "$_name" "curl -sf --max-time 10 http://localhost:${_port}${_health}"
     else
-        printf "  %-30s ${YELLOW}○ SKIP (not enabled)${NC}\n" "$_name..."
+        printf "  %-30s ${YELLOW}â—‹ SKIP (not enabled)${NC}\n" "$_name..."
     fi
 done
 
 # Summary
 echo ""
-echo "═══════════════════════════════════════════"
+echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 if [ $FAILED -eq 0 ]; then
-    echo -e "${GREEN}✅ Dream Server is ready! ($PASSED tests passed)${NC}"
+    echo -e "${GREEN}âœ… Dream Server is ready! ($PASSED tests passed)${NC}"
     echo ""
     echo "   Open WebUI:  http://localhost:${WEBUI_PORT}"
     echo "   API:         http://localhost:${LLM_PORT}/v1/..."
     echo ""
 else
-    echo -e "${RED}⚠️  $FAILED test(s) failed, $PASSED passed${NC}"
+    echo -e "${RED}âš ï¸  $FAILED test(s) failed, $PASSED passed${NC}"
     echo ""
     echo "   Troubleshooting:"
     echo "   - Check logs:  docker compose logs -f"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Dream Server Hardware Classifier — Two-pass GPU matching
+# Dream Server Hardware Classifier â€” Two-pass GPU matching
 # Pass 1: Match known_gpus by device_id then name_patterns (gpu-database.json)
 # Pass 2: Fall back to heuristic_classes (threshold-based, same as old hardware-classes.json)
 #
@@ -72,7 +72,7 @@ ram_mb = int(float(sys.argv[10] or 0))
 with open(db_path, "r", encoding="utf-8") as f:
     db = json.load(f)
 
-# --- Compose overlay mapping (backend → default overlays) ---
+# --- Compose overlay mapping (backend â†’ default overlays) ---
 # CPU backend uses cpu overlay: CPU-only llama.cpp image, no GPU reservation
 OVERLAY_MAP = {
     "amd":    ["docker-compose.base.yml", "docker-compose.amd.yml"],
@@ -101,7 +101,7 @@ for entry in db.get("known_gpus", []):
         selected = entry
         break
     elif id_matched and not selected:
-        # Device ID matched but name didn't — remember as fallback
+        # Device ID matched but name didn't â€” remember as fallback
         selected = entry
         # Keep looking for a better match with same device_id
         continue

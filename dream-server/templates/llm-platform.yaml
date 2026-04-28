@@ -9,7 +9,7 @@ template:
   tier_minimum: T2
   estimated_disk_gb: 15
   service_notes:
-    litellm: "LLM gateway — routes between models"
-    langfuse: "LLM observability — 7 containers, ~6GB"
-    librechat: "Chat UI — set OPENAI_REVERSE_PROXY=http://litellm:4000/v1 to use the gateway"
+    litellm: "LLM gateway â€” routes between models"
+    langfuse: "LLM observability â€” 7 containers, ~6GB"
+    librechat: "Chat UI â€” set OPENAI_REVERSE_PROXY=http://litellm:4000/v1 to use the gateway"
     n8n: "Automation consumer for the LLM gateway"

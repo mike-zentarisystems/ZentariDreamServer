@@ -49,7 +49,7 @@ pass() {
 fail() {
     echo -e "  ${RED}FAIL${NC}  $1"
     if [[ -n "${2:-}" ]]; then
-        echo -e "        ${RED}→ $2${NC}"
+        echo -e "        ${RED}â†’ $2${NC}"
     fi
     FAIL=$((FAIL + 1))
 }
@@ -62,7 +62,7 @@ skip() {
 header() {
     echo ""
     echo -e "${BOLD}${CYAN}[$1]${NC} ${BOLD}$2${NC}"
-    echo -e "${CYAN}$(printf '%.0s─' {1..50})${NC}"
+    echo -e "${CYAN}$(printf '%.0sâ”€' {1..50})${NC}"
 }
 
 # ============================================
@@ -130,7 +130,7 @@ header "2/6" "Docker Compose Validation"
 export WEBUI_SECRET="${WEBUI_SECRET:-test}"
 export N8N_USER="${N8N_USER:-admin@example.invalid}"
 export N8N_PASS="${N8N_PASS:-test-password}"
-export OPENCLAW_TOKEN="${OPENCLAW_TOKEN:-test-openclaw-token}"
+export HERMES_API_KEY="${HERMES_API_KEY:-test-hermes-api-key}"
 export SEARXNG_SECRET="${SEARXNG_SECRET:-test-searxng-secret}"
 
 if [[ -z "$COMPOSE_FILE" ]]; then
@@ -176,7 +176,7 @@ else
             pass "Both web UI service names present (open-webui + webui)"
         fi
     else
-        skip "Docker not installed — cannot validate compose syntax"
+        skip "Docker not installed â€” cannot validate compose syntax"
     fi
 fi
 
@@ -199,7 +199,7 @@ else
 
         # YAML validation using python (skip if PyYAML not installed)
         if ! "$PYTHON_CMD" -c "import yaml" 2>/dev/null; then
-            skip "PyYAML not installed — cannot validate: $basename_profile"
+            skip "PyYAML not installed â€” cannot validate: $basename_profile"
         elif "$PYTHON_CMD" -c "
 import yaml, sys
 with open('$profile') as f:
@@ -342,7 +342,7 @@ if [[ -f "$PROJECT_DIR/scripts/showcase.sh" ]]; then
     if [[ -x "$PROJECT_DIR/scripts/showcase.sh" ]]; then
         pass "showcase.sh exists and is executable"
     else
-        pass "showcase.sh exists (not executable — will fix)"
+        pass "showcase.sh exists (not executable â€” will fix)"
     fi
 
     # Check it has menu function
@@ -400,10 +400,10 @@ fi
 # Summary
 # ============================================
 echo ""
-echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BOLD}${CYAN}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
 TOTAL=$((PASS + FAIL + SKIP))
 echo -e "${BOLD}  Results: ${GREEN}$PASS passed${NC}, ${RED}$FAIL failed${NC}, ${YELLOW}$SKIP skipped${NC} ${BOLD}($TOTAL total)${NC}"
-echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BOLD}${CYAN}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
 echo ""
 
 if [[ $FAIL -gt 0 ]]; then

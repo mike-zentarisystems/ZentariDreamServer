@@ -1,5 +1,5 @@
 #!/bin/bash
-# Migration: v0.1.0 → v0.2.0
+# Migration: v0.1.0 â†’ v0.2.0
 # Description: Add new voice configuration variables
 # Date: 2026-02-11
 

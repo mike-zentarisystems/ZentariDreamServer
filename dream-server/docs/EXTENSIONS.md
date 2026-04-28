@@ -455,6 +455,91 @@ The catalog response also includes `agent_available` (whether the host agent is 
                      into one compose stack  │
 ```
 
+## Current Extension Services
+
+The following extensions are available in `extensions/services/`:
+
+### Observability
+
+| Service | ID | Port | Category | Description |
+|---------|-----|------|----------|-------------|
+| Prometheus | `prometheus` | 9090 | optional | Metrics collection and time-series DB |
+| Grafana | `grafana` | 3007 | optional | Dashboards and alerting |
+| Langfuse | `langfuse` | 3006 | optional | LLM tracing, prompt management, cost analytics |
+| cAdvisor | `cadvisor` | 8083 | optional | Per-container CPU/memory/network metrics |
+| Node Exporter | `node-exporter` | 9100 | optional | Host-level hardware metrics |
+| Uptime Kuma | `uptime-kuma` | 3008 | optional | Uptime monitoring and alert history |
+
+### AI & Inference
+
+| Service | ID | Port | Category | Description |
+|---------|-----|------|----------|-------------|
+| LiteLLM | `litellm` | 4000 | recommended | Unified LLM gateway (local + cloud) |
+| llama-server | `llama-server` | 8080 | core | Local GGUF model inference |
+| Hermes Agent | `hermes-agent` | 8642 | optional | Autonomous multi-step reasoning agent |
+| DreamForge | `dreamforge` | 3010 | optional | Local agent system with 40+ tools |
+
+### User Interfaces
+
+| Service | ID | Port | Category | Description |
+|---------|-----|------|----------|-------------|
+| Open WebUI | `open-webui` | 3000 | core | Chat UI (voice, files, search) |
+| Dashboard | `dashboard` | 3001 | core | Control center UI |
+| Dashboard API | `dashboard-api` | 3002 | core | Backend API for dashboard |
+
+### Voice & Media
+
+| Service | ID | Port | Category | Description |
+|---------|-----|------|----------|-------------|
+| Whisper | `whisper` | 9000 | optional | Speech-to-text transcription |
+| Kokoro TTS | `kokoro` | 8880 | optional | Text-to-speech voice synthesis |
+| ComfyUI | `comfyui` | 8188 | optional | FLUX image generation |
+
+### Data & RAG
+
+| Service | ID | Port | Category | Description |
+|---------|-----|------|----------|-------------|
+| Qdrant | `qdrant` | 6333 | optional | Vector database for semantic search |
+| TEI Embeddings | `embeddings` | 8090 | optional | Text-to-vector embeddings service |
+| Docling | `docling` | 5001 | optional | Document parsing (PDF/DOCX/PPTX → markdown) |
+| Baserow | `baserow` | 8110 | optional | No-code database and app builder |
+
+### Automation & Integration
+
+| Service | ID | Port | Category | Description |
+|---------|-----|------|----------|-------------|
+| n8n | `n8n` | 5678 | optional | Workflow automation (400+ integrations) |
+| SearXNG | `searxng` | 8888 | recommended | Privacy-respecting metasearch engine |
+
+### Infrastructure
+
+| Service | ID | Port | Category | Description |
+|---------|-----|------|----------|-------------|
+| Caddy | `caddy` | 80/443 | optional | Reverse proxy with automatic HTTPS |
+| Authelia | `authelia` | 9091 | optional | Single sign-on and MFA |
+| Vaultwarden | `vaultwarden` | 8222 | optional | Self-hosted password manager |
+| Forgejo | `forgejo` | 3009 | optional | Self-hosted Git server |
+| APE | `ape` | 7890 | optional | Agent Policy Engine (tool call auditing) |
+| Privacy Shield | `privacy-shield` | 8085 | optional | PII detection and redaction |
+
+### Getting Started with New Extensions
+
+```bash
+# Enable any optional service
+dream enable prometheus
+dream enable langfuse
+dream enable uptime-kuma
+dream enable vaultwarden
+dream enable forgejo
+
+# Check status
+dream status
+
+# View logs
+dream logs prometheus
+dream logs grafana
+```
+
 ## Notes
 
 - Manifest loading is additive with safe fallback defaults.

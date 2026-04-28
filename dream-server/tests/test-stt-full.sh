@@ -17,8 +17,8 @@ echo "=== M8 Test: STT Full (Whisper Inference) ==="
 
 # Check if we can generate a simple test
 if ! command -v ffmpeg &> /dev/null; then
-  echo "⚠️  SKIP: ffmpeg not available for audio generation"
-  echo "ℹ️  Manual test: Upload audio to $WHISPER_URL/v1/audio/transcriptions"
+  echo "âš ï¸  SKIP: ffmpeg not available for audio generation"
+  echo "â„¹ï¸  Manual test: Upload audio to $WHISPER_URL/v1/audio/transcriptions"
   exit 0
 fi
 
@@ -40,11 +40,11 @@ rm -f "$TEST_AUDIO"
 
 # Check response
 if echo "$RESPONSE" | grep -qE "text|transcript"; then
-  echo "✅ PASS: STT transcription received (${LATENCY}ms)"
+  echo "âœ… PASS: STT transcription received (${LATENCY}ms)"
   echo "   Transcript: $(echo "$RESPONSE" | grep -o '"text":"[^"]*"' | cut -d'"' -f4)"
   exit 0
 else
-  echo "❌ FAIL: No transcription in response (${LATENCY}ms)"
+  echo "âŒ FAIL: No transcription in response (${LATENCY}ms)"
   echo "   Response: ${RESPONSE:0:100}"
   exit 1
 fi

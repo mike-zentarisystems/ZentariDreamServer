@@ -59,7 +59,7 @@ fi
 
 set -euo pipefail
 
-# ── Locate libraries ──
+# â”€â”€ Locate libraries â”€â”€
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LIB_DIR="${SCRIPT_DIR}/lib"
 
@@ -77,7 +77,7 @@ source "${LIB_DIR}/detection.sh"
 
 unset DREAM_SCRIPT_HINT
 
-# ── Resolve install directory ──
+# â”€â”€ Resolve install directory â”€â”€
 INSTALL_DIR="${DS_INSTALL_DIR}"
 
 # ============================================================================
@@ -124,7 +124,7 @@ get_compose_flags() {
             --gpu-backend "${GPU_BACKEND:-apple}"
         return
     fi
-    # Last resort: resolver script missing — emit base + macos overlay
+    # Last resort: resolver script missing â€” emit base + macos overlay
     local flags="-f docker-compose.base.yml"
     if [[ -f "${INSTALL_DIR}/installers/macos/docker-compose.macos.yml" ]]; then
         flags="$flags -f installers/macos/docker-compose.macos.yml"
@@ -218,7 +218,7 @@ ensure_llama_cpu_budget() {
     fi
 }
 
-# ── Native llama-server management ──
+# â”€â”€ Native llama-server management â”€â”€
 
 get_native_llama_status() {
     NATIVE_LLAMA_RUNNING=false

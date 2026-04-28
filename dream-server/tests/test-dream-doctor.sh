@@ -22,14 +22,14 @@ NC='\033[0m'
 PASSED=0
 FAILED=0
 
-pass() { echo -e "  ${GREEN}✓ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
-fail() { echo -e "  ${RED}✗ FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
-skip() { echo -e "  ${YELLOW}⊘ SKIP${NC} $1"; }
+pass() { echo -e "  ${GREEN}âœ“ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
+fail() { echo -e "  ${RED}âœ— FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
+skip() { echo -e "  ${YELLOW}âŠ˜ SKIP${NC} $1"; }
 
 echo ""
-echo "╔═══════════════════════════════════════════════╗"
-echo "║   dream-doctor.sh Test Suite                  ║"
-echo "╚═══════════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘   dream-doctor.sh Test Suite                  â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
 # 1. Script exists

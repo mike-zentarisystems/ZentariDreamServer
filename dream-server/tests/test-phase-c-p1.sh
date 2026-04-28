@@ -45,9 +45,9 @@ echo "  Prioritized CI Pipeline Tests"
 echo "================================================================"
 echo ""
 
-# ==============================================================═
+# ==============================================================â•
 # C1. Settings page is a static mockup
-# ==============================================================═
+# ==============================================================â•
 echo -e "${CYAN}-- C1. Settings Page Mockup Detection -----------------------"
 
 SETTINGS_TEST=$(curl -sf -m $TEST_TIMEOUT "${API_URL}/api/settings" 2>/dev/null || echo "")
@@ -62,9 +62,9 @@ else
     log_warn "Settings endpoint not implemented (404)"
 fi
 
-# ==============================================================═
+# ==============================================================â•
 # C2. Setup wizard endpoint validation
-# ==============================================================═
+# ==============================================================â•
 echo -e "${CYAN}-- C2. Setup Wizard Endpoints -------------------------------"
 
 # Test /api/setup/test endpoint
@@ -107,9 +107,9 @@ else
     log_pass "Workflows test endpoint exists"
 fi
 
-# ==============================================================═
+# ==============================================================â•
 # C3. SetupWizard step validation
-# ==============================================================═
+# ==============================================================â•
 echo -e "${CYAN}-- C3. Setup Wizard Step Validation -------------------------"
 
 # The setup wizard should not allow skipping the name step
@@ -120,9 +120,9 @@ else
     log_warn "Setup wizard API not found"
 fi
 
-# ==============================================================═
+# ==============================================================â•
 # C4. Voice settings persistence
-# ==============================================================═
+# ==============================================================â•
 echo -e "${CYAN}-- C4. Voice Settings Persistence ---------------------------"
 
 # Try to save and retrieve voice settings
@@ -138,7 +138,7 @@ else
     log_warn "Voice settings endpoint not implemented"
 fi
 
-# ==============================================================═
+# ==============================================================â•
 # C5. Voice agent operation order
 echo -e "${CYAN}-- C5. Voice Agent Operation Order --------------------------"
 
@@ -154,7 +154,7 @@ else
     log_warn "Voice status endpoint not responding"
 fi
 
-# ==============================================================═
+# ==============================================================â•
 # C6. dream-cli status (replaced status.sh)
 echo -e "${CYAN}-- C6. dream-cli status command ------------------------------"
 
@@ -169,7 +169,7 @@ else
     log_warn "dream-cli not found"
 fi
 
-# ==============================================================═
+# ==============================================================â•
 # C7. dream-cli TTS service alias
 echo -e "${CYAN}-- C7. dream-cli TTS Service Alias --------------------------"
 
@@ -184,7 +184,7 @@ else
     log_warn "dream-cli not found"
 fi
 
-# ==============================================================═
+# ==============================================================â•
 # C8. installer summary port display
 echo -e "${CYAN}-- C8. Installer Summary Port Display -----------------------"
 
@@ -199,7 +199,7 @@ else
     log_warn "install.sh not found"
 fi
 
-# ==============================================================═
+# ==============================================================â•
 # C9. dream-update.sh GitHub repo
 echo -e "${CYAN}-- C9. dream-update.sh GitHub Repo --------------------------"
 
@@ -214,7 +214,7 @@ else
     log_warn "dream-update.sh not found"
 fi
 
-# ==============================================================═
+# ==============================================================â•
 # C10. Migration script idempotency
 echo -e "${CYAN}-- C10. Migration Script Idempotency ------------------------"
 
@@ -231,7 +231,7 @@ else
     log_warn "Migration script not found"
 fi
 
-# ==============================================================═
+# ==============================================================â•
 # C11. Container UID/GID configuration
 echo -e "${CYAN}-- C11. Container UID/GID Configuration ---------------------"
 
@@ -249,7 +249,7 @@ else
     log_warn "compose file not found"
 fi
 
-# ==============================================================═
+# ==============================================================â•
 # C12. Docker Compose profiles auto-start
 echo -e "${CYAN}-- C12. Docker Compose Profiles Auto-Start ------------------"
 

@@ -1,0 +1,30 @@
+schema_version: dream.services.v1
+
+compatibility:
+  dream_min: "2.0.0"
+
+service:
+  id: caddy
+  name: Caddy (Reverse Proxy)
+  container_name: dream-caddy
+  host_env: CADDY_HOST
+  default_host: caddy
+  port: 80
+  external_port_env: CADDY_HTTP_PORT
+  external_port_default: 80
+  health: /healthz
+  ui_path: /
+  type: docker
+  gpu_backends: [cpu, none]
+  compose_file: compose.yaml
+  category: core
+  depends_on: [authelia]
+  env_vars:
+    - key: CADDY_HTTP_PORT
+      required: false
+      secret: false
+      description: Caddy HTTP port (default 80)
+    - key: CADDY_HTTPS_PORT
+      required: false
+      secret: false
+      description: Caddy HTTPS port (default 443)

@@ -2,7 +2,7 @@ schema_version: dream.templates.v1
 template:
   id: private-research-hub
   name: Private Research Hub
-  description: "Search, collect, and analyze sensitive information privately — no data leaves your machine."
+  description: "Search, collect, and analyze sensitive information privately â€” no data leaves your machine."
   icon: ShieldCheck
   tags: [privacy, research, documents]
   services: [searxng, perplexica, privacy-shield, paperless-ngx, chromadb]

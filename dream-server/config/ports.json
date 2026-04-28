@@ -82,11 +82,53 @@
       "manifest_service": "litellm"
     },
     {
-      "env_var": "OPENCLAW_PORT",
-      "external_default": 7860,
-      "service_id": "openclaw",
-      "internal_port": 18789,
-      "manifest_service": "openclaw"
+      "env_var": "HERMES_PORT",
+      "external_default": 8642,
+      "service_id": "hermes-agent",
+      "internal_port": 8642,
+      "manifest_service": "hermes-agent"
+    },
+    {
+      "env_var": "BASEROW_PORT",
+      "external_default": 8110,
+      "service_id": "baserow",
+      "internal_port": 80,
+      "manifest_service": "baserow"
+    },
+    {
+      "env_var": "PROMETHEUS_PORT",
+      "external_default": 9090,
+      "service_id": "prometheus",
+      "internal_port": 9090,
+      "manifest_service": "prometheus"
+    },
+    {
+      "env_var": "GRAFANA_PORT",
+      "external_default": 3007,
+      "service_id": "grafana",
+      "internal_port": 3000,
+      "manifest_service": "grafana"
+    },
+    {
+      "env_var": "AUTHELIA_PORT",
+      "external_default": 9091,
+      "service_id": "authelia",
+      "internal_port": 9091,
+      "manifest_service": "authelia"
+    },
+    {
+      "env_var": "CADDY_HTTP_PORT",
+      "external_default": 80,
+      "service_id": "caddy",
+      "internal_port": 80,
+      "manifest_service": "caddy"
+    },
+    {
+      "env_var": "CADDY_HTTPS_PORT",
+      "external_default": 443,
+      "service_id": "caddy",
+      "internal_port": 443,
+      "manifest_service": "caddy"
     },
     {
       "env_var": "SHIELD_PORT",

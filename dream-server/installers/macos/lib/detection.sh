@@ -13,7 +13,7 @@
 #   Add new chip detection patterns in get_apple_silicon_info().
 # ============================================================================
 
-# ── Apple Silicon Detection ──
+# â”€â”€ Apple Silicon Detection â”€â”€
 
 get_apple_silicon_info() {
     # Returns chip model, variant, and core counts
@@ -60,7 +60,7 @@ get_apple_silicon_info() {
     fi
 }
 
-# ── System RAM ──
+# â”€â”€ System RAM â”€â”€
 
 get_system_ram_gb() {
     local ram_bytes
@@ -68,7 +68,7 @@ get_system_ram_gb() {
     SYSTEM_RAM_GB=$(( ram_bytes / 1073741824 ))
 }
 
-# ── macOS Version ──
+# â”€â”€ macOS Version â”€â”€
 
 get_macos_version() {
     MACOS_VERSION=$(sw_vers -productVersion 2>/dev/null || echo "0.0.0")
@@ -85,7 +85,7 @@ get_macos_version() {
     esac
 }
 
-# ── Docker Desktop ──
+# â”€â”€ Docker Desktop â”€â”€
 
 test_docker_desktop() {
     DOCKER_INSTALLED=false
@@ -163,7 +163,7 @@ calculate_llama_cpu_budget() {
     echo "$limit $reservation $available"
 }
 
-# ── Disk Space ──
+# â”€â”€ Disk Space â”€â”€
 
 test_disk_space() {
     local path="${1:-$HOME}"
@@ -187,7 +187,7 @@ test_disk_space() {
     fi
 }
 
-# ── Port Conflict Detection ──
+# â”€â”€ Port Conflict Detection â”€â”€
 
 check_port_conflict() {
     local port="$1"
@@ -209,7 +209,7 @@ check_port_conflict() {
     return 1
 }
 
-# ── Ollama Detection ──
+# â”€â”€ Ollama Detection â”€â”€
 
 check_ollama_conflict() {
     OLLAMA_RUNNING=false

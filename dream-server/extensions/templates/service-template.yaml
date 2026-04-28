@@ -1,5 +1,5 @@
 # =============================================================================
-# Dream Server — Service Extension Manifest Template
+# Dream Server â€” Service Extension Manifest Template
 # =============================================================================
 #
 # HOW TO USE THIS TEMPLATE:
@@ -24,11 +24,11 @@
 #
 # =============================================================================
 
-# REQUIRED — must be exactly this string
+# REQUIRED â€” must be exactly this string
 schema_version: dream.services.v1
 
 service:
-  # ── Identity (REQUIRED) ──
+  # â”€â”€ Identity (REQUIRED) â”€â”€
 
   # Unique ID: lowercase alphanumeric + hyphens. Used in CLI, compose, registry.
   # Must match the directory name under extensions/services/.
@@ -37,13 +37,13 @@ service:
   # Human-readable name shown in dashboard sidebar and CLI output.
   name: My Service
 
-  # ── CLI Aliases (optional) ──
+  # â”€â”€ CLI Aliases (optional) â”€â”€
   # Shorthand names users can type instead of the full ID.
   # Example: "dream logs workflows" resolves to n8n.
   aliases: []
   # aliases: [myservice, ms]
 
-  # ── Docker (REQUIRED for docker services) ──
+  # â”€â”€ Docker (REQUIRED for docker services) â”€â”€
 
   # Container name. Convention: dream-<id>. Used by "dream shell <service>".
   container_name: dream-my-service
@@ -52,7 +52,7 @@ service:
   host_env: MY_SERVICE_HOST        # env var name (optional)
   default_host: my-service         # Docker DNS name (should match compose service name)
 
-  # ── Ports (REQUIRED) ──
+  # â”€â”€ Ports (REQUIRED) â”€â”€
 
   # Internal port the service listens on inside the container.
   port: 1234
@@ -61,41 +61,41 @@ service:
   external_port_env: MY_SERVICE_PORT      # env var name (optional)
   external_port_default: 1234             # default if env var unset
 
-  # ── Health Check (REQUIRED) ──
+  # â”€â”€ Health Check (REQUIRED) â”€â”€
   # Path the dashboard hits to determine if the service is up.
   # Must return HTTP < 500 to be considered healthy.
   health: /health
   # Common patterns: /health, /healthz, /api/health, /
 
-  # ── Service Type ──
-  # "docker" (default) — runs in Docker Compose.
-  # "host-systemd" — runs on the host OS, checked via HOST_GATEWAY.
+  # â”€â”€ Service Type â”€â”€
+  # "docker" (default) â€” runs in Docker Compose.
+  # "host-systemd" â€” runs on the host OS, checked via HOST_GATEWAY.
   type: docker
 
-  # ── GPU Backends ──
+  # â”€â”€ GPU Backends â”€â”€
   # Which GPU backends this service supports. Omit if no GPU needed.
   # Services are only shown/started when the detected backend matches.
   gpu_backends: [amd, nvidia]
   # Use [amd, nvidia] for most services. GPU-specific services use [amd] or [nvidia].
 
-  # ── Compose Fragment (REQUIRED for non-core services) ──
+  # â”€â”€ Compose Fragment (REQUIRED for non-core services) â”€â”€
   # Relative path to the Docker Compose fragment in this directory.
   # The compose file is merged via: docker compose -f base.yml -f <this file>
   compose_file: compose.yaml
 
-  # ── Category ──
+  # â”€â”€ Category â”€â”€
   # core:        Always on, lives in docker-compose.base.yml (no compose.yaml needed)
   # recommended: Enabled by default for most hardware profiles
   # optional:    User must run "dream enable <id>" to activate
   category: optional
 
-  # ── Dependencies (optional) ──
+  # â”€â”€ Dependencies (optional) â”€â”€
   # Other service IDs that must be running for this service to work.
   # "dream enable" will prompt to enable missing dependencies.
   depends_on: []
   # depends_on: [llama-server, qdrant]
 
-  # ── Environment Variables (optional) ──
+  # â”€â”€ Environment Variables (optional) â”€â”€
   # Documents env vars this service uses. Helps "dream enable" prompt for values.
   env_vars: []
   # env_vars:
@@ -108,14 +108,14 @@ service:
   #     default: "4"
   #     description: Number of worker threads
 
-  # ── Installer Setup Hook (optional) ──
+  # â”€â”€ Installer Setup Hook (optional) â”€â”€
   # Relative path to a script run ONCE during installation (phase 11).
   # Receives two arguments: $1 = INSTALL_DIR, $2 = GPU_BACKEND.
   # Use for: creating data dirs, generating config files, downloading assets.
   # setup_hook: setup.sh
 
 # =============================================================================
-# Features — what users see in the dashboard "Features" page
+# Features â€” what users see in the dashboard "Features" page
 # =============================================================================
 # Each feature maps to one or more services. The dashboard checks whether the
 # required services are healthy and shows a status badge accordingly.
@@ -124,10 +124,10 @@ service:
 
 features:
   - id: my-feature
-    name: My Feature                        # REQUIRED — dashboard display name
-    description: What this feature does     # REQUIRED — one-line summary
-    icon: Sparkles                          # REQUIRED — Lucide icon name
-    category: productivity                  # REQUIRED — groups features in the UI
+    name: My Feature                        # REQUIRED â€” dashboard display name
+    description: What this feature does     # REQUIRED â€” one-line summary
+    icon: Sparkles                          # REQUIRED â€” Lucide icon name
+    category: productivity                  # REQUIRED â€” groups features in the UI
     # Categories: ai, productivity, media, search, privacy, developer, system
 
     requirements:

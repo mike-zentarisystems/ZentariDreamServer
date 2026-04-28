@@ -1,5 +1,5 @@
 #!/bin/bash
-# dream-preflight.sh — Quick health check before first chat
+# dream-preflight.sh â€” Quick health check before first chat
 # Usage: ./scripts/dream-preflight.sh
 
 set -euo pipefail
@@ -44,9 +44,9 @@ WEBUI_HEALTH="${SERVICE_HEALTH[open-webui]:-/}"
 # Check Docker is running
 echo -n "Docker daemon... "
 if docker info >/dev/null 2>&1; then
-    echo -e "${GREEN}✓ running${NC}"
+    echo -e "${GREEN}âœ“ running${NC}"
 else
-    echo -e "${RED}✗ not running${NC}"
+    echo -e "${RED}âœ— not running${NC}"
     echo "  Fix: Start Docker Desktop or run 'sudo systemctl start docker'"
     exit 1
 fi
@@ -54,9 +54,9 @@ fi
 # Check containers are up
 echo -n "Core containers... "
 if docker compose $COMPOSE_FLAGS ps | grep -q "$LLM_CONTAINER"; then
-    echo -e "${GREEN}✓ running${NC}"
+    echo -e "${GREEN}âœ“ running${NC}"
 else
-    echo -e "${RED}✗ not running${NC}"
+    echo -e "${RED}âœ— not running${NC}"
     echo "  Fix: Run 'docker compose up -d' first"
     exit 1
 fi
@@ -66,9 +66,9 @@ CURL_HEALTH_FLAGS=(--connect-timeout 3 --max-time 10)
 
 echo -n "llama-server API (port $LLM_PORT)... "
 if curl -sf "${CURL_HEALTH_FLAGS[@]}" "http://localhost:${LLM_PORT}${LLM_HEALTH}" >/dev/null 2>&1; then
-    echo -e "${GREEN}✓ healthy${NC}"
+    echo -e "${GREEN}âœ“ healthy${NC}"
 else
-    echo -e "${YELLOW}⚠ starting up${NC}"
+    echo -e "${YELLOW}âš  starting up${NC}"
     echo "  The model is still loading. Wait 1-2 minutes and retry."
     echo "  Monitor: docker compose logs -f llama-server"
 fi
@@ -76,18 +76,18 @@ fi
 # Check WebUI
 echo -n "Open WebUI (port $WEBUI_PORT)... "
 if curl -sf "${CURL_HEALTH_FLAGS[@]}" "http://localhost:${WEBUI_PORT}${WEBUI_HEALTH}" >/dev/null 2>&1; then
-    echo -e "${GREEN}✓ accessible${NC}"
+    echo -e "${GREEN}âœ“ accessible${NC}"
 else
-    echo -e "${YELLOW}⚠ not ready${NC}"
+    echo -e "${YELLOW}âš  not ready${NC}"
 fi
 
 # Check GPU if available
 echo -n "GPU availability... "
 if docker exec "$LLM_CONTAINER" nvidia-smi >/dev/null 2>&1; then
     GPU_MEM=$(docker exec "$LLM_CONTAINER" nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits 2>/dev/null | sed -n '1p' | tr -d ' ')
-    echo -e "${GREEN}✓ detected (${GPU_MEM}MB free)${NC}"
+    echo -e "${GREEN}âœ“ detected (${GPU_MEM}MB free)${NC}"
 else
-    echo -e "${YELLOW}⚠ not detected (CPU mode)${NC}"
+    echo -e "${YELLOW}âš  not detected (CPU mode)${NC}"
 fi
 
 # Check extension services that are running
@@ -103,9 +103,9 @@ for sid in "${SERVICE_IDS[@]}"; do
 
     echo -n "$name (port $port)... "
     if curl -sf "${CURL_HEALTH_FLAGS[@]}" "http://localhost:${port}${health}" >/dev/null 2>&1; then
-        echo -e "${GREEN}✓ ready${NC}"
+        echo -e "${GREEN}âœ“ ready${NC}"
     else
-        echo -e "${YELLOW}⚠ not ready${NC}"
+        echo -e "${YELLOW}âš  not ready${NC}"
     fi
 done
 

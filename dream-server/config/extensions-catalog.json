@@ -465,7 +465,7 @@
         {
           "id": "continue-coding",
           "name": "Continue Coding Assistant",
-          "description": "AI-powered coding assistant for VS Code and JetBrains. Installs the Continue extension in your IDE and points it at Dream Server's local LLM — no cloud required.\n",
+          "description": "AI-powered coding assistant for VS Code and JetBrains. Installs the Continue extension in your IDE and points it at Dream Server's local LLM â€” no cloud required.\n",
           "icon": "Code",
           "category": "development",
           "requirements": {
@@ -759,7 +759,7 @@
     {
       "id": "fooocus",
       "name": "Fooocus",
-      "description": "Simplified Stable Diffusion interface inspired by Midjourney's ease of use. Not yet supported for local deployment — requires RunPod cloud platform.",
+      "description": "Simplified Stable Diffusion interface inspired by Midjourney's ease of use. Not yet supported for local deployment â€” requires RunPod cloud platform.",
       "category": "optional",
       "gpu_backends": [
         "nvidia"

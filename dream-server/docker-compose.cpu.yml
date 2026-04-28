@@ -1,4 +1,4 @@
-# Dream Server — CPU-Only Overlay (Linux / no GPU)
+# Dream Server â€” CPU-Only Overlay (Linux / no GPU)
 # Uses llama.cpp server CPU build. No NVIDIA/AMD/Intel GPU required.
 # For low-RAM systems, set LLAMA_SERVER_MEMORY_LIMIT=4G in .env
 #

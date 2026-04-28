@@ -22,9 +22,9 @@ PASSED=0
 FAILED=0
 
 echo ""
-echo "╔═══════════════════════════════════════════╗"
-echo "║   Network Timeout Protection Test Suite   ║"
-echo "╚═══════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘   Network Timeout Protection Test Suite   â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
 # Test helper
@@ -76,10 +76,10 @@ test_file_has_timeout() {
     done <<< "$matches"
 
     if $has_timeout; then
-        echo -e "${GREEN}✓ PASS${NC}"
+        echo -e "${GREEN}âœ“ PASS${NC}"
         PASSED=$((PASSED + 1))
     else
-        echo -e "${RED}✗ FAIL${NC}"
+        echo -e "${RED}âœ— FAIL${NC}"
         FAILED=$((FAILED + 1))
         echo "     Missing timeout in: $file"
         echo "     Pattern: $pattern"
@@ -87,7 +87,7 @@ test_file_has_timeout() {
 }
 
 echo "1. Installer Phase Scripts"
-echo "───────────────────────────"
+echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 
 # Phase 05 - Docker
 test_file_has_timeout \
@@ -162,7 +162,7 @@ test_file_has_timeout \
 
 echo ""
 echo "2. Management Scripts"
-echo "─────────────────────"
+echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 
 # dream-preflight.sh
 # dream-preflight.sh
@@ -221,7 +221,7 @@ test_file_has_timeout \
 
 echo ""
 echo "3. macOS Installers"
-echo "───────────────────"
+echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 
 # install-macos.sh
 test_file_has_timeout \
@@ -250,13 +250,13 @@ test_file_has_timeout \
     "macOS CLI status checks"
 
 echo ""
-echo "═══════════════════════════════════════════"
+echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 if [ $FAILED -eq 0 ]; then
-    echo -e "${GREEN}✓ All tests passed${NC} ($PASSED/$((PASSED + FAILED)))"
+    echo -e "${GREEN}âœ“ All tests passed${NC} ($PASSED/$((PASSED + FAILED)))"
     echo ""
     exit 0
 else
-    echo -e "${RED}✗ Some tests failed${NC} ($PASSED passed, $FAILED failed)"
+    echo -e "${RED}âœ— Some tests failed${NC} ($PASSED passed, $FAILED failed)"
     echo ""
     exit 1
 fi

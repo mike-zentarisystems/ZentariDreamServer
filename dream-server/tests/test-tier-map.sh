@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Test: resolve_tier_config() — tier-map.sh
+# Test: resolve_tier_config() â€” tier-map.sh
 # ============================================================================
 # Sources the actual tier-map.sh and verifies each tier resolves to the
 # correct LLM_MODEL, GGUF_FILE, and MAX_CONTEXT.
@@ -122,7 +122,7 @@ assert_eq "MAX_CONTEXT"  "131072"                               "$MAX_CONTEXT"
 echo ""
 
 # --- ARC ---
-echo "ARC (Intel Arc ≥12 GB, e.g. A770 16 GB):"
+echo "ARC (Intel Arc â‰¥12 GB, e.g. A770 16 GB):"
 run_tier ARC
 assert_eq "TIER_NAME"    "Intel Arc"                           "$TIER_NAME"
 assert_eq "MODEL_PROFILE_EFFECTIVE" "qwen"                   "$MODEL_PROFILE_EFFECTIVE"

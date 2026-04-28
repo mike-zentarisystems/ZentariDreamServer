@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Phase 11: Start Services
+# Dream Server Installer â€” Phase 11: Start Services
 # ============================================================================
 # Part of: installers/phases/
 # Purpose: Download GGUF model, SDXL Lightning model, generate models.ini, launch
@@ -47,7 +47,7 @@ else
 
     # Cloud mode: skip model downloads, auto-enable litellm
     if [[ "${DREAM_MODE:-local}" == "cloud" ]]; then
-        ai "Cloud mode — skipping model download"
+        ai "Cloud mode â€” skipping model download"
         # Auto-enable litellm extension
         litellm_cf="$INSTALL_DIR/extensions/services/litellm/compose.yaml"
         litellm_disabled="${litellm_cf}.disabled"
@@ -60,7 +60,7 @@ else
     # Ensure model directory exists
     mkdir -p "$INSTALL_DIR/data/models"
 
-    # ── Bootstrap model fast-start ──
+    # â”€â”€ Bootstrap model fast-start â”€â”€
     # For Tier 1+ installs, download a tiny model first so the user can chat
     # immediately. The full model downloads in the background and hot-swaps.
     [[ -f "$SCRIPT_DIR/installers/lib/bootstrap-model.sh" ]] && . "$SCRIPT_DIR/installers/lib/bootstrap-model.sh"
@@ -120,7 +120,7 @@ else
         if [[ ! -f "$GGUF_DIR/$GGUF_FILE" ]]; then
             dream_progress 77 "services" "Downloading AI model"
             ai "Downloading GGUF model: $GGUF_FILE"
-            signal "This is the big one. I've got it — sit back."
+            signal "This is the big one. I've got it â€” sit back."
             echo ""
 
             # Retry loop: up to 3 attempts with resume support (-c flag)
@@ -133,16 +133,16 @@ else
 
                 if spin_task $dl_pid "Downloading $GGUF_FILE"; then
                     mv "$GGUF_DIR/$GGUF_FILE.part" "$GGUF_DIR/$GGUF_FILE"
-                    printf "\r  ${BGRN}✓${NC} %-60s\n" "Model downloaded: $GGUF_FILE"
+                    printf "\r  ${BGRN}âœ“${NC} %-60s\n" "Model downloaded: $GGUF_FILE"
                     _dl_success=true
                     break
                 fi
-                printf "\r  ${AMB}⚠${NC} %-60s\n" "Download attempt $_attempt failed"
+                printf "\r  ${AMB}âš ${NC} %-60s\n" "Download attempt $_attempt failed"
                 sleep 3
             done
 
             if [[ "$_dl_success" != "true" ]]; then
-                printf "\r  ${RED}✗${NC} %-60s\n" "Download failed after 3 attempts: $GGUF_FILE"
+                printf "\r  ${RED}âœ—${NC} %-60s\n" "Download failed after 3 attempts: $GGUF_FILE"
                 ai "Manual retry: curl -fSL -C - -o '$GGUF_DIR/$GGUF_FILE.part' '$GGUF_URL' && mv '$GGUF_DIR/$GGUF_FILE.part' '$GGUF_DIR/$GGUF_FILE'"
             else
                 # Verify freshly downloaded file
@@ -156,7 +156,7 @@ else
                             ai_warn "Could not compute checksum for downloaded file"
                             ai_warn "Proceeding without verification (file may be corrupt)"
                         else
-                            printf "\r  ${RED}✗${NC} %-60s\n" "Downloaded file is corrupt (SHA256 mismatch)"
+                            printf "\r  ${RED}âœ—${NC} %-60s\n" "Downloaded file is corrupt (SHA256 mismatch)"
                             ai "  Expected: $GGUF_SHA256"
                             ai "  Got:      $ACTUAL_HASH"
                             rm -f "$GGUF_DIR/$GGUF_FILE"
@@ -179,12 +179,12 @@ else
         fi
     fi
 
-    # ── SDXL Lightning model download (ComfyUI image generation) ──
+    # â”€â”€ SDXL Lightning model download (ComfyUI image generation) â”€â”€
     dream_progress 79 "services" "Checking image generation models"
     if [[ "$ENABLE_COMFYUI" != "true" ]]; then
-        ai "Image generation disabled — skipping model download"
+        ai "Image generation disabled â€” skipping model download"
     elif [[ "${DREAM_MODE:-local}" == "cloud" ]]; then
-        ai "Cloud mode — skipping image model download"
+        ai "Cloud mode â€” skipping image model download"
     elif [[ "$GPU_BACKEND" == "amd" ]]; then
         COMFYUI_BASE="$INSTALL_DIR/data/comfyui/ComfyUI/models"
     elif [[ "$GPU_BACKEND" == "nvidia" ]]; then
@@ -291,7 +291,7 @@ MODELS_INI_EOF
         ai_ok "All service dependencies satisfied"
     fi
 
-    # ── Compose syntax validation ──────────────────────────────
+    # â”€â”€ Compose syntax validation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     ai "Validating compose stack configuration..."
     if ! $DOCKER_COMPOSE_CMD "${COMPOSE_FLAGS_ARR[@]}" config --quiet 1>/dev/null 2>"$LOG_FILE.compose-check"; then
         ai_bad "Compose configuration is invalid"
@@ -317,15 +317,15 @@ MODELS_INI_EOF
         if ! $DOCKER_CMD image inspect "$_dreamforge_image" &>/dev/null; then
             _build_services+=(dreamforge)
         else
-            log "DreamForge image found locally — skipping source build"
+            log "DreamForge image found locally â€” skipping source build"
         fi
     fi
     [[ "$GPU_BACKEND" == "amd" ]] && _build_services+=(llama-server)
     if [[ "$GPU_BACKEND" == "nvidia" && " ${_build_services[*]} " == *" comfyui "* ]]; then
-        ai "ComfyUI is compiling from source for NVIDIA — this takes 25-40 minutes on first run."
+        ai "ComfyUI is compiling from source for NVIDIA â€” this takes 25-40 minutes on first run."
     fi
     if [[ " ${_build_services[*]} " == *" dreamforge "* ]]; then
-        ai "DreamForge is compiling from Rust source — this takes 15-25 minutes on first run."
+        ai "DreamForge is compiling from Rust source â€” this takes 15-25 minutes on first run."
     fi
     _build_total=${#_build_services[@]}
     for _svc in "${_build_services[@]}"; do
@@ -333,12 +333,12 @@ MODELS_INI_EOF
         $DOCKER_COMPOSE_CMD "${COMPOSE_FLAGS_ARR[@]}" build --no-cache "$_svc" >> "$LOG_FILE" 2>&1 &
         _build_pid=$!
         if ! spin_task $_build_pid "[$_build_count/$_build_total] Building $_svc"; then
-            printf "\r  ${AMB}⚠${NC} %-60s\n" "$_svc build failed (non-critical)"
+            printf "\r  ${AMB}âš ${NC} %-60s\n" "$_svc build failed (non-critical)"
         else
-            printf "\r  ${BGRN}✓${NC} %-60s\n" "$_svc built"
+            printf "\r  ${BGRN}âœ“${NC} %-60s\n" "$_svc built"
         fi
     done
-    # Start everything — --no-build skips services whose images failed to build.
+    # Start everything â€” --no-build skips services whose images failed to build.
     # Up to 3 attempts with increasing wait between retries. On AMD/Lemonade,
     # the first boot builds a cached llama-server binary which can take 3-5 min.
     for _attempt in 1 2 3; do
@@ -349,7 +349,7 @@ MODELS_INI_EOF
             break
         fi
         if [[ $_attempt -lt 3 ]]; then
-            printf "\r  ${AMB}⚠${NC} %-60s\n" "Some services still starting..."
+            printf "\r  ${AMB}âš ${NC} %-60s\n" "Some services still starting..."
             ai_warn "Some containers need more time. Waiting 30s before retry..."
             sleep 30
         fi
@@ -366,18 +366,18 @@ MODELS_INI_EOF
     $DOCKER_CMD start $($DOCKER_CMD ps -a --filter status=created -q) 2>/dev/null || true
 
     if $compose_ok; then
-        printf "\r  ${BGRN}✓${NC} %-60s\n" "All containers launched"
+        printf "\r  ${BGRN}âœ“${NC} %-60s\n" "All containers launched"
         echo ""
         ai_ok "Services started (llama-server)"
     else
-        printf "\r  ${RED}✗${NC} %-60s\n" "Some containers failed to launch"
+        printf "\r  ${RED}âœ—${NC} %-60s\n" "Some containers failed to launch"
         echo ""
         ai_warn "Some services failed. Check: docker compose logs"
         ai_warn "Log file: $LOG_FILE"
     fi
 
-    # ── Bootstrap: launch background full-model download + auto hot-swap ──
-    # Runs regardless of compose_ok — the download only needs disk + network.
+    # â”€â”€ Bootstrap: launch background full-model download + auto hot-swap â”€â”€
+    # Runs regardless of compose_ok â€” the download only needs disk + network.
     # bootstrap-upgrade.sh checks if Docker is running before attempting
     # hot-swap and handles it gracefully if containers aren't ready yet.
     if [[ "$_BOOTSTRAP_ACTIVE" == "true" ]]; then
@@ -407,7 +407,7 @@ MODELS_INI_EOF
     fi
 
     dream_progress 83 "services" "Running extension setup hooks"
-    # ── Run extension setup hooks ──
+    # â”€â”€ Run extension setup hooks â”€â”€
     if [[ -f "$INSTALL_DIR/lib/service-registry.sh" ]]; then
         _HOOK_DIR="$INSTALL_DIR"
         . "$_HOOK_DIR/lib/service-registry.sh"

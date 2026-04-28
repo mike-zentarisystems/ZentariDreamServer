@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euo pipefail
-# repair-perplexica.sh — Re-seed Perplexica config via HTTP API
+# repair-perplexica.sh â€” Re-seed Perplexica config via HTTP API
 # Called by: dream repair perplexica
 # Requires: Perplexica container running, python3 available
 
@@ -24,7 +24,7 @@ for i in $(seq 1 12); do
     [[ $i -lt 12 ]] && sleep 5
 done
 
-# Seed config via API — export vars so Python reads from env (no shell interpolation)
+# Seed config via API â€” export vars so Python reads from env (no shell interpolation)
 export PERPLEXICA_URL LLM_MODEL
 
 curl -sf --max-time 10 "${PERPLEXICA_URL}/api/config" | \

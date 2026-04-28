@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Logging
+# Dream Server Installer â€” Logging
 # ============================================================================
 # Part of: installers/lib/
 # Purpose: Log, success, warn, error helpers and elapsed time

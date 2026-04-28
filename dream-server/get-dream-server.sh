@@ -23,7 +23,7 @@ success() { echo -e "${GREEN}[  ok ]${NC} $1"; }
 warn()    { echo -e "${YELLOW}[warn ]${NC} $1"; }
 error()   { echo -e "${RED}[error]${NC} $1"; exit 1; }
 
-# ── Banner ──────────────────────────────────────
+# â”€â”€ Banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 echo ""
 echo -e "${BOLD}${BLUE}"
 cat << 'BANNER'
@@ -34,10 +34,10 @@ cat << 'BANNER'
 /_____/_/   \___/\__,_/_/ /_/ /_/  /____/\___/_/    |___/\___/_/
 BANNER
 echo -e "${NC}"
-echo -e "${BOLD}  One-line installer — Local AI for Everyone${NC}"
+echo -e "${BOLD}  One-line installer â€” Local AI for Everyone${NC}"
 echo ""
 
-# ── Detect OS ──────────────────────────────────────
+# â”€â”€ Detect OS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 detect_os() {
     if [[ -f /proc/version ]] && grep -qi microsoft /proc/version 2>/dev/null; then
         echo "wsl"
@@ -55,27 +55,27 @@ log "Detected OS: $OS"
 
 case "$OS" in
     linux|wsl)
-        success "Linux/WSL detected — full support"
+        success "Linux/WSL detected â€” full support"
         ;;
     macos)
-        warn "macOS detected — limited GPU support (Apple Silicon MLX coming soon)"
+        warn "macOS detected â€” limited GPU support (Apple Silicon MLX coming soon)"
         ;;
     unknown)
         error "Unsupported OS. Dream Server requires Linux, WSL, or macOS."
         ;;
 esac
 
-# ── Check prerequisites ──────────────────────────────
+# â”€â”€ Check prerequisites â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 log "Checking prerequisites..."
 
-# Docker check (informational — the installer auto-installs Docker if missing)
+# Docker check (informational â€” the installer auto-installs Docker if missing)
 if command -v docker &> /dev/null; then
     success "Docker found: $(docker --version | head -1)"
 else
-    warn "Docker not found — the installer will attempt to install it"
+    warn "Docker not found â€” the installer will attempt to install it"
 fi
 
-# GPU check (early info — real detection happens in the installer)
+# GPU check (early info â€” real detection happens in the installer)
 _gpu_found=false
 for _v in /sys/class/drm/card*/device/vendor; do
     case "$(cat "$_v" 2>/dev/null)" in
@@ -84,13 +84,13 @@ for _v in /sys/class/drm/card*/device/vendor; do
                 _info=$(nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>/dev/null | head -1)
                 [[ -n "$_info" ]] && success "NVIDIA GPU detected: $_info" && _gpu_found=true
             else
-                success "NVIDIA GPU detected (driver not yet installed — installer will handle it)"
+                success "NVIDIA GPU detected (driver not yet installed â€” installer will handle it)"
                 _gpu_found=true
             fi ;;
         0x1002) # AMD
             success "AMD GPU detected"
             _gpu_found=true ;;
-        0x8086) # Intel — only flag if it looks like Arc (discrete)
+        0x8086) # Intel â€” only flag if it looks like Arc (discrete)
             if lspci 2>/dev/null | grep -qi 'VGA.*Intel.*Arc'; then
                 success "Intel Arc GPU detected"
                 _gpu_found=true
@@ -99,7 +99,7 @@ for _v in /sys/class/drm/card*/device/vendor; do
     $_gpu_found && break
 done
 if ! $_gpu_found; then
-    warn "No GPU detected — CPU-only mode will be used (slow but functional)"
+    warn "No GPU detected â€” CPU-only mode will be used (slow but functional)"
 fi
 
 # git
@@ -141,21 +141,21 @@ else
     success "curl installed"
 fi
 
-# docker (the installer auto-installs Docker if missing — don't block here)
+# docker (the installer auto-installs Docker if missing â€” don't block here)
 if command -v docker &> /dev/null; then
     success "docker found: $(docker --version | head -1)"
     if docker compose version &> /dev/null || docker-compose --version &> /dev/null; then
         success "docker compose found"
     else
-        warn "Docker Compose not found — the installer will attempt to set it up"
+        warn "Docker Compose not found â€” the installer will attempt to set it up"
     fi
 else
-    warn "Docker not found — the installer will attempt to install it"
+    warn "Docker not found â€” the installer will attempt to install it"
 fi
 
-# GPU pre-check already done above — real detection happens in the installer
+# GPU pre-check already done above â€” real detection happens in the installer
 
-# ── Check for existing installation ──────────────────
+# â”€â”€ Check for existing installation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if [[ -d "$INSTALL_DIR" ]]; then
     if [[ -f "$INSTALL_DIR/.env" ]]; then
         warn "Dream Server already installed at $INSTALL_DIR"
@@ -179,7 +179,7 @@ if [[ -d "$INSTALL_DIR" ]]; then
     fi
 fi
 
-# ── Clone repository ──────────────────────────────
+# â”€â”€ Clone repository â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 log "Cloning Dream Server..."
 
 # Clone just the dream-server subdirectory using sparse checkout
@@ -234,16 +234,16 @@ fi
 
 success "Cloned to $INSTALL_DIR"
 
-# ── Make scripts executable ──────────────────────────
+# â”€â”€ Make scripts executable â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 chmod +x "$INSTALL_DIR/install.sh" 2>/dev/null || true
 chmod +x "$INSTALL_DIR/dream-cli" 2>/dev/null || true
 chmod +x "$INSTALL_DIR/scripts/"*.sh 2>/dev/null || true
 # Note: tests/ directory excluded from installation
 
-# ── Run installer ──────────────────────────────
+# â”€â”€ Run installer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 echo ""
 log "Launching Dream Server installer..."
-echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${CYAN}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
 echo ""
 
 cd "$INSTALL_DIR"

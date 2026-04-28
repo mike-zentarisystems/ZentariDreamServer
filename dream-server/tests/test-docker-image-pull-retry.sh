@@ -3,7 +3,7 @@
 # Dream Server Docker Image Pull Retry Test Suite
 # ==========================================================================
 # Behavioral tests for pull_with_progress() using a mocked docker command.
-# This avoids grep-based “string presence” tests and validates retry behavior.
+# This avoids grep-based â€œstring presenceâ€ tests and validates retry behavior.
 #
 # Usage: ./dream-server/tests/test-docker-image-pull-retry.sh
 # ==========================================================================
@@ -28,8 +28,8 @@ trap cleanup EXIT
 export LOG_FILE="$TMP_DIR/install.log"
 touch "$LOG_FILE"
 
-print_pass() { echo -e "${GREEN}✓ PASS${NC}"; PASSED=$((PASSED + 1)); }
-print_fail() { echo -e "${RED}✗ FAIL${NC} ${1:-}"; FAILED=$((FAILED + 1)); }
+print_pass() { echo -e "${GREEN}âœ“ PASS${NC}"; PASSED=$((PASSED + 1)); }
+print_fail() { echo -e "${RED}âœ— FAIL${NC} ${1:-}"; FAILED=$((FAILED + 1)); }
 
 run_pull_with_progress() {
   local docker_cmd=$1
@@ -60,13 +60,13 @@ run_pull_with_progress() {
 }
 
 echo ""
-echo "╔═══════════════════════════════════════════╗"
-echo "║   Docker Image Pull Retry Test Suite     ║"
-echo "╚═══════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘   Docker Image Pull Retry Test Suite     â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
 echo "1. Behavioral Tests (mocked docker)"
-echo "──────────────────────────────────"
+echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 
 # --------------------------------------------------------------------------
 # Mock docker scripts
@@ -162,7 +162,7 @@ fi
 
 echo ""
 echo "2. Integration Tests"
-echo "────────────────────"
+echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 
 printf "  %-60s " "Phase 08 calls pull_with_progress..."
 if grep -q "pull_with_progress" "$ROOT_DIR/installers/phases/08-images.sh"; then
@@ -187,7 +187,7 @@ fi
 
 echo ""
 echo "3. Retry Strategy Tests (source-level sanity checks)"
-echo "────────────────────────────────────────────────────"
+echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 
 printf "  %-60s " "max_attempts is 3..."
 retry_count=$(grep -A 15 "^pull_with_progress()" "$ROOT_DIR/installers/lib/ui.sh" | grep -m1 "max_attempts=" | grep -oE '[0-9]+' || true)
@@ -206,13 +206,13 @@ else
 fi
 
 echo ""
-echo "═══════════════════════════════════════════"
+echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 if [[ $FAILED -eq 0 ]]; then
-  echo -e "${GREEN}✓ All tests passed${NC} ($PASSED/$((PASSED + FAILED)))"
+  echo -e "${GREEN}âœ“ All tests passed${NC} ($PASSED/$((PASSED + FAILED)))"
   echo ""
   exit 0
 else
-  echo -e "${RED}✗ Some tests failed${NC} ($PASSED passed, $FAILED failed)"
+  echo -e "${RED}âœ— Some tests failed${NC} ($PASSED passed, $FAILED failed)"
   echo ""
   exit 1
 fi

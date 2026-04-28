@@ -1,0 +1,69 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'dreamserver'
+
+alerting:
+  alertmanagers: []
+
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+scrape_configs:
+  - job_name: 'dream-dashboard-api'
+    static_configs:
+      - targets: ['dashboard-api:3002']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'dream-llama-server'
+    static_configs:
+      - targets: ['llama-server:8080']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'dream-litellm'
+    static_configs:
+      - targets: ['litellm:4000']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'dream-hermes-agent'
+    static_configs:
+      - targets: ['hermes-agent:8642']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'dream-n8n'
+    static_configs:
+      - targets: ['n8n:5678']
+    metrics_path: '/metrics'
+    scrape_interval: 30s
+
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['host.docker.internal:9100']
+    scrape_interval: 15s
+
+  - job_name: 'uptime-kuma'
+    static_configs:
+      - targets: ['uptime-kuma:3001']
+    metrics_path: /metrics
+    scrape_interval: 60s
+
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3007']
+    metrics_path: '/metrics'
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 60s

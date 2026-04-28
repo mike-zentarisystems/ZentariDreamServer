@@ -41,25 +41,25 @@ echo "    Assistant: $ANSWER2"
 # Validate context preservation
 PASS=0
 if echo "$ANSWER2" | grep -qi "alice"; then
-  echo "  ✅ Name recalled correctly"
+  echo "  âœ… Name recalled correctly"
   PASS=$((PASS+1))
 else
-  echo "  ❌ Name NOT recalled"
+  echo "  âŒ Name NOT recalled"
 fi
 
 if echo "$ANSWER2" | grep -qi "boston"; then
-  echo "  ✅ Location recalled correctly"
+  echo "  âœ… Location recalled correctly"
   PASS=$((PASS+1))
 else
-  echo "  ❌ Location NOT recalled"
+  echo "  âŒ Location NOT recalled"
 fi
 
 if [ $PASS -eq 2 ]; then
   echo ""
-  echo "✅ PASS: Multi-turn context preserved (2/2 facts recalled)"
+  echo "âœ… PASS: Multi-turn context preserved (2/2 facts recalled)"
   exit 0
 else
   echo ""
-  echo "❌ FAIL: Context lost ($PASS/2 facts recalled)"
+  echo "âŒ FAIL: Context lost ($PASS/2 facts recalled)"
   exit 1
 fi

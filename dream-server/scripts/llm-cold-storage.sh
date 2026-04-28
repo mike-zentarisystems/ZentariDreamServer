@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# llm-cold-storage.sh — Archive idle HuggingFace models to cold storage
+# llm-cold-storage.sh â€” Archive idle HuggingFace models to cold storage
 #
 # Part of Dream Server tooling.
 #

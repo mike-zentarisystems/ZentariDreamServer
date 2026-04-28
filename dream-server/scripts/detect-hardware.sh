@@ -228,9 +228,9 @@ detect_amd_sysfs() {
                 if [[ -d "$hwmon_dir" ]]; then
                     local raw_temp raw_power
                     raw_temp=$(cat "$hwmon_dir/temp1_input" 2>/dev/null) || raw_temp=0
-                    temp=$(( raw_temp / 1000 ))  # millidegrees → C
+                    temp=$(( raw_temp / 1000 ))  # millidegrees â†’ C
                     raw_power=$(cat "$hwmon_dir/power1_average" 2>/dev/null) || raw_power=0
-                    power=$(( raw_power / 1000000 ))  # microwatts → W
+                    power=$(( raw_power / 1000000 ))  # microwatts â†’ W
                     break
                 fi
             done
@@ -572,7 +572,7 @@ main() {
     fi
 
     # Determine tier
-    # For unified memory AMD APUs, use system RAM — VRAM reports only carve-out, not usable UMA.
+    # For unified memory AMD APUs, use system RAM â€” VRAM reports only carve-out, not usable UMA.
     local tier tier_desc recommended_model
     if [[ "$memory_type" == "unified" && "$gpu_type" == "amd" ]]; then
         tier=$(get_strix_halo_tier "$ram")
@@ -633,9 +633,9 @@ EOF
             printf '%s\n' "$payload"
         fi
     else
-        echo -e "${BLUE}╔══════════════════════════════════════════╗${NC}"
-        echo -e "${BLUE}║      Dream Server Hardware Detection     ║${NC}"
-        echo -e "${BLUE}╚══════════════════════════════════════════╝${NC}"
+        echo -e "${BLUE}â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—${NC}"
+        echo -e "${BLUE}â•‘      Dream Server Hardware Detection     â•‘${NC}"
+        echo -e "${BLUE}â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
         echo ""
         echo -e "${GREEN}System:${NC}"
         echo "  OS:       $os"

@@ -1,0 +1,34 @@
+schema_version: dream.services.v1
+
+compatibility:
+  dream_min: "2.0.0"
+
+service:
+  id: vaultwarden
+  name: Vaultwarden (Password Manager)
+  container_name: dream-vaultwarden
+  host_env: VAULTWARDEN_HOST
+  default_host: vaultwarden
+  port: 80
+  external_port_env: VAULTWARDEN_PORT
+  external_port_default: 8222
+  health: /alive
+  ui_path: /
+  type: docker
+  gpu_backends: [cpu, none]
+  compose_file: compose.yaml
+  category: optional
+  depends_on: []
+  env_vars:
+    - key: VAULTWARDEN_ADMIN_TOKEN
+      required: true
+      secret: true
+      description: Admin panel token for Vaultwarden (generate with argon2 or random string)
+    - key: VAULTWARDEN_PORT
+      required: false
+      secret: false
+      description: External port for Vaultwarden UI (default 8222)
+    - key: VAULTWARDEN_SIGNUPS_ALLOWED
+      required: false
+      secret: false
+      description: Allow new user signups (true/false, default false)

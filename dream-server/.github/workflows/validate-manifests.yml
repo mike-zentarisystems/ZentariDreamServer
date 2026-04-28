@@ -1,0 +1,67 @@
+name: Validate Extension Manifests
+
+on:
+  push:
+    paths:
+      - 'dream-server/extensions/**'
+  pull_request:
+    paths:
+      - 'dream-server/extensions/**'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate manifests and compose files
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install yq
+        uses: mikefarah/yq@v4.44.1
+
+      - name: Validate manifest schema fields
+        run: |
+          failed=0
+          for manifest in dream-server/extensions/services/*/manifest.yaml; do
+            service=$(basename $(dirname "$manifest"))
+            echo -n "Validating ${service}... "
+
+            for field in "service.id" "service.name" "service.port" "service.health" "service.type" "service.gpu_backends"; do
+              value=$(yq ".$field" "$manifest")
+              if [ "$value" = "null" ] || [ -z "$value" ]; then
+                echo "Missing required field: ${field}"
+                failed=$((failed + 1))
+              fi
+            done
+
+            schema=$(yq '.schema_version' "$manifest")
+            if [ "$schema" != "dream.services.v1" ]; then
+              echo "Invalid schema_version: ${schema}"
+              failed=$((failed + 1))
+            fi
+
+            echo "OK"
+          done
+
+          [ $failed -eq 0 ] || exit 1
+
+      - name: Validate compose files
+        run: |
+          docker compose version
+          failed=0
+          for compose in dream-server/extensions/services/*/compose.yaml; do
+            service=$(basename $(dirname "$compose"))
+            echo -n "Validating compose for ${service}... "
+            if docker compose -f "$compose" config --quiet 2>/dev/null; then
+              echo "OK"
+            else
+              echo "Invalid compose"
+              failed=$((failed + 1))
+            fi
+          done
+          [ $failed -eq 0 ] || exit 1

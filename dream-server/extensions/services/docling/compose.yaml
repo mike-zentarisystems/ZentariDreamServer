@@ -1,0 +1,37 @@
+services:
+  docling:
+    image: ds4sd/docling-serve:latest
+    container_name: dream-docling
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - DOCLING_SERVE_PORT=5001
+      - DOCLING_SERVE_HOST=0.0.0.0
+      - DOCLING_SERVE_ENABLE_GPU=${DOCLING_USE_GPU:-false}
+    volumes:
+      - docling-cache:/root/.cache/docling
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${DOCLING_PORT:-5001}:5001"
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:5001/health || exit 1"]
+      interval: 30s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  docling-cache:

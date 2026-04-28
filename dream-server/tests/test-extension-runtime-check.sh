@@ -23,14 +23,14 @@ PASSED=0
 FAILED=0
 SKIPPED=0
 
-pass() { echo -e "  ${GREEN}✓ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
-fail() { echo -e "  ${RED}✗ FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
-skip() { echo -e "  ${YELLOW}⊘ SKIP${NC} $1"; SKIPPED=$((SKIPPED + 1)); }
+pass() { echo -e "  ${GREEN}âœ“ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
+fail() { echo -e "  ${RED}âœ— FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
+skip() { echo -e "  ${YELLOW}âŠ˜ SKIP${NC} $1"; SKIPPED=$((SKIPPED + 1)); }
 
 echo ""
-echo "╔═══════════════════════════════════════════════════╗"
-echo "║   extension-runtime-check.sh Test Suite          ║"
-echo "╚═══════════════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘   extension-runtime-check.sh Test Suite          â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
 if [[ ! -f "$CHK" ]]; then
@@ -51,7 +51,7 @@ code=$?
 set -e
 
 if [[ $code -ne 0 ]]; then
-    fail "default run exited $code (expected 0 — non-blocking)"
+    fail "default run exited $code (expected 0 â€” non-blocking)"
     echo "$out" | head -20
 else
     pass "default run exits 0"
@@ -65,13 +65,13 @@ fi
 
 if docker info >/dev/null 2>&1; then
     if echo "$out" | grep -qE '\[OK\]|\[BAD\]|\[INFO\]'; then
-        pass "docker available — check lines present"
+        pass "docker available â€” check lines present"
     else
         skip "docker up but no OK/BAD/INFO lines (minimal stack is OK)"
     fi
 else
     if echo "$out" | grep -qi docker; then
-        pass "docker unavailable — script explains skip"
+        pass "docker unavailable â€” script explains skip"
     else
         fail "docker unavailable but output did not mention docker"
     fi

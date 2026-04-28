@@ -1,0 +1,31 @@
+schema_version: dream.services.v1
+
+compatibility:
+  dream_min: "2.0.0"
+
+service:
+  id: hermes-agent
+  name: Hermes Agent (Nous Research)
+  aliases: []
+  container_name: dream-hermes-agent
+  host_env: HERMES_HOST
+  default_host: hermes-agent
+  port: 8642
+  external_port_env: HERMES_PORT
+  external_port_default: 8642
+  health: /health
+  ui_path: /
+  type: docker
+  gpu_backends: [all]
+  compose_file: compose.yaml
+  category: optional
+  depends_on: [llama-server, searxng]
+  env_vars:
+    - key: HERMES_API_KEY
+      required: true
+      secret: true
+      description: Bearer token for Hermes Agent API server
+    - key: HERMES_PORT
+      required: false
+      secret: false
+      description: External port for Hermes Agent API (default 8642)

@@ -33,7 +33,7 @@ fi
 # Ensure SERVICE_PORTS is declared even if service-registry.sh was not sourced
 declare -A SERVICE_PORTS 2>/dev/null || true
 
-# Service endpoints — resolved from registry
+# Service endpoints â€” resolved from registry
 LLM_URL="${LLM_URL:-http://localhost:${SERVICE_PORTS[llama-server]:-11434}}"
 WHISPER_URL="${WHISPER_URL:-http://localhost:${SERVICE_PORTS[whisper]:-9000}}"
 TTS_URL="${TTS_URL:-http://localhost:${SERVICE_PORTS[tts]:-8880}}"
@@ -44,20 +44,20 @@ TESTS_PASSED=0
 TESTS_FAILED=0
 
 pass() {
-    echo -e "${GREEN}✓${NC} $1"
-    # Arithmetic expansion (not `((...))`) — the compound form returns
+    echo -e "${GREEN}âœ“${NC} $1"
+    # Arithmetic expansion (not `((...))`) â€” the compound form returns
     # exit 1 when the pre-increment value is 0, which would trip `set -e`
     # on the first pass/fail and abort the script before any summary.
     TESTS_PASSED=$((TESTS_PASSED + 1))
 }
 
 fail() {
-    echo -e "${RED}✗${NC} $1"
+    echo -e "${RED}âœ—${NC} $1"
     TESTS_FAILED=$((TESTS_FAILED + 1))
 }
 
 warn() {
-    echo -e "${YELLOW}⚠${NC} $1"
+    echo -e "${YELLOW}âš ${NC} $1"
 }
 
 # Test 1: LLM generates coherent text
@@ -287,9 +287,9 @@ echo "  Results: $TESTS_PASSED passed, $TESTS_FAILED failed"
 echo "========================================"
 
 if [[ $TESTS_FAILED -eq 0 ]]; then
-    echo -e "${GREEN}✓ All functional tests passed${NC}"
+    echo -e "${GREEN}âœ“ All functional tests passed${NC}"
     exit 0
 else
-    echo -e "${RED}✗ Some functional tests failed${NC}"
+    echo -e "${RED}âœ— Some functional tests failed${NC}"
     exit 1
 fi

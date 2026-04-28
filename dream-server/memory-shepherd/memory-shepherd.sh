@@ -1,5 +1,5 @@
 #!/bin/bash
-# memory-shepherd.sh — Periodic memory baseline reset for LLM agents
+# memory-shepherd.sh â€” Periodic memory baseline reset for LLM agents
 # Usage: memory-shepherd.sh [agent-name|all]
 set -uo pipefail
 
@@ -7,11 +7,11 @@ TIMESTAMP=$(date '+%Y-%m-%d_%H%M')
 LOCKFILE=/tmp/memory-shepherd.lock
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# ── Logging ────────────────────────────────────────────────────────────
+# â”€â”€ Logging â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] [memory-shepherd] $1"; }
 
-# ── Lock Management ────────────────────────────────────────────────────
+# â”€â”€ Lock Management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 cleanup_lock() { rm -f "$LOCKFILE"; }
 trap cleanup_lock EXIT
@@ -19,16 +19,16 @@ trap cleanup_lock EXIT
 if [ -f "$LOCKFILE" ]; then
     lock_age=$(( $(date +%s) - $(stat -c %Y "$LOCKFILE") ))
     if [ "$lock_age" -gt 120 ]; then
-        log "WARN: Stale lock (age: ${lock_age}s) — removing"
+        log "WARN: Stale lock (age: ${lock_age}s) â€” removing"
         rm -f "$LOCKFILE"
     else
-        log "Another reset running (lock age: ${lock_age}s) — exiting"
+        log "Another reset running (lock age: ${lock_age}s) â€” exiting"
         exit 0
     fi
 fi
 echo $$ > "$LOCKFILE"
 
-# ── Config Parser ──────────────────────────────────────────────────────
+# â”€â”€ Config Parser â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 declare -A CONFIG
 AGENTS=()
@@ -75,7 +75,7 @@ cfg() {
     echo "${CONFIG[$key]:-$default}"
 }
 
-# ── Load Config ────────────────────────────────────────────────────────
+# â”€â”€ Load Config â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 CONF_FILE=$(find_config) || {
     echo "ERROR: No config file found." >&2
@@ -86,7 +86,7 @@ CONF_FILE=$(find_config) || {
 parse_config "$CONF_FILE"
 log "Loaded config from $CONF_FILE (${#AGENTS[@]} agents)"
 
-# ── Global Settings ────────────────────────────────────────────────────
+# â”€â”€ Global Settings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 BASELINE_DIR=$(cfg general baseline_dir "$SCRIPT_DIR/baselines")
 ARCHIVE_DIR=$(cfg general archive_dir "$SCRIPT_DIR/archives")
@@ -99,7 +99,7 @@ MIN_BASELINE_SIZE=$(cfg general min_baseline_size 500)
 [[ "$BASELINE_DIR" != /* ]] && BASELINE_DIR="$SCRIPT_DIR/$BASELINE_DIR"
 [[ "$ARCHIVE_DIR" != /* ]] && ARCHIVE_DIR="$SCRIPT_DIR/$ARCHIVE_DIR"
 
-# ── Reset Functions ────────────────────────────────────────────────────
+# â”€â”€ Reset Functions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 reset_agent() {
     local agent="$1"
@@ -108,19 +108,19 @@ reset_agent() {
     local archive_dir="$4"
 
     if [ ! -f "$baseline" ]; then
-        log "CRITICAL: Baseline missing for $agent at $baseline — aborting"
+        log "CRITICAL: Baseline missing for $agent at $baseline â€” aborting"
         return 1
     fi
 
     local baseline_size
     baseline_size=$(stat -c %s "$baseline")
     if [ "$baseline_size" -lt "$MIN_BASELINE_SIZE" ]; then
-        log "CRITICAL: Baseline for $agent is suspiciously small (${baseline_size} bytes, min: ${MIN_BASELINE_SIZE}) — aborting"
+        log "CRITICAL: Baseline for $agent is suspiciously small (${baseline_size} bytes, min: ${MIN_BASELINE_SIZE}) â€” aborting"
         return 1
     fi
 
     if [ ! -f "$memory_file" ]; then
-        log "WARN: No memory file for $agent — creating from baseline"
+        log "WARN: No memory file for $agent â€” creating from baseline"
         cp "$baseline" "$memory_file"
         return 0
     fi
@@ -128,7 +128,7 @@ reset_agent() {
     local memory_size
     memory_size=$(stat -c %s "$memory_file")
     if [ "$memory_size" -gt "$MAX_MEMORY_SIZE" ]; then
-        log "WARN: Memory file for $agent is ${memory_size} bytes (over limit) — forcing reset"
+        log "WARN: Memory file for $agent is ${memory_size} bytes (over limit) â€” forcing reset"
     fi
 
     local separator_line
@@ -143,7 +143,7 @@ reset_agent() {
             if [ -n "$scratch" ]; then
                 mkdir -p "$archive_dir"
                 local archive_file="$archive_dir/${TIMESTAMP}.md"
-                printf "# %s scratch notes — archived %s\n\n%s\n" "$agent" "$TIMESTAMP" "$scratch" > "$archive_file"
+                printf "# %s scratch notes â€” archived %s\n\n%s\n" "$agent" "$TIMESTAMP" "$scratch" > "$archive_file"
                 log "Archived scratch notes for $agent ($(echo "$scratch" | wc -l) lines)"
             else
                 log "No scratch notes for $agent"
@@ -154,7 +154,7 @@ reset_agent() {
     else
         mkdir -p "$archive_dir"
         cp "$memory_file" "$archive_dir/${TIMESTAMP}-full-backup.md"
-        log "WARN: No separator in $agent memory — backed up entire file before reset"
+        log "WARN: No separator in $agent memory â€” backed up entire file before reset"
     fi
 
     local tmpfile="${memory_file}.reset-tmp"
@@ -172,21 +172,21 @@ reset_remote_agent() {
     local archive_dir="$6"
 
     if [ ! -f "$baseline" ]; then
-        log "CRITICAL: Baseline missing for $agent at $baseline — aborting"
+        log "CRITICAL: Baseline missing for $agent at $baseline â€” aborting"
         return 1
     fi
 
     local baseline_size
     baseline_size=$(stat -c %s "$baseline")
     if [ "$baseline_size" -lt "$MIN_BASELINE_SIZE" ]; then
-        log "CRITICAL: Baseline for $agent is suspiciously small (${baseline_size} bytes, min: ${MIN_BASELINE_SIZE}) — aborting"
+        log "CRITICAL: Baseline for $agent is suspiciously small (${baseline_size} bytes, min: ${MIN_BASELINE_SIZE}) â€” aborting"
         return 1
     fi
 
     # Fetch current memory from remote
     local tmpfile="/tmp/memory-shepherd-${agent}-current.md"
     if ! scp -q "${remote_user}@${remote_host}:${remote_memory}" "$tmpfile" 2>/dev/null; then
-        log "WARN: No memory file for $agent on $remote_host — pushing baseline"
+        log "WARN: No memory file for $agent on $remote_host â€” pushing baseline"
         scp -q "$baseline" "${remote_user}@${remote_host}:${remote_memory}"
         return 0
     fi
@@ -194,7 +194,7 @@ reset_remote_agent() {
     local memory_size
     memory_size=$(stat -c %s "$tmpfile")
     if [ "$memory_size" -gt "$MAX_MEMORY_SIZE" ]; then
-        log "WARN: Memory file for $agent is ${memory_size} bytes (over limit) — forcing reset"
+        log "WARN: Memory file for $agent is ${memory_size} bytes (over limit) â€” forcing reset"
     fi
 
     # Extract and archive scratch notes locally
@@ -210,7 +210,7 @@ reset_remote_agent() {
             if [ -n "$scratch" ]; then
                 mkdir -p "$archive_dir"
                 local archive_file="$archive_dir/${TIMESTAMP}.md"
-                printf "# %s scratch notes — archived %s\n\n%s\n" "$agent" "$TIMESTAMP" "$scratch" > "$archive_file"
+                printf "# %s scratch notes â€” archived %s\n\n%s\n" "$agent" "$TIMESTAMP" "$scratch" > "$archive_file"
                 log "Archived scratch notes for $agent ($(echo "$scratch" | wc -l) lines)"
             else
                 log "No scratch notes for $agent"
@@ -221,7 +221,7 @@ reset_remote_agent() {
     else
         mkdir -p "$archive_dir"
         cp "$tmpfile" "$archive_dir/${TIMESTAMP}-full-backup.md"
-        log "WARN: No separator in $agent memory — backed up entire file before reset"
+        log "WARN: No separator in $agent memory â€” backed up entire file before reset"
     fi
 
     # Push baseline to remote
@@ -230,7 +230,7 @@ reset_remote_agent() {
     rm -f "$tmpfile"
 }
 
-# ── Dispatch ───────────────────────────────────────────────────────────
+# â”€â”€ Dispatch â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 process_agent() {
     local agent="$1"
@@ -244,7 +244,7 @@ process_agent() {
     local archive_path="$ARCHIVE_DIR/$archive_subdir"
 
     if [ -z "$baseline_name" ]; then
-        log "ERROR: No baseline defined for agent '$agent' — skipping"
+        log "ERROR: No baseline defined for agent '$agent' â€” skipping"
         return 1
     fi
 
@@ -259,14 +259,14 @@ process_agent() {
         remote_memory=$(cfg "$agent" remote_memory "")
 
         if [ -z "$remote_memory" ]; then
-            log "ERROR: remote_host set for '$agent' but no remote_memory — skipping"
+            log "ERROR: remote_host set for '$agent' but no remote_memory â€” skipping"
             return 1
         fi
 
         reset_remote_agent "$agent" "$remote_host" "$remote_user" "$remote_memory" "$baseline_path" "$archive_path"
     else
         if [ -z "$memory_file" ]; then
-            log "ERROR: No memory_file defined for agent '$agent' — skipping"
+            log "ERROR: No memory_file defined for agent '$agent' â€” skipping"
             return 1
         fi
 
@@ -274,7 +274,7 @@ process_agent() {
     fi
 }
 
-# ── Main ───────────────────────────────────────────────────────────────
+# â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 TARGET="${1:-all}"
 
@@ -306,7 +306,7 @@ else
     process_agent "$TARGET"
 fi
 
-# ── Cleanup ────────────────────────────────────────────────────────────
+# â”€â”€ Cleanup â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 # Purge old archives
 find "$ARCHIVE_DIR" -name "*.md" -mtime +"$ARCHIVE_RETENTION_DAYS" -delete 2>/dev/null || true

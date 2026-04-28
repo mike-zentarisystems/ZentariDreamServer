@@ -21,17 +21,17 @@ FAILED=0
 
 # Test helpers
 pass() {
-    echo -e "${GREEN}✓${NC} $1"
+    echo -e "${GREEN}âœ“${NC} $1"
     ((PASSED++))
 }
 
 fail() {
-    echo -e "${RED}✗${NC} $1"
+    echo -e "${RED}âœ—${NC} $1"
     ((FAILED++))
 }
 
 info() {
-    echo -e "${BLUE}ℹ${NC} $1"
+    echo -e "${BLUE}â„¹${NC} $1"
 }
 
 # Test 1: Verify cache variables are initialized
@@ -198,7 +198,7 @@ test_syntax() {
 
 # Run all tests
 echo ""
-echo -e "${BLUE}━━━ Service Registry Cache Tests ━━━${NC}"
+echo -e "${BLUE}â”â”â” Service Registry Cache Tests â”â”â”${NC}"
 echo ""
 
 test_cache_vars_initialized
@@ -219,7 +219,7 @@ test_syntax
 
 # Summary
 echo ""
-echo -e "${BLUE}━━━ Test Summary ━━━${NC}"
+echo -e "${BLUE}â”â”â” Test Summary â”â”â”${NC}"
 echo ""
 echo -e "  ${GREEN}Passed:${NC} $PASSED"
 if [[ $FAILED -gt 0 ]]; then
@@ -228,9 +228,9 @@ fi
 echo ""
 
 if [[ $FAILED -eq 0 ]]; then
-    echo -e "${GREEN}✓ All tests passed${NC}"
+    echo -e "${GREEN}âœ“ All tests passed${NC}"
     exit 0
 else
-    echo -e "${RED}✗ Some tests failed${NC}"
+    echo -e "${RED}âœ— Some tests failed${NC}"
     exit 1
 fi

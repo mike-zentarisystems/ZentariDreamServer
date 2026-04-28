@@ -1,9 +1,9 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Phase 02: System Detection
+# Dream Server Installer â€” Phase 02: System Detection
 # ============================================================================
 # Part of: installers/phases/
-# Purpose: Orchestrate hardware detection → tier assignment → compose config
+# Purpose: Orchestrate hardware detection â†’ tier assignment â†’ compose config
 #
 # Expects: SCRIPT_DIR, LOG_FILE, TIER, GPU_BACKEND, GPU_VRAM, GPU_COUNT,
 #           INTERACTIVE, DRY_RUN, CAP_PROFILE_LOADED, detect_gpu(),
@@ -16,7 +16,6 @@
 #           TIER, TIER_NAME, LLM_MODEL, GGUF_FILE, GGUF_URL, MAX_CONTEXT,
 #           COMPOSE_FILE, COMPOSE_FLAGS, RAM_GB, DISK_AVAIL, BACKEND_ID,
 #           LLM_HEALTHCHECK_URL, LLM_PUBLIC_API_PORT,
-#           OPENCLAW_PROVIDER_NAME_DEFAULT, OPENCLAW_PROVIDER_URL_DEFAULT,
 #           GPU_TOPOLOGY_JSON, GPU_HAS_NVLINK, GPU_TOTAL_VRAM,
 #           LLM_MODEL_SIZE_MB
 #
@@ -29,7 +28,7 @@ chapter "SYSTEM DETECTION"
 
 # Cloud mode: skip GPU detection entirely
 if [[ "${DREAM_MODE:-local}" == "cloud" ]]; then
-    ai "Cloud mode — skipping GPU detection"
+    ai "Cloud mode â€” skipping GPU detection"
     GPU_BACKEND="cpu"
     GPU_NAME="Cloud (no local GPU)"
     GPU_VRAM=0
@@ -90,11 +89,11 @@ if grep -qi microsoft /proc/version 2>/dev/null; then
         RAM_GB=$((RAM_KB / 1024 / 1024))
         _wsl_vm_kb=$(grep MemTotal /proc/meminfo | awk '{print $2}')
         _wsl_vm_gb=$((_wsl_vm_kb / 1024 / 1024))
-        log "WSL2 detected — Windows host RAM: ${RAM_GB}GB (WSL2 VM sees: ${_wsl_vm_gb}GB)"
+        log "WSL2 detected â€” Windows host RAM: ${RAM_GB}GB (WSL2 VM sees: ${_wsl_vm_gb}GB)"
     else
         RAM_KB=$(grep MemTotal /proc/meminfo | awk '{print $2}')
         RAM_GB=$((RAM_KB / 1024 / 1024))
-        log "WSL2 detected — could not query Windows host RAM (VM sees: ${RAM_GB}GB)"
+        log "WSL2 detected â€” could not query Windows host RAM (VM sees: ${RAM_GB}GB)"
         log "For correct tier selection: use --tier N or configure .wslconfig"
     fi
 else
@@ -140,7 +139,7 @@ OPENCLAW_PROVIDER_URL_DEFAULT="${BACKEND_PROVIDER_URL:-http://llama-server:8080/
 # Secure Boot + NVIDIA auto-fix
 #-----------------------------------------------------------------------------
 # If detect_gpu found no working GPU, check if it's a fixable driver/Secure Boot issue
-# (Only for NVIDIA — AMD APU is handled above)
+# (Only for NVIDIA â€” AMD APU is handled above)
 if [[ $GPU_COUNT -eq 0 && "$GPU_BACKEND" != "amd" ]] && ! $DRY_RUN; then
     fix_nvidia_secure_boot || true
 fi
@@ -189,7 +188,7 @@ if [[ $GPU_COUNT -gt 0 && "$GPU_BACKEND" == "nvidia" ]]; then
             ai_ok "NVIDIA driver $DRIVER_VERSION (>= $MIN_DRIVER_VERSION required)"
         fi
     else
-        ai_warn "Could not determine driver version — continuing anyway"
+        ai_warn "Could not determine driver version â€” continuing anyway"
     fi
 fi
 
@@ -198,7 +197,7 @@ fi
 #-----------------------------------------------------------------------------
 if [[ $GPU_COUNT -gt 0 && "$GPU_BACKEND" == "intel" ]]; then
 
-    # 1. Cross-validate with lspci — confirm the Arc card is visible to the PCI bus
+    # 1. Cross-validate with lspci â€” confirm the Arc card is visible to the PCI bus
     #    detect_gpu() already confirmed it via sysfs; this adds a human-readable log line.
     _arc_pci_name=""
     if command -v lspci &>/dev/null; then
@@ -217,19 +216,19 @@ if [[ $GPU_COUNT -gt 0 && "$GPU_BACKEND" == "intel" ]]; then
                 | head -1 \
                 | sed 's/.*: //')
             [[ -n "$_arc_pci_name" ]] && ai_ok "lspci: $_arc_pci_name (Intel GPU)" \
-                || ai_warn "lspci: Intel Arc sysfs entry found but lspci VGA entry not visible — IOMMU or PCIe bridge may obscure it"
+                || ai_warn "lspci: Intel Arc sysfs entry found but lspci VGA entry not visible â€” IOMMU or PCIe bridge may obscure it"
         fi
     else
         ai_warn "lspci not found (install pciutils for richer GPU info); sysfs detection succeeded"
     fi
 
-    # 2. Check Level Zero runtime — required for SYCL inference
+    # 2. Check Level Zero runtime â€” required for SYCL inference
     #    level-zero-loader provides /usr/lib/libze_loader.so.1 or the ze_info binary.
     _level_zero_ok=false
     if command -v ze_info &>/dev/null; then
         _level_zero_ok=true
         _ze_version=$(ze_info 2>/dev/null | grep -i 'driver version\|Driver Version' | head -1 | xargs || true)
-        ai_ok "Level Zero: available${_ze_version:+ — $_ze_version}"
+        ai_ok "Level Zero: available${_ze_version:+ â€” $_ze_version}"
     elif ldconfig -p 2>/dev/null | grep -q 'libze_loader'; then
         _level_zero_ok=true
         ai_ok "Level Zero: libze_loader found"
@@ -245,21 +244,21 @@ if [[ $GPU_COUNT -gt 0 && "$GPU_BACKEND" == "intel" ]]; then
         ai "  Without it, llama-server will fall back to CPU-only mode inside the container."
     fi
 
-    # 3. Check /dev/dri — device node needed for Docker passthrough
+    # 3. Check /dev/dri â€” device node needed for Docker passthrough
     if [[ -c /dev/dri/renderD128 || -d /dev/dri ]]; then
         _render_node=$(ls /dev/dri/renderD* 2>/dev/null | head -1 || true)
         ai_ok "/dev/dri: ${_render_node:-/dev/dri present} (GPU device pass-through available)"
     else
-        ai_warn "/dev/dri not found — Docker GPU device pass-through may fail."
+        ai_warn "/dev/dri not found â€” Docker GPU device pass-through may fail."
         ai "  Ensure the Intel i915/xe kernel module is loaded: modprobe i915"
     fi
 
-    # 4. Check intel_gpu_top (from intel-gpu-tools) — non-fatal, used for monitoring
+    # 4. Check intel_gpu_top (from intel-gpu-tools) â€” non-fatal, used for monitoring
     if command -v intel_gpu_top &>/dev/null; then
         _igt_ver=$(intel_gpu_top --version 2>/dev/null | head -1 || true)
         ai_ok "intel_gpu_top: available${_igt_ver:+ ($_igt_ver)}"
     else
-        log "intel_gpu_top not found (optional — used for GPU utilisation monitoring)"
+        log "intel_gpu_top not found (optional â€” used for GPU utilisation monitoring)"
         log "  Install: sudo apt install intel-gpu-tools"
     fi
 
@@ -298,7 +297,7 @@ if [[ $GPU_COUNT -gt 1 && "$GPU_BACKEND" == "nvidia" ]]; then
         
         # Run topology detection and capture JSON output
         GPU_TOPOLOGY_JSON=$(detect_nvidia_topo 2>>"$LOG_FILE") || {
-            warn "Multi-GPU topology detection failed — multi-GPU configuration disabled"
+            warn "Multi-GPU topology detection failed â€” multi-GPU configuration disabled"
             ai_warn "Could not detect GPU topology. Multi-GPU features will be skipped."
             ai_warn "Check $LOG_FILE for details. You can re-run the installer after fixing the issue."
             GPU_TOPOLOGY_JSON="{}"
@@ -325,10 +324,10 @@ if [[ -z "$TIER" ]]; then
     if [[ -n "$PROFILE_TIER" ]]; then
         TIER="$PROFILE_TIER"
     elif [[ "$GPU_BACKEND" == "intel" ]]; then
-        # Intel Arc discrete GPU — SYCL backend via llama.cpp
-        # A770 = 16 GB  → ARC  (≥12 GB)
-        # A750 =  8 GB  → ARC_LITE
-        # A380 =  6 GB  → ARC_LITE
+        # Intel Arc discrete GPU â€” SYCL backend via llama.cpp
+        # A770 = 16 GB  â†’ ARC  (â‰¥12 GB)
+        # A750 =  8 GB  â†’ ARC_LITE
+        # A380 =  6 GB  â†’ ARC_LITE
         arc_vram_gb=$((GPU_VRAM / 1024))
         if [[ $arc_vram_gb -ge 12 ]]; then
             TIER="ARC"
@@ -344,7 +343,7 @@ if [[ -z "$TIER" ]]; then
             TIER="SH_COMPACT"
         fi
     elif [[ "$GPU_BACKEND" == "nvidia" && "$GPU_MEMORY_TYPE" == "unified" ]]; then
-        # NVIDIA Grace Blackwell (GB10, GB200) — unified CPU+GPU memory
+        # NVIDIA Grace Blackwell (GB10, GB200) â€” unified CPU+GPU memory
         unified_gb=$((GPU_VRAM / 1024))
         if [[ $unified_gb -ge 90 ]]; then
             TIER="NV_ULTRA"
@@ -357,7 +356,7 @@ if [[ -z "$TIER" ]]; then
         else
             TIER=1
         fi
-        log "NVIDIA unified memory: ${unified_gb}GB → Tier $TIER"
+        log "NVIDIA unified memory: ${unified_gb}GB â†’ Tier $TIER"
     elif [[ $GPU_VRAM -ge 90000 ]]; then
         TIER="NV_ULTRA"
     elif [[ $GPU_COUNT -ge 2 ]]; then
@@ -398,7 +397,7 @@ fi
 # Resolve compose overlay files
 resolve_compose_config
 
-# Validate compose stack syntax before proceeding (skip on fresh install — .env
+# Validate compose stack syntax before proceeding (skip on fresh install â€” .env
 # is not generated until phase 06, so variable interpolation would fail)
 if [[ -n "${COMPOSE_FLAGS:-}" ]] && [[ -f "$INSTALL_DIR/.env" ]]; then
     ai "Validating compose stack configuration..."
@@ -406,11 +405,11 @@ if [[ -n "${COMPOSE_FLAGS:-}" ]] && [[ -f "$INSTALL_DIR/.env" ]]; then
         ai_ok "Compose stack validated"
     else
         ai "Compose validation found issues (will validate when services start)"
-        log "Compose validation deferred — .env may be stale from a previous install"
+        log "Compose validation deferred â€” .env may be stale from a previous install"
     fi
 fi
 
-# Resolve tier → model/GGUF/context
+# Resolve tier â†’ model/GGUF/context
 if [[ -z "${MODEL_PROFILE:-}" ]]; then
     if [[ -f "$INSTALL_DIR/.env" ]]; then
         _existing_model_profile=$(grep -m1 '^MODEL_PROFILE=' "$INSTALL_DIR/.env" 2>/dev/null | cut -d= -f2- | tr -d '\r' || true)

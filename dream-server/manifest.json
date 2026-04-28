@@ -20,7 +20,7 @@
       },
       "macos": {
         "supported": true,
-        "notes": "Tier B — Apple Silicon with native Metal inference + Docker services"
+        "notes": "Tier B â€” Apple Silicon with native Metal inference + Docker services"
       },
       "windows_native": {
         "supported": false,
@@ -40,7 +40,7 @@
         "supported": true,
         "tier": "experimental",
         "minVramGb": 6,
-        "notes": "Intel Arc via llama.cpp SYCL backend (docker-compose.arc.yml). Tier C — see docs/INTEL-ARC-GUIDE.md."
+        "notes": "Intel Arc via llama.cpp SYCL backend (docker-compose.arc.yml). Tier C â€” see docs/INTEL-ARC-GUIDE.md."
       }
     },
     "dependencies": {

@@ -192,7 +192,7 @@ resolve_tier_config() {
 #
 # Unlike discrete GPUs, Apple Silicon shares all system RAM between
 # macOS (~4-5GB), Docker + services (~2-3GB), and the LLM model.
-# Effective free memory ≈ total RAM minus ~8GB system overhead.
+# Effective free memory â‰ˆ total RAM minus ~8GB system overhead.
 #
 # Thresholds are set conservatively so the model + KV cache fit
 # comfortably alongside everything else.
@@ -207,10 +207,10 @@ auto_select_tier() {
     elif [[ "$ram_gb" -ge 32 ]]; then
         echo "2"
     elif [[ "$ram_gb" -ge 16 ]]; then
-        # 16–31 GB unified → 9B model
+        # 16â€“31 GB unified â†’ 9B model
         echo "1"
     else
-        # < 16 GB unified → ultra-lightweight 2B model
+        # < 16 GB unified â†’ ultra-lightweight 2B model
         echo "0"
     fi
 }

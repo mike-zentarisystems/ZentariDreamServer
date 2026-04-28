@@ -137,9 +137,9 @@ list_backups() {
 
     echo ""
     echo "Available Backups:"
-    echo "═══════════════════════════════════════════════════════════════════"
+    echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
     printf "%-5s %-20s %-12s %-10s %s\n" "#" "ID" "Type" "Size" "Description"
-    echo "───────────────────────────────────────────────────────────────────"
+    echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 
     local i=1
     for backup in "${backups[@]}"; do
@@ -215,7 +215,7 @@ extract_backup() {
     if [[ -f "$compressed" ]]; then
         # Validate: reject archives with absolute paths or path traversal
         if tar -tzf "$compressed" 2>/dev/null | grep -qE '(^/|\.\./)'; then
-            log_error "Backup archive contains unsafe paths (absolute or ../) — refusing to extract"
+            log_error "Backup archive contains unsafe paths (absolute or ../) â€” refusing to extract"
             return 1
         fi
         log_info "Extracting compressed backup..."
@@ -258,7 +258,7 @@ validate_backup() {
     # Display backup info
     echo ""
     echo "Backup Information:"
-    echo "───────────────────────────────────────────────────────────────────"
+    echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
     grep -E '"(backup_date|backup_type|dream_version|description)"' "$manifest" | \
         sed 's/^[[:space:]]*/  /' | sed 's/"//g' | sed 's/,//'
     echo ""
@@ -343,13 +343,13 @@ dry_run_preview() {
 
     if [[ "$restore_data" == "true" ]]; then
         echo "User Data to Restore:"
-        echo "───────────────────────────────────────────────────────────────────"
+        echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
         local data_dirs=("data/open-webui" "data/n8n" "data/qdrant" "data/openclaw" "data/litellm" "data/livekit" "data/ollama")
         for dir in "${data_dirs[@]}"; do
             if [[ -d "$backup_dir/$dir" ]]; then
                 local size
                 size=$(du -sh "$backup_dir/$dir" 2>/dev/null | cut -f1)
-                echo "  ✓ $dir ($size)"
+                echo "  âœ“ $dir ($size)"
             fi
         done
         echo ""
@@ -357,15 +357,15 @@ dry_run_preview() {
 
     if [[ "$restore_config" == "true" ]]; then
         echo "Config Files to Restore:"
-        echo "───────────────────────────────────────────────────────────────────"
+        echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
         # Dynamically discover config files (dotfiles + compose overlays + scripts)
         for file in "$backup_dir"/.env "$backup_dir"/.version "$backup_dir"/docker-compose*.y*ml "$backup_dir"/dream-*.sh; do
             if [[ -f "$file" ]]; then
-                echo "  ✓ $(basename "$file")"
+                echo "  âœ“ $(basename "$file")"
             fi
         done
         if [[ -d "$backup_dir/config" ]]; then
-            echo "  ✓ config/ directory"
+            echo "  âœ“ config/ directory"
         fi
         echo ""
     fi

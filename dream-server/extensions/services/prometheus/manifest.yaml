@@ -1,0 +1,26 @@
+schema_version: dream.services.v1
+
+compatibility:
+  dream_min: "2.0.0"
+
+service:
+  id: prometheus
+  name: Prometheus (Metrics)
+  container_name: dream-prometheus
+  host_env: PROMETHEUS_HOST
+  default_host: prometheus
+  port: 9090
+  external_port_env: PROMETHEUS_PORT
+  external_port_default: 9090
+  health: /-/healthy
+  ui_path: /
+  type: docker
+  gpu_backends: [cpu, none]
+  compose_file: compose.yaml
+  category: core
+  depends_on: []
+  env_vars:
+    - key: PROMETHEUS_PORT
+      required: false
+      secret: false
+      description: External port for Prometheus UI (default 9090)

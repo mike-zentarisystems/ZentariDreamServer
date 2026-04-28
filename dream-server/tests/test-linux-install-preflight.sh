@@ -13,13 +13,13 @@ NC='\033[0m'
 
 PASSED=0
 FAILED=0
-pass() { printf "  ${GREEN}✓ PASS${NC} %s\n" "$1"; PASSED=$((PASSED + 1)); }
-fail() { printf "  ${RED}✗ FAIL${NC} %s\n" "$1"; FAILED=$((FAILED + 1)); }
+pass() { printf "  ${GREEN}âœ“ PASS${NC} %s\n" "$1"; PASSED=$((PASSED + 1)); }
+fail() { printf "  ${RED}âœ— FAIL${NC} %s\n" "$1"; FAILED=$((FAILED + 1)); }
 
 echo ""
-echo "╔══════════════════════════════════════════════════════════╗"
-echo "║   linux-install-preflight.sh tests                       ║"
-echo "╚══════════════════════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘   linux-install-preflight.sh tests                       â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
 if [[ ! -f "$LP" ]]; then
@@ -77,7 +77,7 @@ PY
         fail "JSON output contract validation failed"
     fi
 else
-    fail "python3 not available — skipped JSON contract (unexpected on CI)"
+    fail "python3 not available â€” skipped JSON contract (unexpected on CI)"
 fi
 
 # dream-preflight.sh delegates --install-env to linux-install-preflight

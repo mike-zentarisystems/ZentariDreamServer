@@ -1,0 +1,30 @@
+services:
+  authelia:
+    image: authelia/authelia:4.38
+    container_name: dream-authelia
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - AUTHELIA_JWT_SECRET=${AUTHELIA_JWT_SECRET:?Set AUTHELIA_JWT_SECRET in .env}
+      - AUTHELIA_SESSION_SECRET=${AUTHELIA_SESSION_SECRET:?Set AUTHELIA_SESSION_SECRET in .env}
+      - AUTHELIA_STORAGE_ENCRYPTION_KEY=${AUTHELIA_STORAGE_ENCRYPTION_KEY:?Set AUTHELIA_STORAGE_ENCRYPTION_KEY in .env}
+    volumes:
+      - ../../../config/authelia:/config
+      - authelia-data:/var/lib/authelia
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${AUTHELIA_PORT:-9091}:9091"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:9091/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  authelia-data:

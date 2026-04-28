@@ -1,0 +1,56 @@
+---
+server:
+  host: 0.0.0.0
+  port: 9091
+
+log:
+  level: info
+
+jwt_secret: "{{ env \"AUTHELIA_JWT_SECRET\" }}"
+
+default_redirection_url: https://localhost
+
+totp:
+  issuer: dreamserver.local
+
+authentication_backend:
+  file:
+    path: /config/users_database.yml
+    password:
+      algorithm: argon2id
+      iterations: 1
+      salt_length: 16
+      parallelism: 8
+      memory: 64
+
+access_control:
+  default_policy: deny
+  rules:
+    - domain: "localhost"
+      resources:
+        - "^/api/health$"
+      policy: bypass
+    - domain: "localhost"
+      policy: one_factor
+
+session:
+  name: authelia_session
+  secret: "{{ env \"AUTHELIA_SESSION_SECRET\" }}"
+  expiration: 3600
+  inactivity: 300
+  domain: localhost
+
+regulation:
+  max_retries: 3
+  find_time: 120
+  ban_time: 300
+
+storage:
+  local:
+    path: /var/lib/authelia/db.sqlite3
+  encryption_key: "{{ env \"AUTHELIA_STORAGE_ENCRYPTION_KEY\" }}"
+
+notifier:
+  disable_startup_check: false
+  filesystem:
+    filename: /config/notification.txt

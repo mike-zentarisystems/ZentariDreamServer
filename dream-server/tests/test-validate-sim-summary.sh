@@ -20,13 +20,13 @@ NC='\033[0m'
 PASSED=0
 FAILED=0
 
-pass() { echo -e "  ${GREEN}✓ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
-fail() { echo -e "  ${RED}✗ FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
+pass() { echo -e "  ${GREEN}âœ“ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
+fail() { echo -e "  ${RED}âœ— FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
 
 echo ""
-echo "╔════════════════════════════════════════════════════╗"
-echo "║   validate-sim-summary.py Test Suite              ║"
-echo "╚════════════════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘   validate-sim-summary.py Test Suite              â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
 if [[ ! -f "$ROOT_DIR/scripts/validate-sim-summary.py" ]]; then

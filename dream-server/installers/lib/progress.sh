@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — GUI Progress Protocol
+# Dream Server Installer â€” GUI Progress Protocol
 # ============================================================================
 # Part of: installers/lib/
 # Purpose: Emit structured progress events for the Tauri GUI installer

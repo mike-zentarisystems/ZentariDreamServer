@@ -1,0 +1,69 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: DreamServer Core Alerts
+    folder: DreamServer
+    interval: 1m
+    rules:
+      - uid: dream-llm-down
+        title: LLM Server Down
+        condition: A
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            model:
+              expr: up{job="dream-llama-server"} == 0
+              intervalMs: 1000
+              maxDataPoints: 43200
+        noDataState: Alerting
+        execErrState: Alerting
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "llama-server is down"
+          description: "LLM inference engine has been unreachable for 2 minutes."
+
+      - uid: dream-high-gpu-memory
+        title: GPU Memory > 90%
+        condition: A
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            model:
+              expr: |
+                (container_memory_usage_bytes{name=~"dream-.*"} /
+                container_spec_memory_limit_bytes{name=~"dream-.*"}) > 0.9
+              intervalMs: 1000
+              maxDataPoints: 43200
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Container memory above 90%"
+          description: "Container {{ $labels.name }} memory usage exceeds 90% for 5 minutes."
+
+      - uid: dream-disk-90
+        title: Disk Usage > 90%
+        condition: A
+        data:
+          - refId: A
+            datasourceUid: prometheus
+            model:
+              expr: |
+                (node_filesystem_size_bytes{fstype!="tmpfs",mountpoint="/"} -
+                node_filesystem_free_bytes{fstype!="tmpfs",mountpoint="/"}) /
+                node_filesystem_size_bytes{fstype!="tmpfs",mountpoint="/"} > 0.9
+              intervalMs: 1000
+              maxDataPoints: 43200
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disk usage above 90%"
+          description: "Root filesystem is over 90% full."

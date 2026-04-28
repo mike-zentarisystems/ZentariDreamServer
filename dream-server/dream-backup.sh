@@ -192,9 +192,9 @@ list_backups() {
 
     echo ""
     echo "Existing Backups:"
-    echo "═══════════════════════════════════════════════════════════════════"
+    echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
     printf "%-20s %-12s %-10s %s\n" "ID" "Type" "Size" "Description"
-    echo "───────────────────────────────────────────────────────────────────"
+    echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 
     for backup in "${backups[@]}"; do
         local id
@@ -205,7 +205,7 @@ list_backups() {
         size=$(du -sh "$backup" 2>/dev/null | cut -f1)
 
         if [[ "$backup" == *.tar.gz ]]; then
-            # Compressed archive — extract manifest from inside the tar
+            # Compressed archive â€” extract manifest from inside the tar
             local manifest_data
             local archive_name="${id%.tar.gz}"
             if manifest_data=$(tar xzf "$backup" -O "${archive_name}/manifest.json" 2>/dev/null); then

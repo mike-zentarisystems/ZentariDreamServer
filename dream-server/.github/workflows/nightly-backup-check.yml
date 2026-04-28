@@ -1,0 +1,47 @@
+name: Nightly Backup Check
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-backups:
+    name: Verify backup freshness and integrity
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      DREAM_BASE_URL: ${{ secrets.DREAM_BASE_URL }}
+      DASHBOARD_API_KEY: ${{ secrets.DASHBOARD_API_KEY }}
+
+    steps:
+      - name: Check last backup age
+        run: |
+          response=$(curl -fsS \
+            -H "Authorization: Bearer ${DASHBOARD_API_KEY}" \
+            "${DREAM_BASE_URL}:3002/api/backups/latest")
+
+          last_backup=$(echo "$response" | jq -r '.created_at')
+          now=$(date -u +%s)
+          backup_ts=$(date -d "$last_backup" +%s 2>/dev/null || date -j -f "%Y-%m-%dT%H:%M:%SZ" "$last_backup" +%s)
+          age_hours=$(( (now - backup_ts) / 3600 ))
+
+          echo "Last backup: ${last_backup} (${age_hours} hours ago)"
+
+          if [ "$age_hours" -gt 25 ]; then
+            echo "::error::Last backup is ${age_hours} hours old. Exceeds 25-hour threshold."
+            exit 1
+          fi
+          echo "Backup is fresh"
+
+      - name: Trigger a new backup
+        run: |
+          curl -fsS -X POST \
+            -H "Authorization: Bearer ${DASHBOARD_API_KEY}" \
+            "${DREAM_BASE_URL}:3002/api/backups" \
+            -d '{"description": "nightly-ci"}' \
+            | jq .

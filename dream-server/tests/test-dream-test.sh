@@ -28,16 +28,16 @@ NC='\033[0m'
 
 pass() {
     TESTS_PASSED=$((TESTS_PASSED + 1))
-    echo -e "${GREEN}✓${NC} $1"
+    echo -e "${GREEN}âœ“${NC} $1"
 }
 
 fail() {
     TESTS_FAILED=$((TESTS_FAILED + 1))
-    echo -e "${RED}✗${NC} $1"
+    echo -e "${RED}âœ—${NC} $1"
 }
 
 warn() {
-    echo -e "${YELLOW}⚠${NC} $1"
+    echo -e "${YELLOW}âš ${NC} $1"
 }
 
 test_no_silent_test_suppression() {
@@ -159,9 +159,9 @@ echo "Tests failed: $TESTS_FAILED"
 echo ""
 
 if [[ $TESTS_FAILED -eq 0 ]]; then
-    echo -e "${GREEN}✓ All tests passed${NC}"
+    echo -e "${GREEN}âœ“ All tests passed${NC}"
     exit 0
 else
-    echo -e "${RED}✗ $TESTS_FAILED test(s) failed${NC}"
+    echo -e "${RED}âœ— $TESTS_FAILED test(s) failed${NC}"
     exit 1
 fi

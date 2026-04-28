@@ -1,11 +1,11 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Path Utilities
+# Dream Server Installer â€” Path Utilities
 # ============================================================================
 # Part of: installers/lib/
 # Purpose: Cross-platform path resolution and validation
 #
-# Expects: (nothing — can be sourced independently)
+# Expects: (nothing â€” can be sourced independently)
 # Provides: resolve_install_dir(), validate_install_path(), normalize_path()
 #
 # Modder notes:

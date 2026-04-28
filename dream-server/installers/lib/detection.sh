@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Hardware Detection
+# Dream Server Installer â€” Hardware Detection
 # ============================================================================
 # Part of: installers/lib/
 # Purpose: GPU detection, capability profile loading, backend contract
@@ -151,7 +151,7 @@ detect_gpu() {
     GPU_MEMORY_TYPE="none"
     GPU_DEVICE_ID=""
 
-    # Try NVIDIA first — validate hardware via sysfs vendor ID (0x10de)
+    # Try NVIDIA first â€” validate hardware via sysfs vendor ID (0x10de)
     # before trusting nvidia-smi, which may be installed without NVIDIA hardware
     # (e.g. nvidia-container-toolkit on AMD-only systems).
     # DREAM_DRM_SYS can be overridden in tests to point at a mock sysfs tree.
@@ -160,7 +160,7 @@ detect_gpu() {
     for _v in "$_drm_sys"/card*/device/vendor; do
         [[ "$(cat "$_v" 2>/dev/null)" == "0x10de" ]] && _nvidia_hw=true && break
     done
-    # WSL2: /sys/class/drm/ only contains a 'version' file — no card* entries exist.
+    # WSL2: /sys/class/drm/ only contains a 'version' file â€” no card* entries exist.
     # Fall back to nvidia-smi as the sole hardware witness on WSL2.
     if ! $_nvidia_hw && grep -qiE "microsoft|wsl" /proc/sys/kernel/osrelease 2>/dev/null; then
         command -v nvidia-smi &>/dev/null && _nvidia_hw=true
@@ -186,7 +186,7 @@ detect_gpu() {
                     ram_kb=$(grep MemTotal /proc/meminfo 2>/dev/null | awk '{print $2}')
                     if [[ -n "$ram_kb" && "$ram_kb" -gt 0 ]]; then
                         GPU_VRAM=$((ram_kb / 1024))
-                        log "GPU: $GPU_NAME — unified memory detected ([N/A] from nvidia-smi)"
+                        log "GPU: $GPU_NAME â€” unified memory detected ([N/A] from nvidia-smi)"
                         log "Using system RAM as VRAM budget: ${GPU_VRAM}MB"
                     else
                         warn "Cannot determine system RAM for unified memory GPU"
@@ -198,17 +198,17 @@ detect_gpu() {
             pci_id=$(nvidia-smi --query-gpu=pci.device_id --format=csv,noheader 2>/dev/null | head -1 | xargs)
             [[ -n "$pci_id" ]] && GPU_DEVICE_ID="${pci_id:0:6}"
             if [[ $GPU_COUNT -gt 1 ]]; then
-                # Build a display name for multi-GPU (e.g. "RTX 3090 + RTX 4090" or "RTX 4090 × 2")
+                # Build a display name for multi-GPU (e.g. "RTX 3090 + RTX 4090" or "RTX 4090 Ã— 2")
                 local first_name second_name
                 first_name=$(echo "$GPU_INFO" | sed -n '1p' | cut -d',' -f1 | xargs)
                 second_name=$(echo "$GPU_INFO" | sed -n '2p' | cut -d',' -f1 | xargs)
                 if [[ "$first_name" == "$second_name" ]]; then
-                    GPU_NAME="${first_name} × ${GPU_COUNT}"
+                    GPU_NAME="${first_name} Ã— ${GPU_COUNT}"
                 else
                     GPU_NAME="${first_name} + ${second_name}"
                     [[ $GPU_COUNT -gt 2 ]] && GPU_NAME="${GPU_NAME} + $((GPU_COUNT - 2)) more"
                 fi
-                log "GPU: ${GPU_COUNT}x NVIDIA (${GPU_VRAM}MB total VRAM) — ${GPU_NAME}"
+                log "GPU: ${GPU_COUNT}x NVIDIA (${GPU_VRAM}MB total VRAM) â€” ${GPU_NAME}"
             else
                 log "GPU: $GPU_NAME (${GPU_VRAM}MB VRAM)"
             fi
@@ -302,7 +302,7 @@ MIN_DRIVER_VERSION=570
 fix_nvidia_secure_boot() {
     # Step 1: Is there even NVIDIA hardware on this machine?
     if ! lspci 2>/dev/null | grep -qi 'nvidia'; then
-        return 1  # No hardware — nothing to fix
+        return 1  # No hardware â€” nothing to fix
     fi
 
     ai "NVIDIA GPU hardware detected but driver not responding."
@@ -331,7 +331,7 @@ fix_nvidia_secure_boot() {
         ai "Driver nvidia-driver-${installed_driver} is installed."
     fi
 
-    # Step 3: Try loading the module — see why it fails
+    # Step 3: Try loading the module â€” see why it fails
     local modprobe_err
     modprobe_err=$(sudo modprobe nvidia 2>&1) || true
 
@@ -351,7 +351,7 @@ fix_nvidia_secure_boot() {
         return 1
     fi
 
-    # Step 5: Secure Boot is blocking the module — ensure it's properly signed
+    # Step 5: Secure Boot is blocking the module â€” ensure it's properly signed
     ai_warn "Secure Boot is blocking the NVIDIA kernel module."
     ai "Preparing module signing..."
 
@@ -423,9 +423,9 @@ fix_nvidia_secure_boot() {
     sudo depmod -a 2>>"$LOG_FILE"
     ai_ok "Signed $signed_count NVIDIA module(s)"
 
-    # Step 6: Try loading — if MOK key is already enrolled, this works immediately
+    # Step 6: Try loading â€” if MOK key is already enrolled, this works immediately
     if sudo modprobe nvidia 2>>"$LOG_FILE" && nvidia-smi &>/dev/null; then
-        ai_ok "NVIDIA driver loaded — GPU is online"
+        ai_ok "NVIDIA driver loaded â€” GPU is online"
         # Regenerate CDI spec so Docker sees the correct driver libraries
         if command -v nvidia-ctk &>/dev/null; then
             sudo nvidia-ctk cdi generate --output=/etc/cdi/nvidia.yaml 2>>"$LOG_FILE" || true
@@ -434,7 +434,7 @@ fix_nvidia_secure_boot() {
         return 0
     fi
 
-    # Step 7: MOK key needs firmware enrollment — one reboot required
+    # Step 7: MOK key needs firmware enrollment â€” one reboot required
     # This is the standard Ubuntu Secure Boot flow (same thing Ubuntu's
     # "Additional Drivers" tool does).  It only happens once per machine.
 
@@ -506,7 +506,7 @@ SVCEOF
         sudo reboot
     fi
 
-    # Non-interactive mode: exit cleanly (not an error — reboot is a normal install phase)
+    # Non-interactive mode: exit cleanly (not an error â€” reboot is a normal install phase)
     ai "Reboot this machine to continue installation."
     exit 0
 }

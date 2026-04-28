@@ -4,7 +4,7 @@
 # ============================================================================
 # Part of: installers/macos/lib/
 # Purpose: Detect non-POSIX filesystems at the install path (which silently
-#          drop chmod/chown — leaking .env secrets) and Docker Desktop file
+#          drop chmod/chown â€” leaking .env secrets) and Docker Desktop file
 #          sharing allowlist gaps (which surface as cryptic OCI mount errors).
 #
 # Provides:
@@ -16,7 +16,7 @@
 # Modder notes:
 #   POSIX-permission filesystems leave chmod 600 .env useful. Non-POSIX
 #   filesystems (exFAT/FAT/NTFS-via-fuseblk) make the chmod a no-op, so the
-#   secrets file ends up world-readable — treat that as fatal.
+#   secrets file ends up world-readable â€” treat that as fatal.
 #   Filesystems that hold containerised data subpaths only are warn-only.
 # ============================================================================
 
@@ -53,7 +53,7 @@ test_install_dir_filesystem() {
         # (e.g. /Volumes/X/dreamserver) make it exit non-zero, which under
         # `set -euo pipefail` would silently kill the entire installer. The
         # personality lookup is an optional refinement on top of `stat -f %T`,
-        # so swallow non-zero — empty personality just means we keep the stat
+        # so swallow non-zero â€” empty personality just means we keep the stat
         # value.
         local personality=""
         personality=$(diskutil info "$probe" 2>/dev/null \

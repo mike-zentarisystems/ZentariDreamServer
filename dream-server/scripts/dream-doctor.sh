@@ -70,7 +70,7 @@ if (( RAM_GB == 0 )) && [[ -f "$ROOT_DIR/.env" ]]; then
     [[ -n "${_env_ram:-}" ]] && RAM_GB="$_env_ram"
 fi
 
-# Disk: POSIX df -k — works on BSD and GNU identically (df -BG is GNU-only).
+# Disk: POSIX df -k â€” works on BSD and GNU identically (df -BG is GNU-only).
 DISK_GB="$(df -k "$HOME" 2>/dev/null | tail -1 | awk '{print int($4/1024/1024)}' || echo 0)"
 
 if [[ -x "$SCRIPT_DIR/scripts/build-capability-profile.sh" ]]; then
@@ -205,7 +205,7 @@ collect_extension_diagnostics() {
         # installers/macos/docker-compose.macos.yml) so service manifests are
         # discovered. doctor/preflight path doesn't have that workaround, so the
         # raw gpu_backends check produces false positives for CPU-only services
-        # declaring gpu_backends: [amd, nvidia]. Skip the check on apple — if a
+        # declaring gpu_backends: [amd, nvidia]. Skip the check on apple â€” if a
         # service genuinely needs GPU and isn't available on Apple, it's a
         # manifest-level concern, not a runtime doctor warning.
         if [[ "$backend" != "apple" ]] && declare -p SERVICE_GPU_BACKENDS &>/dev/null; then
@@ -319,7 +319,7 @@ if runtime["docker_daemon"] and not runtime["webui_http"]:
 # STT model cache: service up but model missing is a common silent failure
 if stt_cached == "false" and stt_recovery:
     fix_hints.append(
-        f"Whisper STT model '{stt_model_name}' not cached — transcription will 404. "
+        f"Whisper STT model '{stt_model_name}' not cached â€” transcription will 404. "
         f"Run: {stt_recovery}"
     )
 

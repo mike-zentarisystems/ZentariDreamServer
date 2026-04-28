@@ -1,5 +1,5 @@
 #!/bin/bash
-# Token Spy Session Manager — cost-aware session cleanup
+# Token Spy Session Manager â€” cost-aware session cleanup
 # Queries the token monitor API for real token economics instead of checking file sizes.
 # Primary defense is your agent framework's native compaction. This script only
 # intervenes as a safety valve when compaction fails and sessions exceed limits.
@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-# ── Configuration ──────────────────────────────────────────────────────────────
+# â”€â”€ Configuration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 MONITOR_HOST="${MONITOR_HOST:-127.0.0.1}"
 
@@ -54,7 +54,7 @@ get_agent_char_limit() {
   echo "$limit"
 }
 
-# ── Functions ──────────────────────────────────────────────────────────────────
+# â”€â”€ Functions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*"; }
 
@@ -102,7 +102,7 @@ kill_session() {
   if [ -f "$f" ]; then
     local size_h
     size_h=$(du -h "$f" | cut -f1)
-    log "  [KILL] Removing session $session_id ($size_h) — $reason"
+    log "  [KILL] Removing session $session_id ($size_h) â€” $reason"
     rm -f "$f"
   fi
 
@@ -156,7 +156,7 @@ enforce_count_limit() {
     local age_mins=$(( (now - mtime) / 60 ))
 
     if [ "$age_mins" -le "$RECENT_MINUTES" ]; then
-      log "  [COUNT] Skipping $basename — touched ${age_mins}m ago (hot)"
+      log "  [COUNT] Skipping $basename â€” touched ${age_mins}m ago (hot)"
       continue
     fi
 
@@ -164,7 +164,7 @@ enforce_count_limit() {
   done
 }
 
-# ── Remote Agent Management ────────────────────────────────────────────────────
+# â”€â”€ Remote Agent Management â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 manage_remote_agent() {
   local agent="$1" host="$2" remote_dir="$3"
@@ -202,7 +202,7 @@ REMOTESCRIPT
 ) || remote_info="SSH_FAILED"
 
   if [ "$remote_info" = "SSH_FAILED" ]; then
-    log "  [WARN] SSH to $host failed — skipping $agent"
+    log "  [WARN] SSH to $host failed â€” skipping $agent"
     return 0
   fi
 
@@ -246,7 +246,7 @@ REMOTESCRIPT
         to_remove+=("$sid")
         log "  [KILL] Oversized session: $sid ($(( size / 1024 ))KB > $(( size_limit / 1024 ))KB)"
       else
-        log "  [WARN] Oversized session $sid ($(( size / 1024 ))KB) but hot (${age_mins}m) — skipping"
+        log "  [WARN] Oversized session $sid ($(( size / 1024 ))KB) but hot (${age_mins}m) â€” skipping"
       fi
     fi
   done < <(echo "$remote_info" | sed -n '/SESSION_LIST_START/,/SESSION_LIST_END/p' | grep -vE '_START|_END' | grep '|')
@@ -267,7 +267,7 @@ REMOTESCRIPT
   log "  Done"
 }
 
-# ── Main Loop ──────────────────────────────────────────────────────────────────
+# â”€â”€ Main Loop â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 if [ ${#AGENTS[@]} -eq 0 ]; then
   log "No agents configured in AGENTS array. Edit session-manager.sh to add your agents."
@@ -305,10 +305,10 @@ for agent_entry in "${AGENTS[@]}"; do
       log "  [WATCH] Session growing, compaction should trigger soon"
       ;;
     compact_soon)
-      log "  [WARN] Session approaching limit — compaction expected"
+      log "  [WARN] Session approaching limit â€” compaction expected"
       ;;
     reset_recommended)
-      log "  [CRITICAL] History exceeds ${char_limit}ch limit (at ${history}ch) — compaction may have failed"
+      log "  [CRITICAL] History exceeds ${char_limit}ch limit (at ${history}ch) â€” compaction may have failed"
       if [ -d "$sessions_dir" ]; then
         largest=$(ls -S "$sessions_dir"/*.jsonl 2>/dev/null | head -1)
         if [ -n "$largest" ]; then
@@ -318,10 +318,10 @@ for agent_entry in "${AGENTS[@]}"; do
       fi
       ;;
     cache_unstable)
-      log "  [ALERT] Cache write percentage unusually high — possible cache thrashing"
+      log "  [ALERT] Cache write percentage unusually high â€” possible cache thrashing"
       ;;
     unavailable)
-      log "  [WARN] Token monitor unavailable on port $port — falling back to file cleanup only"
+      log "  [WARN] Token monitor unavailable on port $port â€” falling back to file cleanup only"
       ;;
     *)
       log "  [WARN] Unknown recommendation: $rec"
@@ -336,14 +336,14 @@ for agent_entry in "${AGENTS[@]}"; do
   log "  Done"
 done
 
-# ── Remote Agents ──────────────────────────────────────────────────────────
+# â”€â”€ Remote Agents â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 for agent_entry in "${REMOTE_AGENTS[@]}"; do
   IFS='|' read -r agent host remote_dir <<< "$agent_entry"
   manage_remote_agent "$agent" "$host" "$remote_dir"
 done
 
-# ── Summary ────────────────────────────────────────────────────────────────
+# â”€â”€ Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 log "=== Session Manager Complete ==="
 for agent_entry in "${AGENTS[@]}"; do

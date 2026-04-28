@@ -1,11 +1,11 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Constants
+# Dream Server Installer â€” Constants
 # ============================================================================
 # Part of: installers/lib/
 # Purpose: Colors, paths, version string, timezone detection
 #
-# Expects: (nothing — first file sourced)
+# Expects: (nothing â€” first file sourced)
 # Provides: VERSION, SCRIPT_DIR, INSTALL_DIR, LOG_FILE, color codes,
 #           SYSTEM_TZ, CAPABILITY_PROFILE_FILE, PREFLIGHT_REPORT_FILE,
 #           INSTALL_START_EPOCH, _sed_i()
@@ -41,17 +41,17 @@ else
 fi
 
 #=============================================================================
-# Colors — green phosphor CRT theme
+# Colors â€” green phosphor CRT theme
 #=============================================================================
 RED='\033[0;31m'
-GRN='\033[0;32m'         # Standard green — body text
-BGRN='\033[1;32m'        # Bright green — emphasis, success, headings
-DGRN='\033[2;32m'        # Dim green — secondary text, lore
-AMB='\033[0;33m'         # Amber — warnings, ETA labels
-WHT='\033[1;37m'         # White — key URLs
+GRN='\033[0;32m'         # Standard green â€” body text
+BGRN='\033[1;32m'        # Bright green â€” emphasis, success, headings
+DGRN='\033[2;32m'        # Dim green â€” secondary text, lore
+AMB='\033[0;33m'         # Amber â€” warnings, ETA labels
+WHT='\033[1;37m'         # White â€” key URLs
 DIM='\033[2;37m'         # Dim white
 NC='\033[0m'             # Reset
-CURSOR='█'               # Block cursor for typing
+CURSOR='â–ˆ'               # Block cursor for typing
 
 #=============================================================================
 # Cross-platform helpers

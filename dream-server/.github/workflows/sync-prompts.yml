@@ -1,0 +1,50 @@
+name: Sync Prompt Library from Langfuse
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-prompts:
+    name: Export Langfuse prompts to Forgejo
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+      LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+      LANGFUSE_BASE_URL: ${{ secrets.LANGFUSE_BASE_URL }}
+
+    steps:
+      - name: Checkout prompt-library repo
+        uses: actions/checkout@v4
+
+      - name: Fetch all production prompts from Langfuse
+        run: |
+          mkdir -p prompts
+          curl -fsS \
+            -u "${LANGFUSE_PUBLIC_KEY}:${LANGFUSE_SECRET_KEY}" \
+            "${LANGFUSE_BASE_URL}/api/public/v2/prompts?limit=100&label=production" \
+            | jq -r '.data[] | @base64' | while read encoded; do
+              prompt=$(echo "$encoded" | base64 -d)
+              name=$(echo "$prompt" | jq -r '.name')
+              version=$(echo "$prompt" | jq -r '.version')
+              echo "$prompt" | jq '.' > "prompts/${name}-v${version}.json"
+              echo "Exported: ${name} v${version}"
+            done
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "DreamServer CI"
+          git config user.email "ci@dreamserver.local"
+          git add prompts/
+          if git diff --staged --quiet; then
+            echo "No prompt changes to commit"
+          else
+            git commit -m "chore: sync production prompts from Langfuse [$(date -u +%Y-%m-%d)]"
+            git push
+          fi

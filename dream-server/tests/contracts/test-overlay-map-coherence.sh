@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ============================================================================
-# Contract test: OVERLAY_MAP ↔ hardware-classes.json coherence (issue #342)
+# Contract test: OVERLAY_MAP â†” hardware-classes.json coherence (issue #342)
 #
 # Two independent sources define compose overlay paths:
 #   - scripts/classify-hardware.sh: OVERLAY_MAP dict + apple/macos special case
@@ -18,7 +18,7 @@ cd "$ROOT_DIR"
 
 command -v python3 >/dev/null 2>&1 || { echo "[FAIL] python3 is required"; exit 1; }
 
-echo "[contract] OVERLAY_MAP ↔ hardware-classes.json coherence"
+echo "[contract] OVERLAY_MAP â†” hardware-classes.json coherence"
 
 python3 <<'PY'
 import ast, json, re, sys
@@ -86,4 +86,4 @@ if fail > 0:
     sys.exit(1)
 PY
 
-echo "[PASS] OVERLAY_MAP ↔ hardware-classes.json coherence"
+echo "[PASS] OVERLAY_MAP â†” hardware-classes.json coherence"

@@ -1,4 +1,4 @@
-# Dream Server — NVIDIA GPU Overlay (Core Services Only)
+# Dream Server â€” NVIDIA GPU Overlay (Core Services Only)
 # ComfyUI GPU config moved to extensions/services/comfyui/compose.nvidia.yaml
 # Whisper GPU config moved to extensions/services/whisper/compose.nvidia.yaml
 # Use with: docker compose -f docker-compose.base.yml -f docker-compose.nvidia.yml up -d

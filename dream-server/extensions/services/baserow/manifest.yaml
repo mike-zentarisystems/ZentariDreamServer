@@ -1,0 +1,35 @@
+schema_version: dream.services.v1
+
+compatibility:
+  dream_min: "2.0.0"
+
+service:
+  id: baserow
+  name: Baserow (Database / App Builder)
+  aliases: []
+  container_name: dream-baserow
+  host_env: BASEROW_HOST
+  default_host: baserow
+  port: 80
+  external_port_env: BASEROW_PORT
+  external_port_default: 8110
+  health: /api/_health/
+  ui_path: /
+  type: docker
+  gpu_backends: [cpu, none]
+  compose_file: compose.yaml
+  category: core
+  depends_on: []
+  env_vars:
+    - key: BASEROW_PORT
+      required: false
+      secret: false
+      description: External port for Baserow UI (default 8110)
+    - key: BASEROW_SECRET_KEY
+      required: true
+      secret: true
+      description: Django secret key for Baserow
+    - key: BASEROW_JWT_SIGNING_KEY
+      required: true
+      secret: true
+      description: JWT signing key for Baserow auth

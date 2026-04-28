@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Phase 04: Requirements Check
+# Dream Server Installer â€” Phase 04: Requirements Check
 # ============================================================================
 # Part of: installers/phases/
 # Purpose: RAM, disk, GPU, and port availability checks
@@ -188,7 +188,7 @@ check_port_conflict() {
         # No tools available
         if [[ "${_port_check_warned}" != "true" ]]; then
             _port_check_warned=true
-            warn "Neither 'lsof', 'ss', nor 'netstat' found — cannot verify port availability"
+            warn "Neither 'lsof', 'ss', nor 'netstat' found â€” cannot verify port availability"
             warn "Install lsof, iproute2 (for ss), or net-tools (for netstat) to enable port checks"
         fi
         return 1

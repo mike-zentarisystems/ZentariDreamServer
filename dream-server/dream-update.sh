@@ -106,10 +106,10 @@ _prune_rollback_snapshots() {
 
 # snapshot_pre_update <timestamp>
 #   Creates data/backups/pre-update-<timestamp>/ and copies:
-#     • .env and .env.* variants
-#     • docker-compose*.yml overlays (tracks active stack)
-#     • config/{litellm,n8n,openclaw,searxng}/ (per-extension config)
-#     • .version
+#     â€¢ .env and .env.* variants
+#     â€¢ docker-compose*.yml overlays (tracks active stack)
+#     â€¢ config/{litellm,n8n,openclaw,searxng}/ (per-extension config)
+#     â€¢ .version
 #   Validates timestamp format, writes snapshot.json, verifies integrity,
 #   then prints the snapshot directory path on stdout.
 snapshot_pre_update() {
@@ -138,7 +138,7 @@ snapshot_pre_update() {
         done
     done
 
-    # Active compose overlays — needed to re-create the exact stack on rollback
+    # Active compose overlays â€” needed to re-create the exact stack on rollback
     for f in "${INSTALL_DIR}"/docker-compose*.yml "${INSTALL_DIR}"/docker-compose*.yaml; do
         [[ -f "$f" ]] || continue
         cp "$f" "${snap_dir}/"
@@ -203,10 +203,10 @@ _restore_snapshot() {
         return 1
     fi
 
-    # Warn about absent critical files (non-fatal — install may not have had them)
+    # Warn about absent critical files (non-fatal â€” install may not have had them)
     for required in ".env" ".version"; do
         if [[ ! -f "${snap_dir}/${required}" ]]; then
-            log_warn "Snapshot is missing ${required} — snapshot may be incomplete."
+            log_warn "Snapshot is missing ${required} â€” snapshot may be incomplete."
         fi
     done
 
@@ -258,7 +258,7 @@ wait_for_healthy() {
         fi
         local remaining=$(( deadline - SECONDS ))
         if (( remaining > delay )); then
-            log_info "  Not yet healthy — retrying in ${delay}s (${remaining}s remaining)..."
+            log_info "  Not yet healthy â€” retrying in ${delay}s (${remaining}s remaining)..."
             sleep "$delay"
         elif (( remaining > 0 )); then
             sleep "$remaining"
@@ -362,7 +362,7 @@ cmd_check() {
             log_warn "You are ahead of the latest release (development version)."
             ;;
         2)
-            log_info "Update available: ${current_version} → ${latest_version}"
+            log_info "Update available: ${current_version} â†’ ${latest_version}"
             echo ""
             echo "Run 'dream-update.sh update' to update."
             ;;
@@ -506,7 +506,7 @@ cmd_update() {
     local current_version
     current_version=$(get_current_version)
 
-    # ── Step 1: rollback snapshot ─────────────────────────────────────────────
+    # â”€â”€ Step 1: rollback snapshot â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     local timestamp
     timestamp=$(date +%Y%m%d-%H%M%S)
     local snap_dir
@@ -517,7 +517,7 @@ cmd_update() {
     _update_gpu_backend=$(grep '^GPU_BACKEND=' "${INSTALL_DIR}/.env" 2>/dev/null | cut -d= -f2 | tr -d '"' || echo "")
     _update_tier=$(grep '^TIER=' "${INSTALL_DIR}/.env" 2>/dev/null | cut -d= -f2 | tr -d '"' || echo "")
 
-    # Resolve compose flags once — used in restart and rollback paths.
+    # Resolve compose flags once â€” used in restart and rollback paths.
     local compose_flags=""
     if [[ -x "${INSTALL_DIR}/scripts/resolve-compose-stack.sh" ]]; then
         compose_flags=$(bash "${INSTALL_DIR}/scripts/resolve-compose-stack.sh" \
@@ -529,7 +529,7 @@ cmd_update() {
         local all_exist=true
         for flag_file in $(echo "$compose_flags" | grep -o -- '-f [^ ]*' | cut -d' ' -f2); do
             if [[ ! -f "${INSTALL_DIR}/${flag_file}" ]]; then
-                log_warn "Compose file not found: ${flag_file} — falling back to docker-compose.yml"
+                log_warn "Compose file not found: ${flag_file} â€” falling back to docker-compose.yml"
                 all_exist=false
                 break
             fi
@@ -537,7 +537,7 @@ cmd_update() {
         [[ "$all_exist" == "true" ]] || compose_flags=""
     fi
 
-    # ── Step 2: pull latest changes ───────────────────────────────────────────
+    # â”€â”€ Step 2: pull latest changes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     log_info "Pulling latest changes..."
     if [[ ! -d "${INSTALL_DIR}/.git" ]]; then
         log_error "Not a git repository. Manual update required."
@@ -550,7 +550,7 @@ cmd_update() {
         return 1
     fi
 
-    # ── Step 3: migrations ────────────────────────────────────────────────────
+    # â”€â”€ Step 3: migrations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     local migrations_dir="${INSTALL_DIR}/migrations"
     if [[ -d "$migrations_dir" ]]; then
         log_info "Running migrations..."
@@ -566,7 +566,7 @@ cmd_update() {
         done
     fi
 
-    # ── Step 4: restart services ──────────────────────────────────────────────
+    # â”€â”€ Step 4: restart services â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     log_info "Restarting services..."
     cd "$INSTALL_DIR"
     if [[ -n "${compose_flags}" ]]; then
@@ -591,7 +591,7 @@ cmd_update() {
         log_warn "No compose files found. Skipping container restart."
     fi
 
-    # ── Step 5: health-check with timeout ────────────────────────────────────
+    # â”€â”€ Step 5: health-check with timeout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if ! wait_for_healthy; then
         _update_rollback \
             "Services failed to become healthy after update (timeout: ${HEALTH_TIMEOUT}s)." \
@@ -599,7 +599,7 @@ cmd_update() {
         return 1
     fi
 
-    # ── Step 6: record new version ────────────────────────────────────────────
+    # â”€â”€ Step 6: record new version â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     local new_version
     new_version=$(git describe --tags 2>/dev/null || git rev-parse --short HEAD)
     local version_data='{}'
@@ -678,7 +678,7 @@ cmd_rollback() {
         docker-compose down
     fi
 
-    # Restore — use _restore_snapshot for pre-update snapshots (they include
+    # Restore â€” use _restore_snapshot for pre-update snapshots (they include
     # config-* dirs); fall back to flat-file copy for legacy general backups.
     if [[ -f "${backup_path}/snapshot.json" ]]; then
         if ! _restore_snapshot "$backup_path"; then

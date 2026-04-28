@@ -123,12 +123,12 @@ cmd_diff() {
     local current_env="${INSTALL_DIR}/.env"
     
     if [[ ! -f "$example_env" ]]; then
-        log_warn "No .env.example found — cannot show diff"
+        log_warn "No .env.example found â€” cannot show diff"
         return 1
     fi
     
     if [[ ! -f "$current_env" ]]; then
-        log_warn "No .env found — user hasn't configured yet"
+        log_warn "No .env found â€” user hasn't configured yet"
         return 1
     fi
     
@@ -175,7 +175,7 @@ cmd_check() {
     result=$?
 
     if [[ $result -eq 2 ]]; then
-        log_warn "Migration needed: $last_migrated → $current_version"
+        log_warn "Migration needed: $last_migrated â†’ $current_version"
         
         # List pending migrations
         echo ""
@@ -218,7 +218,7 @@ cmd_migrate() {
         return 0
     fi
     
-    log_info "Migrating: $last_migrated → $current_version"
+    log_info "Migrating: $last_migrated â†’ $current_version"
     
     # Run migrations in order
     local failed=0

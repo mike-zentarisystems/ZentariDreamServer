@@ -1,10 +1,10 @@
-# Dream Server — Intel Arc GPU Overlay (SYCL backend)
+# Dream Server â€” Intel Arc GPU Overlay (SYCL backend)
 # Requires: Intel Arc GPU with oneAPI Level Zero runtime on host
 # Use with: docker compose -f docker-compose.base.yml -f docker-compose.intel.yml up -d
 #
 # Supported hardware:
-#   ARC tier      — Arc A770 16 GB  (and future Arc B-series ≥12 GB)
-#   ARC_LITE tier — Arc A750 8 GB, A380 6 GB
+#   ARC tier      â€” Arc A770 16 GB  (and future Arc B-series â‰¥12 GB)
+#   ARC_LITE tier â€” Arc A750 8 GB, A380 6 GB
 #
 # Host prerequisites:
 #   apt install intel-opencl-icd intel-level-zero-gpu level-zero

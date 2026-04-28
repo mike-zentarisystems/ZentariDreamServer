@@ -19,13 +19,13 @@ NC='\033[0m'
 PASSED=0
 FAILED=0
 
-pass() { echo -e "  ${GREEN}✓ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
-fail() { echo -e "  ${RED}✗ FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
+pass() { echo -e "  ${GREEN}âœ“ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
+fail() { echo -e "  ${RED}âœ— FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
 
 echo ""
-echo "╔═══════════════════════════════════════════════╗"
-echo "║   Doctor Extension Diagnostics Test           ║"
-echo "╚═══════════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘   Doctor Extension Diagnostics Test           â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
 # 1. EXT_DIAGNOSTICS variable is initialized

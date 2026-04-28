@@ -56,7 +56,7 @@ fi
 
 set -euo pipefail
 
-# ── Parse arguments ──
+# â”€â”€ Parse arguments â”€â”€
 DRY_RUN=false
 FORCE=false
 NON_INTERACTIVE=false
@@ -101,11 +101,11 @@ if $ALL_FEATURES; then
     $NO_LANGFUSE_EXPLICIT || ENABLE_LANGFUSE=true
 fi
 
-# ── Locate script directory and source tree root ──
+# â”€â”€ Locate script directory and source tree root â”€â”€
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCE_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 
-# ── Source libraries ──
+# â”€â”€ Source libraries â”€â”€
 LIB_DIR="${SCRIPT_DIR}/lib"
 source "${LIB_DIR}/constants.sh"
 source "${LIB_DIR}/ui.sh"
@@ -114,7 +114,7 @@ source "${LIB_DIR}/detection.sh"
 source "${LIB_DIR}/preflight-fs.sh"
 source "${LIB_DIR}/env-generator.sh"
 
-# ── File-local helpers ──
+# â”€â”€ File-local helpers â”€â”€
 # Build a launchd-friendly PATH that includes Docker and Homebrew prefixes.
 # launchd does NOT inherit the user's login shell PATH, so any path containing
 # `docker` or `brew`-installed tools must be baked into the plist explicitly.
@@ -144,7 +144,7 @@ _compute_launchd_path() {
     printf '%s' "$path_out"
 }
 
-# ── Resolve install directory ──
+# â”€â”€ Resolve install directory â”€â”€
 INSTALL_DIR="${DS_INSTALL_DIR}"
 
 # Initialize log file
@@ -257,7 +257,7 @@ if $OLLAMA_RUNNING; then
     fi
 fi
 
-# Port conflict checks — dynamically read from extension manifests
+# Port conflict checks â€” dynamically read from extension manifests
 _conflict_ports=(8080 11434)  # llama-server (native) + Ollama default (host conflict, no manifest)
 for _manifest in "${SOURCE_ROOT}/extensions/services/"*/manifest.yaml; do
     [[ -f "$_manifest" ]] || continue
@@ -274,7 +274,7 @@ for port_check in "${_conflict_ports[@]}"; do
 done
 
 # macOS AirPlay Receiver uses port 9000 (Monterey 12.0+, enabled by default).
-# It cannot be killed — it's a system service. Auto-reassign Whisper to 9100.
+# It cannot be killed â€” it's a system service. Auto-reassign Whisper to 9100.
 if check_port_conflict 9000; then
     export WHISPER_PORT=9100
     ai_ok "Port 9000 in use (AirPlay Receiver) -- Whisper reassigned to port ${WHISPER_PORT}"
@@ -533,7 +533,7 @@ else
     # Change to install directory for docker compose
     cd "$INSTALL_DIR"
 
-    # ── Bootstrap fast-start ──────────────────────────────────────────────
+    # â”€â”€ Bootstrap fast-start â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     _BOOTSTRAP_ACTIVE=false
     if bootstrap_needed "$SELECTED_TIER" "$INSTALL_DIR" "$GGUF_FILE"; then
         _BOOTSTRAP_ACTIVE=true
@@ -552,7 +552,7 @@ else
         ai "Your full model ($FULL_LLM_MODEL) will download in the background."
     fi
 
-    # ── Download GGUF model (if not cloud-only) ──
+    # â”€â”€ Download GGUF model (if not cloud-only) â”€â”€
     if [[ -n "$GGUF_URL" ]] && ! $CLOUD_MODE; then
         MODEL_PATH="${INSTALL_DIR}/data/models/${GGUF_FILE}"
 
@@ -582,7 +582,7 @@ else
         fi
     fi
 
-    # ── Patch .env for bootstrap model ──────────────────────────────────────
+    # â”€â”€ Patch .env for bootstrap model â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if [[ "$_BOOTSTRAP_ACTIVE" == "true" ]]; then
         _env_file="$INSTALL_DIR/.env"
         if [[ -f "$_env_file" ]]; then
@@ -594,7 +594,7 @@ else
         fi
     fi
 
-    # ── Download and start native llama-server (Metal) ──
+    # â”€â”€ Download and start native llama-server (Metal) â”€â”€
     if ! $CLOUD_MODE; then
         chapter "NATIVE LLAMA-SERVER (METAL)"
 
@@ -743,7 +743,7 @@ else
         fi
     fi
 
-    # ── Assemble Docker Compose flags ──
+    # â”€â”€ Assemble Docker Compose flags â”€â”€
     COMPOSE_FLAGS=("-f" "docker-compose.base.yml")
 
     if $CLOUD_MODE; then
@@ -844,7 +844,7 @@ else
         COMPOSE_FLAGS+=("-f" "docker-compose.override.yml")
     fi
 
-    # ── Validate compose files exist before launching ──
+    # â”€â”€ Validate compose files exist before launching â”€â”€
     for ((i=0; i<${#COMPOSE_FLAGS[@]}; i++)); do
         if [[ "${COMPOSE_FLAGS[$i]}" == "-f" ]] && (( i+1 < ${#COMPOSE_FLAGS[@]} )); then
             CF="${COMPOSE_FLAGS[$((i+1))]}"
@@ -856,7 +856,7 @@ else
         fi
     done
 
-    # ── Unload stale LaunchAgents before compose (crash-safe) ──
+    # â”€â”€ Unload stale LaunchAgents before compose (crash-safe) â”€â”€
     # If a previous install registered these agents and this run fails at
     # compose-up, the old agents would keep running with stale paths
     # (DREAM_HOME pointing at the deleted install dir).  Clearing them
@@ -864,7 +864,7 @@ else
     launchctl bootout "gui/$(id -u)/${DREAM_AGENT_PLIST_LABEL}" 2>/dev/null || true
     launchctl bootout "gui/$(id -u)/${OPENCODE_PLIST_LABEL}" 2>/dev/null || true
 
-    # ── Start Docker services ──
+    # â”€â”€ Start Docker services â”€â”€
     chapter "STARTING SERVICES"
     ai "Running: docker compose ${COMPOSE_FLAGS[*]} up -d"
     set +o pipefail  # pipefail would abort on compose exit before PIPESTATUS is read; capture it first
@@ -883,7 +883,7 @@ else
     # Save compose flags for dream-macos.sh
     echo "${COMPOSE_FLAGS[*]}" > "${INSTALL_DIR}/.compose-flags"
 
-    # ── Launch background model upgrade ──────────────────────────────────
+    # â”€â”€ Launch background model upgrade â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     if [[ "$_BOOTSTRAP_ACTIVE" == "true" ]]; then
         ai "Launching background download for $FULL_LLM_MODEL..."
         mkdir -p "$INSTALL_DIR/logs"
@@ -901,7 +901,7 @@ else
         fi
     fi
 
-    # ── Install & start OpenCode (native host binary) ──
+    # â”€â”€ Install & start OpenCode (native host binary) â”€â”€
     chapter "OPENCODE (AI CODING IDE)"
 
     if [[ ! -x "$OPENCODE_BIN" ]]; then
@@ -910,7 +910,7 @@ else
         if curl -fsSL --max-time 300 https://opencode.ai/install -o "$tmpfile" 2>/dev/null && bash "$tmpfile" >> "$DS_LOG_FILE" 2>&1; then
             ai_ok "OpenCode installed (~/.opencode/bin/opencode)"
         else
-            ai_warn "OpenCode install failed — install later with: curl -fsSL https://opencode.ai/install | bash"
+            ai_warn "OpenCode install failed â€” install later with: curl -fsSL https://opencode.ai/install | bash"
         fi
         rm -f "$tmpfile"
     else
@@ -1012,7 +1012,7 @@ PLIST_EOF
     fi
 fi
 
-# ── Dream Host Agent (extension lifecycle management) ──
+# â”€â”€ Dream Host Agent (extension lifecycle management) â”€â”€
 AGENT_PYTHON="$(command -v python3)"
 if [[ -f "${INSTALL_DIR}/bin/dream-host-agent.py" ]] && [[ -n "$AGENT_PYTHON" ]]; then
     # See opencode-web block above for the xpcproxy sandbox rationale behind
@@ -1020,7 +1020,7 @@ if [[ -f "${INSTALL_DIR}/bin/dream-host-agent.py" ]] && [[ -n "$AGENT_PYTHON" ]]
     mkdir -p "$HOME/Library/LaunchAgents" "$HOME/Library/Logs/DreamServer"
     DREAM_AGENT_PATH="$(_compute_launchd_path "")"
     if ! command -v docker >/dev/null 2>&1; then
-        ai_warn "docker not found on PATH at install time — host agent will fail to start until Docker Desktop is launched and 'docker' resolves on your shell PATH"
+        ai_warn "docker not found on PATH at install time â€” host agent will fail to start until Docker Desktop is launched and 'docker' resolves on your shell PATH"
     fi
     cat > "$DREAM_AGENT_PLIST" <<AGENT_PLIST_EOF
 <?xml version="1.0" encoding="UTF-8"?>
@@ -1150,8 +1150,8 @@ for ((idx=0; idx<${#HEALTH_NAMES[@]}; idx++)); do
     fi
 done
 
-# ── Pre-download the Whisper STT model ──
-# Speaches does NOT auto-download on transcription requests — it returns 404.
+# â”€â”€ Pre-download the Whisper STT model â”€â”€
+# Speaches does NOT auto-download on transcription requests â€” it returns 404.
 # We must trigger the download explicitly here, verify it completed, and
 # surface a clear recovery command if anything fails.
 if [[ "$ENABLE_VOICE" == "true" ]]; then
@@ -1199,7 +1199,7 @@ if [[ "$ENABLE_VOICE" == "true" ]]; then
     fi
 fi
 
-# ── Auto-configure Perplexica ──
+# â”€â”€ Auto-configure Perplexica â”€â”€
 ai "Configuring Perplexica..."
 if configure_perplexica 3004 "$LLM_MODEL"; then
     ai_ok "Perplexica configured (model: ${LLM_MODEL})"
@@ -1207,7 +1207,7 @@ else
     ai_warn "Perplexica auto-config skipped -- complete setup at http://localhost:3004"
 fi
 
-# ── Pre-mark setup wizard complete ──
+# â”€â”€ Pre-mark setup wizard complete â”€â”€
 # The dashboard-api reads ${INSTALL_DIR}/data/config/setup-complete.json
 # (mounted at /data/config/setup-complete.json inside the container) to
 # decide first_run state. Writing this here prevents the wizard from
@@ -1223,7 +1223,7 @@ else
     ai_warn "Could not write ${_setup_complete_file} (non-fatal)"
 fi
 
-# ── Success card ──
+# â”€â”€ Success card â”€â”€
 if ! $ALL_HEALTHY; then
     echo ""
     ai_warn "Some services may still be starting. Check with:"

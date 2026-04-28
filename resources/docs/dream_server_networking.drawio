@@ -1,0 +1,192 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Port Reference & Network Zones">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2200" pageHeight="1200" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- ===== ZONE: LAN / PUBLIC ===== -->
+        <mxCell id="zone_lan" value="LAN / Public&#xa;(0.0.0.0)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1565c0;resizeParent=1;resizeParentMax=true;containerType=swimlane;fontStyle=1;fontColor=#1565c0;align=left;spacingLeft=10;indent=10;marginBottom=10" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="420" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_lan_content" value="" style="fillColor=none;strokeColor=none" vertex="1" parent="zone_lan">
+          <mxGeometry y="50" width="420" height="230" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="caddy_port" value="Caddy&#xa;80 / 443" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e65100;strokeColor=#bf360c;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_lan_content">
+          <mxGeometry x="20" y="20" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="authelia_port" value="Authelia&#xa;9091" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1565c0;strokeColor=#0d47a1;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_lan_content">
+          <mxGeometry x="20" y="100" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="caddy_note" value="HTTPS entry point&#xa;All LAN access via Caddy&#xa;+ Authelia SSO" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#666666;fontSize=9" vertex="1" parent="z_lan_content">
+          <mxGeometry x="180" y="20" width="220" height="50" as="geometry"/>
+        </mxCell>
+        <mxCell id="authelia_note" value="Public login page&#xa;Forward-auth for all&#xa;protected services" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#666666;fontSize=9" vertex="1" parent="z_lan_content">
+          <mxGeometry x="180" y="100" width="220" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== ZONE: AUTHELIA PROTECTED ===== -->
+        <mxCell id="zone_authelia" value="Authelia Protected&#xa;(127.0.0.1)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;resizeParent=1;resizeParentMax=true;containerType=swimlane;fontStyle=1;fontColor=#2e7d32;align=left;spacingLeft=10;indent=10;marginBottom=10" vertex="1" parent="1">
+          <mxGeometry x="460" y="20" width="520" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_auth_content" value="" style="fillColor=none;strokeColor=none" vertex="1" parent="zone_authelia">
+          <mxGeometry y="50" width="520" height="230" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="openwebui_port" value="Open WebUI&#xa;3000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_auth_content">
+          <mxGeometry x="20" y="20" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="dashboard_port" value="Dashboard&#xa;3001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_auth_content">
+          <mxGeometry x="160" y="20" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="grafana_port" value="Grafana&#xa;3007" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_auth_content">
+          <mxGeometry x="300" y="20" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="langfuse_port" value="Langfuse&#xa;3006" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_auth_content">
+          <mxGeometry x="20" y="100" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="n8n_port" value="n8n&#xa;5678" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_auth_content">
+          <mxGeometry x="160" y="100" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="baserow_port" value="Baserow&#xa;8110" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_auth_content">
+          <mxGeometry x="300" y="100" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="forgejo_port" value="Forgejo&#xa;3009" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_auth_content">
+          <mxGeometry x="20" y="180" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="uptimekuma_port" value="Uptime Kuma&#xa;3008" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_auth_content">
+          <mxGeometry x="160" y="180" width="120" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== ZONE: INTERNAL ONLY ===== -->
+        <mxCell id="zone_internal" value="Internal Only&#xa;(Docker network)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#e65100;resizeParent=1;resizeParentMax=true;containerType=swimlane;fontStyle=1;fontColor=#e65100;align=left;spacingLeft=10;indent=10;marginBottom=10" vertex="1" parent="1">
+          <mxGeometry x="1000" y="20" width="560" height="280" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_int_content" value="" style="fillColor=none;strokeColor=none" vertex="1" parent="zone_internal">
+          <mxGeometry y="50" width="560" height="230" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="llamaserver_port" value="llama-server&#xa;8080" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c62828;strokeColor=#b71c1c;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_int_content">
+          <mxGeometry x="20" y="20" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="litellm_port" value="LiteLLM&#xa;4000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f57f17;strokeColor=#e65100;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_int_content">
+          <mxGeometry x="160" y="20" width="120" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="whisper_port" value="Whisper&#xa;9000" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00838f;strokeColor=#006064;fontColor=#ffffff" vertex="1" parent="z_int_content">
+          <mxGeometry x="300" y="20" width="110" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="kokoro_port" value="Kokoro&#xa;8880" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00838f;strokeColor=#006064;fontColor=#ffffff" vertex="1" parent="z_int_content">
+          <mxGeometry x="430" y="20" width="110" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="searxng_port" value="SearXNG&#xa;8888" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00838f;strokeColor=#006064;fontColor=#ffffff" vertex="1" parent="z_int_content">
+          <mxGeometry x="20" y="100" width="110" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="comfyui_port" value="ComfyUI&#xa;8188" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00838f;strokeColor=#006064;fontColor=#ffffff" vertex="1" parent="z_int_content">
+          <mxGeometry x="150" y="100" width="110" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="qdrant_port" value="Qdrant&#xa;6333" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00838f;strokeColor=#006064;fontColor=#ffffff" vertex="1" parent="z_int_content">
+          <mxGeometry x="280" y="100" width="110" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="tei_port" value="TEI&#xa;8090" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00838f;strokeColor=#006064;fontColor=#ffffff" vertex="1" parent="z_int_content">
+          <mxGeometry x="410" y="100" width="110" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="docling_port" value="Docling&#xa;5001" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00838f;strokeColor=#006064;fontColor=#ffffff" vertex="1" parent="z_int_content">
+          <mxGeometry x="20" y="180" width="110" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="hermes_port" value="Hermes&#xa;8642" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6a1b9a;strokeColor=#4a148c;fontColor=#ffffff" vertex="1" parent="z_int_content">
+          <mxGeometry x="150" y="180" width="110" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="privshield_port" value="Privacy&#xa;Shield&#xa;8085" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#37474f;strokeColor=#263238;fontColor=#ffffff" vertex="1" parent="z_int_content">
+          <mxGeometry x="280" y="180" width="110" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="cadvisor_port" value="cAdvisor&#xa;8083" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4e342e;strokeColor=#3e2723;fontColor=#ffffff" vertex="1" parent="z_int_content">
+          <mxGeometry x="410" y="180" width="110" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== ZONE: SELF-MANAGED AUTH ===== -->
+        <mxCell id="zone_self" value="Self-Managed Auth&#xa;(127.0.0.1)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#ad1457;resizeParent=1;resizeParentMax=true;containerType=swimlane;fontStyle=1;fontColor=#ad1457;align=left;spacingLeft=10;indent=10;marginBottom=10" vertex="1" parent="1">
+          <mxGeometry x="1580" y="20" width="200" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_self_content" value="" style="fillColor=none;strokeColor=none" vertex="1" parent="zone_self">
+          <mxGeometry y="50" width="200" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="vaultwarden_port" value="Vaultwarden&#xa;8222" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#37474f;strokeColor=#263238;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_self_content">
+          <mxGeometry x="20" y="20" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== ZONE: HOST NETWORK ===== -->
+        <mxCell id="zone_host" value="Host Network&#xa;(network_mode: host)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#ffebee;strokeColor=#c62828;resizeParent=1;resizeParentMax=true;containerType=swimlane;fontStyle=1;fontColor=#c62828;align=left;spacingLeft=10;indent=10;marginBottom=10" vertex="1" parent="1">
+          <mxGeometry x="1580" y="180" width="200" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_host_content" value="" style="fillColor=none;strokeColor=none" vertex="1" parent="zone_host">
+          <mxGeometry y="50" width="200" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="nodeexp_port" value="Node Exp&#xa;9100" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c62828;strokeColor=#b71c1c;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_host_content">
+          <mxGeometry x="20" y="20" width="140" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== ZONE: PROM/GRAFANA ===== -->
+        <mxCell id="zone_prom" value="Observability&#xa;(127.0.0.1)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#2e7d32;resizeParent=1;resizeParentMax=true;containerType=swimlane;fontStyle=1;fontColor=#2e7d32;align=left;spacingLeft=10;indent=10;marginBottom=10" vertex="1" parent="1">
+          <mxGeometry x="460" y="320" width="520" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_prom_content" value="" style="fillColor=none;strokeColor=none" vertex="1" parent="zone_prom">
+          <mxGeometry y="50" width="520" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="prom_port" value="Prometheus&#xa;9090" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1b5e20;strokeColor=#1b5e20;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_prom_content">
+          <mxGeometry x="20" y="20" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="prom_note" value="Authelia protected&#xa;Scrapes: llama-server, litellm,&#xa;hermes, n8n, cAdvisor, nodeexp" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#666666;fontSize=9" vertex="1" parent="z_prom_content">
+          <mxGeometry x="180" y="20" width="320" height="50" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== ZONE: DREAMFORGE ===== -->
+        <mxCell id="zone_ape" value="Agent / Token Auth&#xa;(127.0.0.1)" style="swimlane;horizontal=0;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#6a1b9a;resizeParent=1;resizeParentMax=true;containerType=swimlane;fontStyle=1;fontColor=#6a1b9a;align=left;spacingLeft=10;indent=10;marginBottom=10" vertex="1" parent="1">
+          <mxGeometry x="1000" y="320" width="560" height="140" as="geometry"/>
+        </mxCell>
+        <mxCell id="z_ape_content" value="" style="fillColor=none;strokeColor=none" vertex="1" parent="zone_ape">
+          <mxGeometry y="50" width="560" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="dreamforge_port" value="DreamForge&#xa;3010" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6a1b9a;strokeColor=#4a148c;fontColor=#ffffff;fontStyle=1" vertex="1" parent="z_ape_content">
+          <mxGeometry x="20" y="20" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="ape_port" value="APE&#xa;7890" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6a1b9a;strokeColor=#4a148c;fontColor=#ffffff" vertex="1" parent="z_ape_content">
+          <mxGeometry x="180" y="20" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="forgejo_ssh" value="Forgejo SSH&#xa;2222" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#37474f;strokeColor=#263238;fontColor=#ffffff" vertex="1" parent="z_ape_content">
+          <mxGeometry x="340" y="20" width="140" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="auth_note" value="Bearer token auth&#xa;APE audits tool calls" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#666666;fontSize=9" vertex="1" parent="z_ape_content">
+          <mxGeometry x="20" y="80" width="200" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="ssh_note" value="Bound to 127.0.0.1&#xa;Use Caddy TCP proxy or tunnel" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#666666;fontSize=9" vertex="1" parent="z_ape_content">
+          <mxGeometry x="340" y="80" width="200" height="30" as="geometry"/>
+        </mxCell>
+
+        <!-- ===== FOOTER LEGEND ===== -->
+        <mxCell id="legend" value="Legend" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontStyle=1;fontColor=#333333;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="20" y="480" width="80" height="20" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg1" value="Caddy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e65100;strokeColor=#bf360c;fontColor=#ffffff;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="20" y="510" width="80" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg1txt" value="Binds 0.0.0.0 — LAN accessible" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#333333" vertex="1" parent="1">
+          <mxGeometry x="110" y="510" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg2" value="127.0.0.1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2e7d32;strokeColor=#1b5e20;fontColor=#ffffff;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="20" y="550" width="80" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg2txt" value="Localhost only — no external access" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#333333" vertex="1" parent="1">
+          <mxGeometry x="110" y="550" width="220" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg3" value="Host" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#c62828;strokeColor=#b71c1c;fontColor=#ffffff;fontSize=10" vertex="1" parent="1">
+          <mxGeometry x="20" y="590" width="80" height="30" as="geometry"/>
+        </mxCell>
+        <mxCell id="leg3txt" value="network_mode: host — no Docker port mapping" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;fontColor=#333333" vertex="1" parent="1">
+          <mxGeometry x="110" y="590" width="300" height="30" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

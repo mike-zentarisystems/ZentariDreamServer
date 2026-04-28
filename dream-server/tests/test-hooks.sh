@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server — Lifecycle Hooks Test Suite
+# Dream Server â€” Lifecycle Hooks Test Suite
 # ============================================================================
 # Tests hook resolution priority in service-registry.sh (SERVICE_SETUP_HOOKS)
 # and validates the _run_hook helper pattern.
@@ -34,7 +34,7 @@ pass() {
 
 fail() {
     echo -e "  ${RED}FAIL${NC}  $1"
-    [[ -n "${2:-}" ]] && echo -e "        ${RED}→ $2${NC}"
+    [[ -n "${2:-}" ]] && echo -e "        ${RED}â†’ $2${NC}"
     FAIL=$((FAIL + 1))
 }
 
@@ -46,7 +46,7 @@ skip() {
 header() {
     echo ""
     echo -e "${BOLD}${CYAN}[$1]${NC} ${BOLD}$2${NC}"
-    echo -e "${CYAN}$(printf '%.0s─' {1..60})${NC}"
+    echo -e "${CYAN}$(printf '%.0sâ”€' {1..60})${NC}"
 }
 
 # Check prerequisites
@@ -136,7 +136,7 @@ else
 fi
 
 # ============================================
-# TEST 3: No hook set → empty
+# TEST 3: No hook set â†’ empty
 # ============================================
 header "3/4" "No hook set returns empty"
 
@@ -156,7 +156,7 @@ sr_load 2>/dev/null
 
 HOOK_PATH3="${SERVICE_SETUP_HOOKS[test-ext3]:-}"
 if [[ -z "$HOOK_PATH3" ]]; then
-    pass "No hook set → empty string"
+    pass "No hook set â†’ empty string"
 else
     fail "Expected empty hook path" "got: $HOOK_PATH3"
 fi
@@ -217,9 +217,9 @@ fi
 # Summary
 # ============================================
 echo ""
-echo -e "${BOLD}════════════════════════════════════════${NC}"
+echo -e "${BOLD}â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
 TOTAL=$((PASS + FAIL + SKIP))
 echo -e "  ${GREEN}$PASS passed${NC}  ${RED}$FAIL failed${NC}  ${YELLOW}$SKIP skipped${NC}  ($TOTAL total)"
-echo -e "${BOLD}════════════════════════════════════════${NC}"
+echo -e "${BOLD}â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
 
 [[ $FAIL -eq 0 ]]

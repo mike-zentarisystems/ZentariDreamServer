@@ -21,13 +21,13 @@ NC='\033[0m'
 PASSED=0
 FAILED=0
 
-pass() { echo -e "  ${GREEN}✓ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
-fail() { echo -e "  ${RED}✗ FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
+pass() { echo -e "  ${GREEN}âœ“ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
+fail() { echo -e "  ${RED}âœ— FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
 
 echo ""
-echo "╔═══════════════════════════════════════════════╗"
-echo "║   GPU Backend Validation Test                 ║"
-echo "╚═══════════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘   GPU Backend Validation Test                 â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
 # 1. SERVICE_GPU_BACKENDS array is declared in service-registry.sh

@@ -13,9 +13,9 @@ GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-pass() { echo -e "${GREEN}✓${NC} $1"; }
-fail() { echo -e "${RED}✗${NC} $1"; exit 1; }
-info() { echo -e "${BLUE}ℹ${NC} $1"; }
+pass() { echo -e "${GREEN}âœ“${NC} $1"; }
+fail() { echo -e "${RED}âœ—${NC} $1"; exit 1; }
+info() { echo -e "${BLUE}â„¹${NC} $1"; }
 
 [[ -x "$DREAM_BACKUP" ]] || fail "dream-backup.sh not found or not executable"
 [[ -x "$DREAM_RESTORE" ]] || fail "dream-restore.sh not found or not executable"
@@ -77,4 +77,4 @@ pass "All expected files/dirs present after restore"
 pass "All file contents match after restore"
 
 echo ""
-echo -e "${GREEN}✓ Round-trip backup/restore test passed${NC}"
+echo -e "${GREEN}âœ“ Round-trip backup/restore test passed${NC}"

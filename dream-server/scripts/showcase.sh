@@ -29,7 +29,7 @@ if [[ -f "$DREAM_DIR/lib/service-registry.sh" ]]; then
     sr_resolve_ports
 fi
 
-# URLs — resolved from registry
+# URLs â€” resolved from registry
 LLM_URL="${LLM_URL:-http://localhost:${SERVICE_PORTS[llama-server]:-11434}}"
 WHISPER_URL="${WHISPER_URL:-http://localhost:${SERVICE_PORTS[whisper]:-9000}}"
 TTS_URL="${TTS_URL:-http://localhost:${SERVICE_PORTS[tts]:-8880}}"
@@ -42,21 +42,21 @@ clear_screen() {
 
 print_header() {
     echo ""
-    echo -e "${BOLD}${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${BOLD}${CYAN}║               Dream Server Interactive Showcase              ║${NC}"
-    echo -e "${BOLD}${CYAN}╚══════════════════════════════════════════════════════════════╝${NC}"
+    echo -e "${BOLD}${CYAN}â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—${NC}"
+    echo -e "${BOLD}${CYAN}â•‘               Dream Server Interactive Showcase              â•‘${NC}"
+    echo -e "${BOLD}${CYAN}â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
     echo ""
 }
 
 print_menu() {
     echo -e "${BOLD}What would you like to try?${NC}"
     echo ""
-    echo -e "  ${CYAN}[1]${NC} 💬 Chat with AI"
-    echo -e "  ${CYAN}[2]${NC} 🎤 Voice-to-Voice Demo"
-    echo -e "  ${CYAN}[3]${NC} 📚 Document Q&A (RAG)"
-    echo -e "  ${CYAN}[4]${NC} 💻 Code Assistant"
-    echo -e "  ${CYAN}[5]${NC} 📊 System Status"
-    echo -e "  ${CYAN}[Q]${NC} 🚪 Quit"
+    echo -e "  ${CYAN}[1]${NC} ðŸ’¬ Chat with AI"
+    echo -e "  ${CYAN}[2]${NC} ðŸŽ¤ Voice-to-Voice Demo"
+    echo -e "  ${CYAN}[3]${NC} ðŸ“š Document Q&A (RAG)"
+    echo -e "  ${CYAN}[4]${NC} ðŸ’» Code Assistant"
+    echo -e "  ${CYAN}[5]${NC} ðŸ“Š System Status"
+    echo -e "  ${CYAN}[Q]${NC} ðŸšª Quit"
     echo ""
     echo -ne "${BOLD}Select an option: ${NC}"
 }
@@ -69,8 +69,8 @@ check_service() {
 
 demo_chat() {
     clear_screen
-    echo -e "${BOLD}${MAGENTA}💬 Chat with AI${NC}"
-    echo -e "${DIM}────────────────────────────────────────${NC}"
+    echo -e "${BOLD}${MAGENTA}ðŸ’¬ Chat with AI${NC}"
+    echo -e "${DIM}â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€${NC}"
     echo ""
     
     if ! check_service "$LLM_URL" "/health"; then
@@ -112,8 +112,8 @@ demo_chat() {
 
 demo_voice() {
     clear_screen
-    echo -e "${BOLD}${MAGENTA}🎤 Voice-to-Voice Demo${NC}"
-    echo -e "${DIM}────────────────────────────────────────${NC}"
+    echo -e "${BOLD}${MAGENTA}ðŸŽ¤ Voice-to-Voice Demo${NC}"
+    echo -e "${DIM}â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€${NC}"
     echo ""
     
     if ! check_service "$WHISPER_URL" "/health"; then
@@ -161,8 +161,8 @@ demo_voice() {
 
 demo_rag() {
     clear_screen
-    echo -e "${BOLD}${MAGENTA}📚 Document Q&A (RAG Demo)${NC}"
-    echo -e "${DIM}────────────────────────────────────────${NC}"
+    echo -e "${BOLD}${MAGENTA}ðŸ“š Document Q&A (RAG Demo)${NC}"
+    echo -e "${DIM}â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€${NC}"
     echo ""
     
     if ! check_service "$LLM_URL" "/health"; then
@@ -196,7 +196,7 @@ demo_rag() {
     echo -e "${CYAN}Indexing document...${NC}"
     
     # Simple RAG demo using direct LLM (without full workflow for CLI demo)
-    echo -e "${GREEN}✓ Document loaded (${#DOC_CONTENT} chars)${NC}"
+    echo -e "${GREEN}âœ“ Document loaded (${#DOC_CONTENT} chars)${NC}"
     echo ""
     echo -e "${DIM}Ask questions about the document (or 'back' to return):${NC}"
     echo ""
@@ -235,8 +235,8 @@ demo_rag() {
 
 demo_code() {
     clear_screen
-    echo -e "${BOLD}${MAGENTA}💻 Code Assistant${NC}"
-    echo -e "${DIM}────────────────────────────────────────${NC}"
+    echo -e "${BOLD}${MAGENTA}ðŸ’» Code Assistant${NC}"
+    echo -e "${DIM}â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€${NC}"
     echo ""
     
     if ! check_service "$LLM_URL" "/health"; then
@@ -310,8 +310,8 @@ demo_code() {
 
 show_status() {
     clear_screen
-    echo -e "${BOLD}${MAGENTA}📊 System Status${NC}"
-    echo -e "${DIM}────────────────────────────────────────${NC}"
+    echo -e "${BOLD}${MAGENTA}ðŸ“Š System Status${NC}"
+    echo -e "${DIM}â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€${NC}"
     echo ""
     
     echo -e "${BOLD}Services:${NC}"
@@ -324,9 +324,9 @@ show_status() {
         [[ "$_port" == "0" ]] && continue
         _url="http://localhost:${_port}"
         if check_service "$_url" "$_health"; then
-            echo -e "  ${GREEN}✓${NC} $_name ${DIM}($_url)${NC}"
+            echo -e "  ${GREEN}âœ“${NC} $_name ${DIM}($_url)${NC}"
         else
-            echo -e "  ${RED}✗${NC} $_name ${DIM}($_url)${NC}"
+            echo -e "  ${RED}âœ—${NC} $_name ${DIM}($_url)${NC}"
         fi
     done
     
@@ -370,7 +370,7 @@ while true; do
         5) show_status ;;
         q|quit|exit) 
             echo ""
-            echo -e "${GREEN}Thanks for trying Dream Server! 🌙${NC}"
+            echo -e "${GREEN}Thanks for trying Dream Server! ðŸŒ™${NC}"
             echo ""
             exit 0
             ;;

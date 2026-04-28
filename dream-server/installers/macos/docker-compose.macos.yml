@@ -10,7 +10,7 @@ services:
     deploy:
       replicas: 0    # Disabled -- running natively on macOS host via Metal
 
-  # Readiness sidecar — polls native llama-server on the macOS host.
+  # Readiness sidecar â€” polls native llama-server on the macOS host.
   # Docker Compose cannot express depends_on for a host process, so this
   # lightweight container bridges the gap.  open-webui waits on its
   # healthcheck before starting.

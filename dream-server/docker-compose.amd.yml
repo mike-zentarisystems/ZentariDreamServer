@@ -1,4 +1,4 @@
-# Dream Server — AMD GPU Overlay (Lemonade inference backend)
+# Dream Server â€” AMD GPU Overlay (Lemonade inference backend)
 # Lemonade provides optimized local AI inference with Vulkan, ROCm, and NPU support.
 # ComfyUI GPU config moved to extensions/services/comfyui/compose.amd.yaml
 # Use with: docker compose -f docker-compose.base.yml -f docker-compose.amd.yml up -d

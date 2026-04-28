@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Background Task Management
+# Dream Server Installer â€” Background Task Management
 # ============================================================================
 # Part of: installers/lib/
 # Purpose: Track and verify completion of background processes

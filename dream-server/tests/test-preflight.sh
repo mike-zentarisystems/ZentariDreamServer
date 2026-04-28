@@ -6,7 +6,7 @@
 # project's shell style requirements, and encodes the correct LLM port
 # default (8080, not 11434).
 #
-# These tests are static (no running Docker) — they inspect the script itself.
+# These tests are static (no running Docker) â€” they inspect the script itself.
 # Integration-level tests (actual service probing) are covered in
 # tests/test-health-check.sh and tests/test-integration.sh.
 #
@@ -28,17 +28,17 @@ NC='\033[0m'
 PASSED=0
 FAILED=0
 
-pass() { printf "  ${GREEN}✓ PASS${NC} %s\n" "$1"; PASSED=$((PASSED + 1)); }
-fail() { printf "  ${RED}✗ FAIL${NC} %s\n" "$1"; FAILED=$((FAILED + 1)); }
-skip() { printf "  ${YELLOW}⊘ SKIP${NC} %s\n" "$1"; }
+pass() { printf "  ${GREEN}âœ“ PASS${NC} %s\n" "$1"; PASSED=$((PASSED + 1)); }
+fail() { printf "  ${RED}âœ— FAIL${NC} %s\n" "$1"; FAILED=$((FAILED + 1)); }
+skip() { printf "  ${YELLOW}âŠ˜ SKIP${NC} %s\n" "$1"; }
 
 echo ""
-echo "╔════════════════════════════════════════════════╗"
-echo "║   dream-preflight.sh Test Suite               ║"
-echo "╚════════════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘   dream-preflight.sh Test Suite               â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
-# ── Static checks ──────────────────────────────────────────────────────────
+# â”€â”€ Static checks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 # 1. Script exists
 if [[ ! -f "$PREFLIGHT" ]]; then
@@ -60,7 +60,7 @@ fi
 if grep -q 'set -euo pipefail' "$PREFLIGHT"; then
     pass "set -euo pipefail present"
 else
-    fail "set -euo pipefail missing — CONTRIBUTING.md requires this in all bash files"
+    fail "set -euo pipefail missing â€” CONTRIBUTING.md requires this in all bash files"
 fi
 
 # 4. LLM port default is 8080, NOT 11434
@@ -71,12 +71,12 @@ fi
 if grep -q 'LLAMA_SERVER_PORT:-8080' "$PREFLIGHT"; then
     pass "LLM port fallback is 8080 (aligns with config/ports.json)"
 else
-    fail "LLM port fallback is not 8080 — check the OLLAMA_PORT expansion in dream-preflight.sh"
+    fail "LLM port fallback is not 8080 â€” check the OLLAMA_PORT expansion in dream-preflight.sh"
 fi
 
 # 5. Does NOT contain the old wrong fallback of 11434 in port resolution
 if grep -q 'LLAMA_SERVER_PORT:-11434' "$PREFLIGHT"; then
-    fail "Old wrong LLM port fallback 11434 still present — should be 8080"
+    fail "Old wrong LLM port fallback 11434 still present â€” should be 8080"
 else
     pass "Old wrong LLM port fallback 11434 is gone"
 fi
@@ -92,14 +92,14 @@ fi
 if grep -q '/sys/class/drm/card\*/device' "$PREFLIGHT"; then
     pass "AMD sysfs scan uses glob (all DRM cards)"
 else
-    fail "AMD sysfs scan missing wildcard — may miss some AMD GPUs"
+    fail "AMD sysfs scan missing wildcard â€” may miss some AMD GPUs"
 fi
 
 # 8. Script uses BASH_SOURCE for portability (not $0)
 if grep -q 'BASH_SOURCE' "$PREFLIGHT"; then
     pass "Uses BASH_SOURCE for script dir resolution"
 else
-    fail "Missing BASH_SOURCE — \$0 breaks when script is sourced"
+    fail "Missing BASH_SOURCE â€” \$0 breaks when script is sourced"
 fi
 
 # 9. Summary section has all expected check sections
@@ -120,10 +120,10 @@ else
     fail "Does not probe actual Docker port mapping"
 fi
 
-# ── Runtime smoke test (no Docker required) ─────────────────────────────────
+# â”€â”€ Runtime smoke test (no Docker required) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 # 11. Script runs to completion without unbound variable or syntax errors
-#     (Services won't be up, so we expect exit 1 — that is correct behavior)
+#     (Services won't be up, so we expect exit 1 â€” that is correct behavior)
 set +e
 err_output=$(
     SERVICE_HOST=localhost \
@@ -145,10 +145,10 @@ fi
 if [[ "$run_exit" -eq 0 ]] || [[ "$run_exit" -eq 1 ]]; then
     pass "Exit code is valid (0=pass, 1=fail): $run_exit"
 else
-    fail "Unexpected exit code $run_exit — script may have crashed"
+    fail "Unexpected exit code $run_exit â€” script may have crashed"
 fi
 
-# ── Summary ────────────────────────────────────────────────────────────────
+# â”€â”€ Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 echo ""
 echo "Result: $PASSED passed, $FAILED failed"

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Phase 07: Developer Tools
+# Dream Server Installer â€” Phase 07: Developer Tools
 # ============================================================================
 # Part of: installers/phases/
 # Purpose: Install Claude Code, Codex CLI, and OpenCode
@@ -45,7 +45,7 @@ else
                     sudo zypper --non-interactive install nodejs 2>&1 | tee -a "$LOG_FILE" || true
                 ;;
             *)
-                ai_warn "Unknown package manager — cannot install Node.js automatically"
+                ai_warn "Unknown package manager â€” cannot install Node.js automatically"
                 ;;
         esac
     fi
@@ -64,7 +64,7 @@ else
         if ! command -v claude &> /dev/null; then
             npm install -g @anthropic-ai/claude-code >> "$LOG_FILE" 2>&1 && \
                 ai_ok "Claude Code installed (run 'claude' to start)" || \
-                ai_warn "Claude Code install failed — install later with: npm i -g @anthropic-ai/claude-code"
+                ai_warn "Claude Code install failed â€” install later with: npm i -g @anthropic-ai/claude-code"
         else
             ai_ok "Claude Code already installed"
         fi
@@ -73,7 +73,7 @@ else
         if ! command -v codex &> /dev/null; then
             npm install -g @openai/codex >> "$LOG_FILE" 2>&1 && \
                 ai_ok "Codex CLI installed (run 'codex' to start)" || \
-                ai_warn "Codex CLI install failed — install later with: npm i -g @openai/codex"
+                ai_warn "Codex CLI install failed â€” install later with: npm i -g @openai/codex"
         else
             ai_ok "Codex CLI already installed"
         fi
@@ -84,18 +84,18 @@ else
             ai "Added ~/.npm-global/bin to PATH in ~/.bashrc"
         fi
     else
-        ai_warn "npm not available — skipping Claude Code and Codex CLI install"
+        ai_warn "npm not available â€” skipping Claude Code and Codex CLI install"
         ai "  Install later: npm i -g @anthropic-ai/claude-code @openai/codex"
     fi
 
-    # ── OpenCode (local agentic coding platform) ──
+    # â”€â”€ OpenCode (local agentic coding platform) â”€â”€
     if ! command -v opencode &> /dev/null && [[ ! -x "$HOME/.opencode/bin/opencode" ]]; then
         ai "Installing OpenCode..."
         tmpfile=$(mktemp /tmp/opencode-install.XXXXXX.sh)
         if curl -fsSL --max-time 300 https://opencode.ai/install -o "$tmpfile" 2>/dev/null && bash "$tmpfile" >> "$LOG_FILE" 2>&1; then
             ai_ok "OpenCode installed (~/.opencode/bin/opencode)"
         else
-            ai_warn "OpenCode install failed — install later with: curl -fsSL https://opencode.ai/install | bash"
+            ai_warn "OpenCode install failed â€” install later with: curl -fsSL https://opencode.ai/install | bash"
         fi
         rm -f "$tmpfile"
     else
@@ -109,8 +109,8 @@ else
         # Read OLLAMA_PORT and DREAM_MODE from .env generated in phase 06
         if [[ -f "$INSTALL_DIR/.env" ]]; then
             [[ -z "${OLLAMA_PORT:-}" ]] && OLLAMA_PORT=$(grep -m1 '^OLLAMA_PORT=' "$INSTALL_DIR/.env" | cut -d= -f2-)
-            # Always re-read DREAM_MODE from .env — Phase 06 may have changed it
-            # (e.g. "local" → "lemonade" for AMD) but the shell variable is stale.
+            # Always re-read DREAM_MODE from .env â€” Phase 06 may have changed it
+            # (e.g. "local" â†’ "lemonade" for AMD) but the shell variable is stale.
             DREAM_MODE=$(grep -m1 '^DREAM_MODE=' "$INSTALL_DIR/.env" | cut -d= -f2-)
             [[ -z "${LITELLM_KEY:-}" ]] && LITELLM_KEY=$(grep -m1 '^LITELLM_KEY=' "$INSTALL_DIR/.env" | cut -d= -f2-)
         fi
@@ -172,7 +172,7 @@ OPENCODE_EOF
                     _opencode_updated=true
                 else
                     rm -f "$_opencode_tmp"
-                    ai_warn "OpenCode config jq rewrite failed (existing file unparseable) — regenerating from template"
+                    ai_warn "OpenCode config jq rewrite failed (existing file unparseable) â€” regenerating from template"
                 fi
             else
                 # Fallback without jq: narrow sed that only matches the quoted value,
@@ -190,7 +190,7 @@ OPENCODE_EOF
                 ai_ok "OpenCode config regenerated from template (recovered from corruption)"
             fi
         fi
-        # OpenCode reads config.json, not opencode.json — always sync
+        # OpenCode reads config.json, not opencode.json â€” always sync
         cp "$OPENCODE_CONFIG_DIR/opencode.json" "$OPENCODE_CONFIG_DIR/config.json"
 
         # Install OpenCode Web UI as user-level systemd service (no sudo required)
@@ -219,7 +219,7 @@ OPENCODE_EOF
     fi
 fi
 
-# ── Dream Host Agent (extension lifecycle management) ──
+# â”€â”€ Dream Host Agent (extension lifecycle management) â”€â”€
 if [[ -f "$INSTALL_DIR/bin/dream-host-agent.py" ]]; then
     AGENT_PYTHON="$(command -v python3)"
     if [[ -n "$AGENT_PYTHON" ]]; then
@@ -230,7 +230,7 @@ if [[ -f "$INSTALL_DIR/bin/dream-host-agent.py" ]]; then
             if [[ -f "$INSTALL_DIR/scripts/systemd/dream-host-agent.service" ]]; then
                 svc_tmp="/tmp/dream-host-agent.service.$$"
                 cp "$INSTALL_DIR/scripts/systemd/dream-host-agent.service" "$svc_tmp"
-                # Substitute placeholders — use sed directly with | delimiter
+                # Substitute placeholders â€” use sed directly with | delimiter
                 # (paths contain / but never |, so | is a safe delimiter)
                 sed -i "s|__INSTALL_DIR__|${INSTALL_DIR}|g" "$svc_tmp" 2>/dev/null || \
                     sed -i '' "s|__INSTALL_DIR__|${INSTALL_DIR}|g" "$svc_tmp"
@@ -240,7 +240,7 @@ if [[ -f "$INSTALL_DIR/bin/dream-host-agent.py" ]]; then
                     sed -i '' "s|__PYTHON3__|${AGENT_PYTHON}|g" "$svc_tmp"
                 # Verify placeholders were actually rendered
                 if grep -q '__INSTALL_DIR__\|__HOME__\|__PYTHON3__' "$svc_tmp"; then
-                    ai_warn "Host agent systemd unit has unrendered placeholders — check $svc_tmp"
+                    ai_warn "Host agent systemd unit has unrendered placeholders â€” check $svc_tmp"
                 else
                     cp "$svc_tmp" "$SYSTEMD_USER_DIR/dream-host-agent.service"
                 fi
@@ -249,7 +249,7 @@ if [[ -f "$INSTALL_DIR/bin/dream-host-agent.py" ]]; then
             systemctl --user daemon-reload 2>/dev/null || true
             systemctl --user enable --now dream-host-agent.service >> "$LOG_FILE" 2>&1 && \
                 ai_ok "Dream host agent installed (systemd --user, port 7710)" || \
-                ai_warn "Dream host agent service failed to start — run: dream agent start"
+                ai_warn "Dream host agent service failed to start â€” run: dream agent start"
             # Force-restart so the running process matches the binary the installer
             # just rewrote. enable --now is a no-op when the unit was already active,
             # which would leave an old daemon holding a deleted inode and serving
@@ -259,15 +259,15 @@ if [[ -f "$INSTALL_DIR/bin/dream-host-agent.py" ]]; then
             if systemctl --user is-enabled dream-host-agent.service >/dev/null 2>&1; then
                 systemctl --user restart dream-host-agent.service >> "$LOG_FILE" 2>&1 && \
                     ai_ok "Dream host agent restarted (loaded new binary)" || \
-                    ai_warn "Dream host agent restart failed (non-fatal) — run: systemctl --user restart dream-host-agent.service"
+                    ai_warn "Dream host agent restart failed (non-fatal) â€” run: systemctl --user restart dream-host-agent.service"
             fi
             loginctl enable-linger "$(whoami)" 2>/dev/null || \
                 sudo -n loginctl enable-linger "$(whoami)" 2>/dev/null || true
         else
-            ai_warn "No systemd detected — dream host agent not auto-installed."
+            ai_warn "No systemd detected â€” dream host agent not auto-installed."
             ai_warn "  Start manually: dream agent start"
         fi
     else
-        ai_warn "python3 not found — dream host agent not installed"
+        ai_warn "python3 not found â€” dream host agent not installed"
     fi
 fi

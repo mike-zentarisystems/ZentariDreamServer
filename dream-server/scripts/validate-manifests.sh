@@ -70,11 +70,11 @@ importlib.import_module("yaml")
 importlib.import_module("jsonschema")
 PY
   then
-    warn "python3 yaml/jsonschema modules not available — skipping schema validation (compatibility checks only)"
+    warn "python3 yaml/jsonschema modules not available â€” skipping schema validation (compatibility checks only)"
     PYTHON_OK=false
   fi
 else
-  warn "python3 not found — skipping schema validation (compatibility checks only)"
+  warn "python3 not found â€” skipping schema validation (compatibility checks only)"
 fi
 
 py_exit=0
@@ -212,7 +212,7 @@ for service_dir in sorted(ext_dir.iterdir()):
 # Print human-readable summary
 print()
 print("Extension manifest validation")
-print("────────────────────────────")
+print("â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€")
 if not results:
     print("No extension manifests found.")
     sys.exit(0)

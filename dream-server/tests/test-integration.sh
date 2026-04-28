@@ -4,12 +4,12 @@
 #
 # Usage: ./tests/test-integration.sh [--verbose] [--quick]
 
-# Note: Intentionally NOT using set -e here — test functions return 1 on failure
+# Note: Intentionally NOT using set -e here â€” test functions return 1 on failure
 # and we want to continue running all tests, tracking results via PASSED/FAILED counters
 set -uo pipefail
 
 # Check for required dependencies
-command -v jq >/dev/null 2>&1 || { echo -e "${RED}✗${NC} jq is required but not installed. Install with: apt-get install jq (Debian/Ubuntu) or brew install jq (macOS)"; exit 1; }
+command -v jq >/dev/null 2>&1 || { echo -e "${RED}âœ—${NC} jq is required but not installed. Install with: apt-get install jq (Debian/Ubuntu) or brew install jq (macOS)"; exit 1; }
 
 # Colors
 RED='\033[0;31m'
@@ -41,10 +41,10 @@ for arg in "$@"; do
 done
 
 # Logging
-log_info() { echo -e "${BLUE}ℹ${NC} $1"; }
-log_pass() { echo -e "${GREEN}✓${NC} $1"; ((PASSED++)); }
-log_fail() { echo -e "${RED}✗${NC} $1"; ((FAILED++)); }
-log_skip() { echo -e "${YELLOW}○${NC} $1 (skipped)"; ((SKIPPED++)); }
+log_info() { echo -e "${BLUE}â„¹${NC} $1"; }
+log_pass() { echo -e "${GREEN}âœ“${NC} $1"; ((PASSED++)); }
+log_fail() { echo -e "${RED}âœ—${NC} $1"; ((FAILED++)); }
+log_skip() { echo -e "${YELLOW}â—‹${NC} $1 (skipped)"; ((SKIPPED++)); }
 log_verbose() { $VERBOSE && echo -e "  ${NC}$1" || true; }
 
 # Test helpers
@@ -125,15 +125,15 @@ test_llm() {
 
 # Header
 echo ""
-echo -e "${BLUE}╔══════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${BLUE}║${NC}  Dream Server Integration Tests                              ${BLUE}║${NC}"
-echo -e "${BLUE}╚══════════════════════════════════════════════════════════════╝${NC}"
+echo -e "${BLUE}â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—${NC}"
+echo -e "${BLUE}â•‘${NC}  Dream Server Integration Tests                              ${BLUE}â•‘${NC}"
+echo -e "${BLUE}â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
 echo ""
 
 # ========================================
 # Dashboard API Tests
 # ========================================
-echo -e "${BLUE}▸ Dashboard API${NC}"
+echo -e "${BLUE}â–¸ Dashboard API${NC}"
 
 test_http "API health check" "http://localhost:3002/health"
 test_json "API status endpoint" "http://localhost:3002/api/status" '.gpu or .services'
@@ -144,7 +144,7 @@ test_json "Service list" "http://localhost:3002/services" '. | length > 0'
 # Model API Tests
 # ========================================
 echo ""
-echo -e "${BLUE}▸ Model Manager API${NC}"
+echo -e "${BLUE}â–¸ Model Manager API${NC}"
 
 test_json "Model catalog" "http://localhost:3002/api/models" '.models | length > 0'
 test_json "VRAM info in catalog" "http://localhost:3002/api/models" '.gpu.vramTotal > 0'
@@ -153,7 +153,7 @@ test_json "VRAM info in catalog" "http://localhost:3002/api/models" '.gpu.vramTo
 # Workflow API Tests
 # ========================================
 echo ""
-echo -e "${BLUE}▸ Workflow API${NC}"
+echo -e "${BLUE}â–¸ Workflow API${NC}"
 
 test_json "Workflow catalog" "http://localhost:3002/api/workflows" '.workflows | length > 0'
 test_json "Workflow categories" "http://localhost:3002/api/workflows" '.categories | keys | length > 0'
@@ -162,7 +162,7 @@ test_json "Workflow categories" "http://localhost:3002/api/workflows" '.categori
 # Voice API Tests
 # ========================================
 echo ""
-echo -e "${BLUE}▸ Voice API${NC}"
+echo -e "${BLUE}â–¸ Voice API${NC}"
 
 test_json "Voice status" "http://localhost:3002/api/voice/status" '.services'
 
@@ -170,7 +170,7 @@ test_json "Voice status" "http://localhost:3002/api/voice/status" '.services'
 # Core Service Tests
 # ========================================
 echo ""
-echo -e "${BLUE}▸ Core Services${NC}"
+echo -e "${BLUE}â–¸ Core Services${NC}"
 
 # llama-server
 if ! $QUICK; then
@@ -190,7 +190,7 @@ test_http "Qdrant health" "http://localhost:6333/" || log_skip "Qdrant not runni
 # Voice Services Tests
 # ========================================
 echo ""
-echo -e "${BLUE}▸ Voice Services${NC}"
+echo -e "${BLUE}â–¸ Voice Services${NC}"
 
 test_http "Whisper STT" "http://localhost:9001/" || log_skip "Whisper not running"
 test_http "Kokoro TTS" "http://localhost:8880/" || log_skip "Kokoro not running"
@@ -200,7 +200,7 @@ test_http "LiveKit" "http://localhost:7880/" || log_skip "LiveKit not running"
 # Dashboard UI Tests
 # ========================================
 echo ""
-echo -e "${BLUE}▸ Dashboard UI${NC}"
+echo -e "${BLUE}â–¸ Dashboard UI${NC}"
 
 test_http "Dashboard serves" "http://localhost:3001/"
 
@@ -208,7 +208,7 @@ test_http "Dashboard serves" "http://localhost:3001/"
 # Summary
 # ========================================
 echo ""
-echo -e "${BLUE}═══════════════════════════════════════════════════════════════${NC}"
+echo -e "${BLUE}â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
 TOTAL=$((PASSED + FAILED + SKIPPED))
 echo -e "Results: ${GREEN}$PASSED passed${NC} / ${RED}$FAILED failed${NC} / ${YELLOW}$SKIPPED skipped${NC} ($TOTAL total)"
 

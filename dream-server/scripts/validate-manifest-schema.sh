@@ -45,21 +45,21 @@ EOF
 }
 
 error() {
-    echo -e "${RED}✗ ERROR:${NC} $*" >&2
+    echo -e "${RED}âœ— ERROR:${NC} $*" >&2
     ((ERRORS++))
 }
 
 warn() {
-    echo -e "${YELLOW}⚠ WARNING:${NC} $*" >&2
+    echo -e "${YELLOW}âš  WARNING:${NC} $*" >&2
     ((WARNINGS++))
 }
 
 info() {
-    [[ "$VERBOSE" == "true" ]] && echo -e "${BLUE}ℹ${NC} $*"
+    [[ "$VERBOSE" == "true" ]] && echo -e "${BLUE}â„¹${NC} $*"
 }
 
 success() {
-    [[ "$VERBOSE" == "true" ]] && echo -e "${GREEN}✓${NC} $*"
+    [[ "$VERBOSE" == "true" ]] && echo -e "${GREEN}âœ“${NC} $*"
 }
 
 # Validate a single manifest
@@ -182,16 +182,16 @@ done
 
 # Summary
 echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”"
 echo "Summary: $TOTAL total, $VALID valid, $ERRORS errors, $WARNINGS warnings"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”"
 
 if [[ $ERRORS -gt 0 ]]; then
-    echo -e "${RED}✗ FAILED${NC} ($ERRORS errors)"; exit 1
+    echo -e "${RED}âœ— FAILED${NC} ($ERRORS errors)"; exit 1
 elif [[ $WARNINGS -gt 0 && "$STRICT_MODE" == "true" ]]; then
-    echo -e "${YELLOW}✗ FAILED${NC} ($WARNINGS warnings in strict mode)"; exit 1
+    echo -e "${YELLOW}âœ— FAILED${NC} ($WARNINGS warnings in strict mode)"; exit 1
 elif [[ $WARNINGS -gt 0 ]]; then
-    echo -e "${YELLOW}⚠ Passed with warnings${NC}"; exit 0
+    echo -e "${YELLOW}âš  Passed with warnings${NC}"; exit 0
 else
-    echo -e "${GREEN}✓ All valid${NC}"; exit 0
+    echo -e "${GREEN}âœ“ All valid${NC}"; exit 0
 fi

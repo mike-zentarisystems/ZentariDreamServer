@@ -66,8 +66,8 @@ fi
 TEMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TEMP_DIR"' EXIT
 
-export OPENCLAW_DIR="$TEMP_DIR/openclaw"
-export SESSIONS_DIR="$OPENCLAW_DIR/agents/main/sessions"
+export HERMES_DIR="$TEMP_DIR/hermes-agent"
+export SESSIONS_DIR="$HERMES_DIR/sessions"
 
 cleanup_exit=0
 cleanup_output=$(bash "$SESSION_CLEANUP_SCRIPT" 2>&1) || cleanup_exit=$?

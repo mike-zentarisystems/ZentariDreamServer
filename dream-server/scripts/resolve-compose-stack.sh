@@ -171,7 +171,7 @@ if ext_dir.exists():
             service = manifest.get("service", {})
             # Check GPU backend compatibility
             backends = service.get("gpu_backends", ["amd", "nvidia"])
-            # "none" means CPU-only — compatible with any GPU backend
+            # "none" means CPU-only â€” compatible with any GPU backend
             if gpu_backend not in backends and "all" not in backends and "none" not in backends:
                 continue
             # Get compose file from manifest
@@ -181,16 +181,16 @@ if ext_dir.exists():
                 if compose_path.exists():
                     resolved.append(str(compose_path.relative_to(script_dir)))
                 elif (service_dir / f"{compose_rel}.disabled").exists():
-                    continue  # Service disabled — skip all overlays
+                    continue  # Service disabled â€” skip all overlays
                 else:
                     print(f"WARNING: {service_dir.name}: compose_file '{compose_rel}' not found, skipping overlays", file=sys.stderr)
-                    continue  # Base compose missing — skip GPU/mode overlays
-            # GPU-specific overlay (filesystem discovery — not in manifest)
+                    continue  # Base compose missing â€” skip GPU/mode overlays
+            # GPU-specific overlay (filesystem discovery â€” not in manifest)
             gpu_overlay = service_dir / f"compose.{gpu_backend}.yaml"
             if gpu_overlay.exists():
                 resolved.append(str(gpu_overlay.relative_to(script_dir)))
             
-            # Mode-specific overlay — depends_on for local/hybrid mode only.
+            # Mode-specific overlay â€” depends_on for local/hybrid mode only.
             # Skip on Apple Silicon: macOS runs llama-server natively on the host
             # (Docker service has replicas: 0), so `depends_on: llama-server:
             # service_healthy` inside compose.local.yaml overlays can never be
@@ -222,7 +222,7 @@ if ext_dir.exists():
                 else:
                     sys.exit(1)
             else:
-                # Unexpected error — re-raise to crash visibly
+                # Unexpected error â€” re-raise to crash visibly
                 raise
 
 # Discover enabled user-installed extensions (from dashboard portal)

@@ -14,6 +14,21 @@ model_list:
       model: anthropic/claude-haiku-4-5-20251001
       api_key: os.environ/ANTHROPIC_API_KEY
 
+  - model_name: minimax
+    litellm_params:
+      model: minimax/minimax-abb-1001
+      api_key: os.environ/MINIMAX_API_KEY
+
+  - model_name: openrouter
+    litellm_params:
+      model: openrouter/openai/gpt-4o
+      api_key: os.environ/OPENROUTER_API_KEY
+
+  - model_name: openrouter/*  # wildcard for openrouter provider routing
+    litellm_params:
+      model: openrouter/*
+      api_key: os.environ/OPENROUTER_API_KEY
+
 router_settings:
   routing_strategy: simple-shuffle
 

@@ -1,0 +1,41 @@
+services:
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:14.0
+    container_name: dream-forgejo
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+      - FORGEJO__database__DB_TYPE=sqlite3
+      - FORGEJO__database__PATH=/data/forgejo/forgejo.db
+      - FORGEJO__server__ROOT_URL=http://localhost:${FORGEJO_PORT:-3009}
+      - FORGEJO__server__HTTP_PORT=3000
+      - FORGEJO__server__SSH_PORT=${FORGEJO_SSH_PORT:-2222}
+      - FORGEJO__server__SSH_LISTEN_PORT=22
+      - FORGEJO__security__INSTALL_LOCK=false
+      - FORGEJO__service__DISABLE_REGISTRATION=true
+      - FORGEJO__service__REQUIRE_SIGNIN_VIEW=true
+      - FORGEJO__log__LEVEL=warn
+      - FORGEJO__admin__DEFAULT_EMAIL_NOTIFICATIONS=disabled
+    volumes:
+      - forgejo-data:/data
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${FORGEJO_PORT:-3009}:3000"
+      - "127.0.0.1:${FORGEJO_SSH_PORT:-2222}:22"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/healthz || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  forgejo-data:

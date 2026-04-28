@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server Installer — Bootstrap Model Library
+# Dream Server Installer â€” Bootstrap Model Library
 # ============================================================================
 # Part of: installers/lib/
 # Purpose: Constants and helpers for the bootstrap model fast-start pattern.
@@ -18,7 +18,7 @@ BOOTSTRAP_GGUF_URL="https://huggingface.co/unsloth/Qwen3.5-2B-GGUF/resolve/main/
 BOOTSTRAP_LLM_MODEL="qwen3.5-2b"
 BOOTSTRAP_MAX_CONTEXT=8192
 
-# bootstrap_needed — Should we use the fast-start bootstrap pattern?
+# bootstrap_needed â€” Should we use the fast-start bootstrap pattern?
 #
 # Returns 0 (true) when ALL of these hold:
 #   1. Tier is above 0 (full model is larger than the bootstrap model)
@@ -31,19 +31,19 @@ bootstrap_needed() {
     local tier_rank
     tier_rank="$(tier_rank "$TIER")"
 
-    # Tier 0: the full model IS the bootstrap model — no point
+    # Tier 0: the full model IS the bootstrap model â€” no point
     [[ "$tier_rank" -le 0 ]] && return 1
 
-    # Full model already on disk — skip bootstrap, use it directly
+    # Full model already on disk â€” skip bootstrap, use it directly
     [[ -f "${INSTALL_DIR}/data/models/${GGUF_FILE}" ]] && return 1
 
     # User opted out
     [[ "${NO_BOOTSTRAP:-false}" == "true" ]] && return 1
 
-    # Offline mode — can't download anything
+    # Offline mode â€” can't download anything
     [[ "${OFFLINE_MODE:-false}" == "true" ]] && return 1
 
-    # Cloud mode — no local model needed
+    # Cloud mode â€” no local model needed
     [[ "${DREAM_MODE:-local}" == "cloud" ]] && return 1
 
     return 0

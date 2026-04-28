@@ -1,5 +1,5 @@
 #!/bin/bash
-# install.sh — Generate and install systemd timers for memory-shepherd
+# install.sh â€” Generate and install systemd timers for memory-shepherd
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -8,7 +8,7 @@ DRY_RUN=false
 PREFIX=""
 USER_MODE=false
 
-# ── Usage ──────────────────────────────────────────────────────────────
+# â”€â”€ Usage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 usage() {
     cat <<EOF
@@ -28,7 +28,7 @@ EOF
     exit 0
 }
 
-# ── Parse Args ─────────────────────────────────────────────────────────
+# â”€â”€ Parse Args â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -39,7 +39,7 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# ── Detect Mode ────────────────────────────────────────────────────────
+# â”€â”€ Detect Mode â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 if [ -z "$PREFIX" ]; then
     if [ "$(id -u)" -eq 0 ]; then
@@ -56,7 +56,7 @@ fi
 SYSTEMCTL_FLAG=""
 $USER_MODE && SYSTEMCTL_FLAG="--user"
 
-# ── Config Parser (minimal — just need agent names) ────────────────────
+# â”€â”€ Config Parser (minimal â€” just need agent names) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 declare -A CONFIG
 AGENTS=()
@@ -115,7 +115,7 @@ echo "Prefix:  $PREFIX"
 echo "Mode:    $($USER_MODE && echo "user" || echo "system")"
 echo ""
 
-# ── Create Directories ─────────────────────────────────────────────────
+# â”€â”€ Create Directories â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 BASELINE_DIR="${CONFIG[general.baseline_dir]:-./baselines}"
 ARCHIVE_DIR="${CONFIG[general.archive_dir]:-./archives}"
@@ -130,7 +130,7 @@ if ! $DRY_RUN; then
     done
 fi
 
-# ── Generate Units ─────────────────────────────────────────────────────
+# â”€â”€ Generate Units â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 generate_service() {
     local name="$1"
@@ -169,14 +169,14 @@ EOF
 
 INSTALLED_TIMERS=()
 
-# Timer for "all" agents — runs every 3 hours with some jitter
+# Timer for "all" agents â€” runs every 3 hours with some jitter
 SERVICE_NAME="memory-shepherd"
 SERVICE_FILE="$PREFIX/${SERVICE_NAME}.service"
 TIMER_FILE="$PREFIX/${SERVICE_NAME}.timer"
 
 echo "--- memory-shepherd.service (resets all agents) ---"
-SERVICE_CONTENT=$(generate_service "$SERVICE_NAME" "all" "Memory Shepherd — reset all agents")
-TIMER_CONTENT=$(generate_timer "$SERVICE_NAME" "Memory Shepherd — periodic reset" "*-*-* 00/3:00:00" "5min")
+SERVICE_CONTENT=$(generate_service "$SERVICE_NAME" "all" "Memory Shepherd â€” reset all agents")
+TIMER_CONTENT=$(generate_timer "$SERVICE_NAME" "Memory Shepherd â€” periodic reset" "*-*-* 00/3:00:00" "5min")
 
 if $DRY_RUN; then
     echo "$SERVICE_CONTENT"
@@ -192,7 +192,7 @@ else
 fi
 INSTALLED_TIMERS+=("${SERVICE_NAME}.timer")
 
-# Per-agent timers — staggered by 10 minutes
+# Per-agent timers â€” staggered by 10 minutes
 stagger=0
 for agent in "${AGENTS[@]}"; do
     SERVICE_NAME="memory-shepherd-${agent}"
@@ -209,8 +209,8 @@ for agent in "${AGENTS[@]}"; do
 
     echo ""
     echo "--- ${SERVICE_NAME}.service ---"
-    SERVICE_CONTENT=$(generate_service "$SERVICE_NAME" "$agent" "Memory Shepherd — reset $agent")
-    TIMER_CONTENT=$(generate_timer "$SERVICE_NAME" "Memory Shepherd — periodic reset for $agent" "$calendar" "2min")
+    SERVICE_CONTENT=$(generate_service "$SERVICE_NAME" "$agent" "Memory Shepherd â€” reset $agent")
+    TIMER_CONTENT=$(generate_timer "$SERVICE_NAME" "Memory Shepherd â€” periodic reset for $agent" "$calendar" "2min")
 
     if $DRY_RUN; then
         echo "$SERVICE_CONTENT"
@@ -227,11 +227,11 @@ for agent in "${AGENTS[@]}"; do
     stagger=$((stagger + 1))
 done
 
-# ── Enable Timers ──────────────────────────────────────────────────────
+# â”€â”€ Enable Timers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 if $DRY_RUN; then
     echo ""
-    echo "=== DRY RUN — no files written, no timers enabled ==="
+    echo "=== DRY RUN â€” no files written, no timers enabled ==="
     echo "Would install: ${INSTALLED_TIMERS[*]}"
 else
     echo ""
@@ -247,7 +247,7 @@ else
     done
 fi
 
-# ── Summary ────────────────────────────────────────────────────────────
+# â”€â”€ Summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 echo ""
 echo "=== Summary ==="

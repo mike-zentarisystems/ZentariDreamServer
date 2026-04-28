@@ -1,5 +1,5 @@
 # =============================================================================
-# Dream Server — Compose Fragment Template
+# Dream Server â€” Compose Fragment Template
 # =============================================================================
 #
 # This file is merged into the compose stack via:
@@ -17,15 +17,15 @@
 # GPU OVERLAYS:
 #   If your service needs GPU access, create compose.amd.yaml / compose.nvidia.yaml
 #   alongside this file. The compose resolver picks them up automatically.
-#   There are TWO patterns — pick the one that fits your service:
+#   There are TWO patterns â€” pick the one that fits your service:
 #
-#   Pattern 1 — CPU-base with GPU tag swap (compose-gpu-swap.yaml)
+#   Pattern 1 â€” CPU-base with GPU tag swap (compose-gpu-swap.yaml)
 #     Use when your service works on CPU but runs faster on GPU.
 #     This file (compose.yaml) carries the full definition with a CPU image.
 #     The GPU overlay only swaps the image tag and adds device access.
 #     Example: whisper (speech-to-text runs on CPU, accelerated by CUDA).
 #
-#   Pattern 2 — Empty base with full GPU overlay (compose-gpu-only.yaml)
+#   Pattern 2 â€” Empty base with full GPU overlay (compose-gpu-only.yaml)
 #     Use when your service ONLY makes sense on a GPU (no CPU fallback).
 #     This file (compose.yaml) is just `services: {}` (empty stub).
 #     Each GPU overlay contains the complete service definition.
@@ -53,7 +53,7 @@ services:
       - MY_SETTING=${MY_SETTING:-default_value}
 
     volumes:
-      # Persistent data — survives container rebuilds
+      # Persistent data â€” survives container rebuilds
       - ./data/my-service:/app/data
 
     ports:
@@ -83,5 +83,5 @@ services:
 #   my-service-data:
 #     driver: local
 
-# No networks section needed — services join the default network
+# No networks section needed â€” services join the default network
 # (named "dream-network" in docker-compose.base.yml) automatically.

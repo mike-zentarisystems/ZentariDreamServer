@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# Dream Server — NVIDIA Topology Detection Test
+# Dream Server â€” NVIDIA Topology Detection Test
 # ============================================================================
 # Part of: tests/
 # Purpose: Test NVIDIA topology detection against fixture files
@@ -52,10 +52,10 @@ test_1gpu_pcie() {
     local links_count=$(echo "$result" | jq -r '.links | length')
     
     if [[ "$gpu_count" == "1" ]] && [[ "$links_count" == "0" ]]; then
-        echo -e "${GRN}✓ PASS: 1 GPU, 0 links${NC}"
+        echo -e "${GRN}âœ“ PASS: 1 GPU, 0 links${NC}"
         TESTS_PASSED=$((TESTS_PASSED + 1))
     else
-        echo -e "${RED}✗ FAIL: Expected 1 GPU and 0 links, got $gpu_count GPUs and $links_count links${NC}"
+        echo -e "${RED}âœ— FAIL: Expected 1 GPU and 0 links, got $gpu_count GPUs and $links_count links${NC}"
         TESTS_FAILED=$((TESTS_FAILED + 1))
     fi
 }
@@ -89,10 +89,10 @@ test_4gpus_soc() {
     local has_soc=$(echo "$result" | jq -r '.links[] | select(.link_type == "SOC") | .link_type' | head -1)
     
     if [[ "$gpu_count" == "4" ]] && [[ "$links_count" -gt "0" ]] && [[ "$has_soc" == "SOC" ]]; then
-        echo -e "${GRN}✓ PASS: 4 GPUs, $links_count links, SOC topology detected${NC}"
+        echo -e "${GRN}âœ“ PASS: 4 GPUs, $links_count links, SOC topology detected${NC}"
         TESTS_PASSED=$((TESTS_PASSED + 1))
     else
-        echo -e "${RED}✗ FAIL: Expected 4 GPUs with SOC links, got $gpu_count GPUs, $links_count links${NC}"
+        echo -e "${RED}âœ— FAIL: Expected 4 GPUs with SOC links, got $gpu_count GPUs, $links_count links${NC}"
         TESTS_FAILED=$((TESTS_FAILED + 1))
     fi
 }
@@ -125,10 +125,10 @@ test_4gpus_sys_separated_nv_pairs() {
     local nvlink_count=$(echo "$result" | jq -r '[.links[] | select(.link_type | startswith("NV"))] | length')
     
     if [[ "$gpu_count" == "4" ]] && [[ "$nvlink_count" -gt "0" ]]; then
-        echo -e "${GRN}✓ PASS: 4 GPUs, $nvlink_count NVLink connections${NC}"
+        echo -e "${GRN}âœ“ PASS: 4 GPUs, $nvlink_count NVLink connections${NC}"
         TESTS_PASSED=$((TESTS_PASSED + 1))
     else
-        echo -e "${RED}✗ FAIL: Expected 4 GPUs with NVLink, got $gpu_count GPUs, $nvlink_count NVLinks${NC}"
+        echo -e "${RED}âœ— FAIL: Expected 4 GPUs with NVLink, got $gpu_count GPUs, $nvlink_count NVLinks${NC}"
         TESTS_FAILED=$((TESTS_FAILED + 1))
     fi
 }
@@ -162,10 +162,10 @@ test_5gpus_nv12_with_mlx5() {
     local nv12_count=$(echo "$result" | jq -r '[.links[] | select(.link_type == "NV12")] | length')
     
     if [[ "$gpu_count" == "5" ]] && [[ "$nv12_count" -gt "0" ]]; then
-        echo -e "${GRN}✓ PASS: 5 GPUs, $nv12_count NV12 connections${NC}"
+        echo -e "${GRN}âœ“ PASS: 5 GPUs, $nv12_count NV12 connections${NC}"
         TESTS_PASSED=$((TESTS_PASSED + 1))
     else
-        echo -e "${RED}✗ FAIL: Expected 5 GPUs with NV12, got $gpu_count GPUs, $nv12_count NV12 links${NC}"
+        echo -e "${RED}âœ— FAIL: Expected 5 GPUs with NV12, got $gpu_count GPUs, $nv12_count NV12 links${NC}"
         TESTS_FAILED=$((TESTS_FAILED + 1))
     fi
 }
@@ -198,10 +198,10 @@ test_8gpus_nv12_full_mesh() {
     
     # Full mesh of 8 GPUs should have 28 links (8*7/2)
     if [[ "$gpu_count" == "8" ]] && [[ "$nv12_count" -gt "20" ]]; then
-        echo -e "${GRN}✓ PASS: 8 GPUs, $nv12_count NV12 connections (full mesh)${NC}"
+        echo -e "${GRN}âœ“ PASS: 8 GPUs, $nv12_count NV12 connections (full mesh)${NC}"
         TESTS_PASSED=$((TESTS_PASSED + 1))
     else
-        echo -e "${RED}✗ FAIL: Expected 8 GPUs with full mesh NV12, got $gpu_count GPUs, $nv12_count NV12 links${NC}"
+        echo -e "${RED}âœ— FAIL: Expected 8 GPUs with full mesh NV12, got $gpu_count GPUs, $nv12_count NV12 links${NC}"
         TESTS_FAILED=$((TESTS_FAILED + 1))
     fi
 }
@@ -241,10 +241,10 @@ test_8gpus_nv12_full_mesh_with_numa() {
     local nv12_count=$(echo "$result" | jq -r '[.links[] | select(.link_type == "NV12")] | length')
     
     if [[ "$gpu_count" == "8" ]] && [[ "$numa_nodes" == "2" ]] && [[ "$nv12_count" -gt "20" ]]; then
-        echo -e "${GRN}✓ PASS: 8 GPUs, 2 NUMA nodes, $nv12_count NV12 connections${NC}"
+        echo -e "${GRN}âœ“ PASS: 8 GPUs, 2 NUMA nodes, $nv12_count NV12 connections${NC}"
         TESTS_PASSED=$((TESTS_PASSED + 1))
     else
-        echo -e "${RED}✗ FAIL: Expected 8 GPUs, 2 NUMA nodes with NV12, got $gpu_count GPUs, $numa_nodes NUMA nodes, $nv12_count NV12 links${NC}"
+        echo -e "${RED}âœ— FAIL: Expected 8 GPUs, 2 NUMA nodes with NV12, got $gpu_count GPUs, $numa_nodes NUMA nodes, $nv12_count NV12 links${NC}"
         TESTS_FAILED=$((TESTS_FAILED + 1))
     fi
 }
@@ -276,10 +276,10 @@ test_8gpus_nv1_nv2_partial_mesh() {
     local nvlink_count=$(echo "$result" | jq -r '[.links[] | select(.link_type | startswith("NV"))] | length')
     
     if [[ "$gpu_count" == "8" ]] && [[ "$nvlink_count" -gt "0" ]]; then
-        echo -e "${GRN}✓ PASS: 8 GPUs, $nvlink_count NVLink connections (partial mesh)${NC}"
+        echo -e "${GRN}âœ“ PASS: 8 GPUs, $nvlink_count NVLink connections (partial mesh)${NC}"
         TESTS_PASSED=$((TESTS_PASSED + 1))
     else
-        echo -e "${RED}✗ FAIL: Expected 8 GPUs with NVLink, got $gpu_count GPUs, $nvlink_count NVLink connections${NC}"
+        echo -e "${RED}âœ— FAIL: Expected 8 GPUs with NVLink, got $gpu_count GPUs, $nvlink_count NVLink connections${NC}"
         TESTS_FAILED=$((TESTS_FAILED + 1))
     fi
 }

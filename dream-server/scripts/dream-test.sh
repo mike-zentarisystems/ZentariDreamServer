@@ -41,7 +41,7 @@ if [[ -f "$_DT_DIR/lib/service-registry.sh" ]]; then
     sr_resolve_ports
 fi
 
-# Service endpoints — resolved from registry
+# Service endpoints â€” resolved from registry
 LLM_HOST="${LLM_HOST:-localhost}"
 LLM_PORT="${LLM_PORT:-${SERVICE_PORTS[llama-server]:-11434}}"
 LLM_URL="http://${LLM_HOST}:${LLM_PORT}"

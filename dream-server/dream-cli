@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # dream-cli - Command line interface for Dream Server
 # Mission: M5 (Clonable Dream Setup Server)
-# Version: 2.0.0 — Registry-driven service resolution
+# Version: 2.0.0 â€” Registry-driven service resolution
 
 set -e
 
 # Require Bash 4+ (associative arrays used by service registry and dream-cli)
 if (( BASH_VERSINFO[0] < 4 )); then
-    echo -e "\033[0;31m✗\033[0m dream-cli requires Bash 4.0+ (you have $BASH_VERSION)" >&2
+    echo -e "\033[0;31mâœ—\033[0m dream-cli requires Bash 4.0+ (you have $BASH_VERSION)" >&2
     echo "  macOS ships Bash 3.2 due to licensing. Install a modern version:" >&2
     echo "    brew install bash" >&2
     echo "  Then re-run with:  /opt/homebrew/bin/bash $0 $*" >&2
@@ -31,13 +31,13 @@ if [[ -f "$INSTALL_DIR/.env" ]]; then
     [[ -n "${_v:-}" ]] && VERSION="$_v"
 fi
 
-# Colors — use ANSI-C quoting ($'\033') so the variables hold real ESC bytes
+# Colors â€” use ANSI-C quoting ($'\033') so the variables hold real ESC bytes
 # at assignment time. Single-quoted strings store the backslash literally,
 # which breaks unquoted heredocs (cmd_help) that never re-interpret escapes.
 # Guard on TTY + NO_COLOR so redirected / piped output stays clean.
 # Per no-color.org, NO_COLOR disables colors when it is present (set to any
-# value, including empty), so we check set-ness with ${NO_COLOR+x} — which
-# expands to "x" whenever NO_COLOR is set and to "" only when truly unset —
+# value, including empty), so we check set-ness with ${NO_COLOR+x} â€” which
+# expands to "x" whenever NO_COLOR is set and to "" only when truly unset â€”
 # rather than ${NO_COLOR:-} which would treat NO_COLOR="" as unset.
 if [[ -t 1 ]] && [[ -z "${NO_COLOR+x}" ]]; then
     RED=$'\033[0;31m'
@@ -59,16 +59,16 @@ fi
 # Helpers
 #=============================================================================
 log() { echo -e "${CYAN}[dream]${NC} $1" >&2; }
-success() { echo -e "${GREEN}✓${NC} $1"; }
-warn() { echo -e "${YELLOW}⚠${NC} $1" >&2; }
-error() { echo -e "${RED}✗${NC} $1"; exit 1; }
-log_warn() { echo -e "${YELLOW}⚠${NC} $1"; }
-log_error() { echo -e "${RED}✗${NC} $1" >&2; }
+success() { echo -e "${GREEN}âœ“${NC} $1"; }
+warn() { echo -e "${YELLOW}âš ${NC} $1" >&2; }
+error() { echo -e "${RED}âœ—${NC} $1"; exit 1; }
+log_warn() { echo -e "${YELLOW}âš ${NC} $1"; }
+log_error() { echo -e "${RED}âœ—${NC} $1" >&2; }
 
 # Print a separator of repeated characters filling the given width.
-# Usage: hr <width> [<char=─>]
+# Usage: hr <width> [<char=â”€>]
 hr() {
-    local w="${1:-10}" c="${2:-─}" out=''
+    local w="${1:-10}" c="${2:-â”€}" out=''
     printf -v out '%*s' "$w" ''
     printf '%s' "${out// /$c}"
 }
@@ -210,7 +210,7 @@ check_install() {
     fi
 }
 
-# Extract the major component of a semver string (e.g. "2.1.0" → "2").
+# Extract the major component of a semver string (e.g. "2.1.0" â†’ "2").
 # Used only for counting major-version jumps; not for ordering comparisons.
 _semver_major() {
     echo "${1%%.*}"
@@ -229,7 +229,7 @@ _semver_lt() {
         if (( n1 < n2 )); then return 0; fi
         if (( n1 > n2 )); then return 1; fi
     done
-    return 1  # equal → not less-than
+    return 1  # equal â†’ not less-than
 }
 
 # Read a top-level or nested string field from a JSON file.
@@ -287,13 +287,13 @@ _check_version_compat() {
     fi
     [[ -z "$_COMPAT_INSTALLED_VER" ]] && _COMPAT_INSTALLED_VER="$VERSION"
 
-    # 2. Target version — from manifest.json (reflects the incoming release after pull)
+    # 2. Target version â€” from manifest.json (reflects the incoming release after pull)
     _COMPAT_TARGET_VER=""
     if [[ -f "$INSTALL_DIR/manifest.json" ]]; then
         _COMPAT_TARGET_VER=$(_manifest_field "$INSTALL_DIR/manifest.json" "dream_version")
     fi
 
-    # 3. min_compatible_dream_version — read via _manifest_field to avoid 2>/dev/null + injection
+    # 3. min_compatible_dream_version â€” read via _manifest_field to avoid 2>/dev/null + injection
     local min_compat_ver=""
     if [[ -f "$INSTALL_DIR/manifest.json" ]]; then
         min_compat_ver=$(_manifest_field "$INSTALL_DIR/manifest.json" "min_compatible_dream_version")
@@ -312,12 +312,12 @@ _check_version_compat() {
     # major_jump may be negative (downgrade); use arithmetic not regex for sign-aware logic
     local major_jump=$(( new_major - cur_major ))
 
-    # 4. Downgrade detection — warn and confirm before proceeding
+    # 4. Downgrade detection â€” warn and confirm before proceeding
     if (( major_jump < 0 )); then
         echo ""
-        echo -e "${YELLOW}┌──────────────────────────────────────────────────────────┐${NC}"
-        echo -e "${YELLOW}│  Downgrade detected                                      │${NC}"
-        echo -e "${YELLOW}└──────────────────────────────────────────────────────────┘${NC}"
+        echo -e "${YELLOW}â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”${NC}"
+        echo -e "${YELLOW}â”‚  Downgrade detected                                      â”‚${NC}"
+        echo -e "${YELLOW}â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜${NC}"
         echo ""
         warn "Installed : v${_COMPAT_INSTALLED_VER}  (major ${cur_major})"
         warn "Target    : v${_COMPAT_TARGET_VER}  (major ${new_major})"
@@ -339,13 +339,13 @@ _check_version_compat() {
     fi
 
     # 5. Hard block: installed version is below min_compatible_dream_version.
-    #    Uses full 3-component comparison — major-only was insufficient
+    #    Uses full 3-component comparison â€” major-only was insufficient
     #    (e.g. 1.2.0 vs min 1.5.0 both have major 1 but 1.2.0 < 1.5.0).
     if [[ -n "$min_compat_ver" ]] && _semver_lt "$_COMPAT_INSTALLED_VER" "$min_compat_ver"; then
         echo ""
-        echo -e "${RED}╔══════════════════════════════════════════════════════════╗${NC}"
-        echo -e "${RED}║  UPGRADE BLOCKED — installed version is too old          ║${NC}"
-        echo -e "${RED}╚══════════════════════════════════════════════════════════╝${NC}"
+        echo -e "${RED}â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—${NC}"
+        echo -e "${RED}â•‘  UPGRADE BLOCKED â€” installed version is too old          â•‘${NC}"
+        echo -e "${RED}â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
         echo ""
         warn "Installed : v${_COMPAT_INSTALLED_VER}"
         warn "Target    : v${_COMPAT_TARGET_VER}"
@@ -366,28 +366,28 @@ _check_version_compat() {
     # 6. Warn: major version jump > 1
     if (( major_jump > 1 )); then
         echo ""
-        echo -e "${YELLOW}┌──────────────────────────────────────────────────────────┐${NC}"
-        echo -e "${YELLOW}│  Major version jump detected                             │${NC}"
-        echo -e "${YELLOW}└──────────────────────────────────────────────────────────┘${NC}"
+        echo -e "${YELLOW}â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”${NC}"
+        echo -e "${YELLOW}â”‚  Major version jump detected                             â”‚${NC}"
+        echo -e "${YELLOW}â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜${NC}"
         echo ""
         warn "Installed  : v${_COMPAT_INSTALLED_VER}  (major ${cur_major})"
         warn "Target     : v${_COMPAT_TARGET_VER}  (major ${new_major})"
         warn "Jump       : ${major_jump} major versions"
         echo ""
         log "Skipping more than 1 major version may introduce breaking changes."
-        log "Recommended: upgrade step-by-step (v${cur_major} → v$((cur_major+1)) → … → v${new_major})."
+        log "Recommended: upgrade step-by-step (v${cur_major} â†’ v$((cur_major+1)) â†’ â€¦ â†’ v${new_major})."
         log "Review CHANGELOG.md for each major version before proceeding."
         echo ""
         if [[ "$force" == "true" ]]; then
             warn "--force specified: skipping confirmation."
         else
-            read -p "  Proceed with v${_COMPAT_INSTALLED_VER} → v${_COMPAT_TARGET_VER} anyway? [y/N] " -n 1 -r
+            read -p "  Proceed with v${_COMPAT_INSTALLED_VER} â†’ v${_COMPAT_TARGET_VER} anyway? [y/N] " -n 1 -r
             echo ""
             if [[ ! $REPLY =~ ^[Yy]$ ]]; then
                 log "Update cancelled."
                 return 1
             fi
-            warn "Proceeding — back up your data first: dream backup"
+            warn "Proceeding â€” back up your data first: dream backup"
         fi
         echo ""
     fi
@@ -400,7 +400,7 @@ _check_version_compat() {
 #=============================================================================
 [[ -f "$SCRIPT_DIR/lib/safe-env.sh" ]] && . "$SCRIPT_DIR/lib/safe-env.sh"
 load_env() {
-    [[ -f "$INSTALL_DIR/.env" ]] || { warn ".env not found at $INSTALL_DIR — run installer first"; return 1; }
+    [[ -f "$INSTALL_DIR/.env" ]] || { warn ".env not found at $INSTALL_DIR â€” run installer first"; return 1; }
     load_env_file "$INSTALL_DIR/.env"
 }
 
@@ -511,7 +511,7 @@ get_compose_flags() {
             echo "$cached"
             return
         fi
-        # Stale or corrupt — remove and fall through to dynamic resolution
+        # Stale or corrupt â€” remove and fall through to dynamic resolution
         rm -f "$INSTALL_DIR/.compose-flags"
     fi
     # Fallback: resolve dynamically
@@ -549,7 +549,7 @@ cmd_status() {
     local -a flags
     read -ra flags <<< "$flags_str"
 
-    echo -e "${BLUE}━━━ Dream Server Status ━━━${NC}"
+    echo -e "${BLUE}â”â”â” Dream Server Status â”â”â”${NC}"
     echo ""
 
     # Container status
@@ -558,7 +558,7 @@ cmd_status() {
     echo ""
 
     # Registry-driven health checks (parallel)
-    echo -e "${BLUE}━━━ Health Checks ━━━${NC}"
+    echo -e "${BLUE}â”â”â” Health Checks â”â”â”${NC}"
 
     # Create temp directory for health check results
     local tmpdir
@@ -630,9 +630,9 @@ cmd_status() {
 
     # GPU status if available
     if command -v nvidia-smi &> /dev/null; then
-        echo -e "${BLUE}━━━ GPU Status ━━━${NC}"
+        echo -e "${BLUE}â”â”â” GPU Status â”â”â”${NC}"
         nvidia-smi --query-gpu=name,utilization.gpu,memory.used,memory.total,temperature.gpu --format=csv,noheader,nounits | \
-            awk -F', ' '{printf "  %s: %s%% GPU | %sMB/%sMB VRAM | %s°C\n", $1, $2, $3, $4, $5}'
+            awk -F', ' '{printf "  %s: %s%% GPU | %sMB/%sMB VRAM | %sÂ°C\n", $1, $2, $3, $4, $5}'
     fi
 
     # Bootstrap status
@@ -868,11 +868,11 @@ cmd_dry_run() {
     cd "$INSTALL_DIR"
     load_env
 
-    echo -e "${BLUE}━━━ Dream Update — Dry Run ━━━${NC}"
+    echo -e "${BLUE}â”â”â” Dream Update â€” Dry Run â”â”â”${NC}"
     echo -e "${CYAN}Preview only. No changes will be applied.${NC}"
     echo ""
 
-    # ── version ──────────────────────────────────────────────────────────────
+    # â”€â”€ version â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     local cur_ver="0.0.0"
     if [[ -f "$INSTALL_DIR/.env" ]]; then
         local _v
@@ -934,7 +934,7 @@ cmd_dry_run() {
     fi
     echo ""
 
-    # ── image tags ────────────────────────────────────────────────────────────
+    # â”€â”€ image tags â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     echo -e "${CYAN}Configured image tags (would be pulled):${NC}"
     local flags_str
     flags_str=$(get_compose_flags)
@@ -972,7 +972,7 @@ cmd_dry_run() {
         || echo "  (services not running)"
     echo ""
 
-    # ── model / GGUF ─────────────────────────────────────────────────────────
+    # â”€â”€ model / GGUF â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     echo -e "${CYAN}Model configuration (.env):${NC}"
     local -a model_keys=(TIER LLM_MODEL GGUF_FILE CTX_SIZE GPU_BACKEND N_GPU_LAYERS)
     local key
@@ -983,7 +983,7 @@ cmd_dry_run() {
     done
     echo ""
 
-    # ── .env keys the update path reads/writes ────────────────────────────────
+    # â”€â”€ .env keys the update path reads/writes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     echo -e "${CYAN}.env keys the update path will read or write:${NC}"
     local -a update_keys=(DREAM_VERSION TIER LLM_MODEL GGUF_FILE CTX_SIZE GPU_BACKEND N_GPU_LAYERS)
 
@@ -999,7 +999,7 @@ cmd_dry_run() {
     fi
     echo ""
 
-    # ── summary ───────────────────────────────────────────────────────────────
+    # â”€â”€ summary â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
     echo -e "${CYAN}To apply this update:${NC}  dream update"
     echo ""
     echo -e "${YELLOW}Dry run complete. Nothing was changed.${NC}"
@@ -1035,7 +1035,7 @@ cmd_update() {
     local -a flags
     read -ra flags <<< "$flags_str"
 
-    # Version compatibility check — warn on major version jumps before touching anything
+    # Version compatibility check â€” warn on major version jumps before touching anything
     if ! _check_version_compat "$force_flag"; then
         exit 0
     fi
@@ -1043,10 +1043,10 @@ cmd_update() {
     # Show what we're updating from/to (if versions were resolved)
     if [[ -n "${_COMPAT_INSTALLED_VER:-}" && -n "${_COMPAT_TARGET_VER:-}" \
           && "$_COMPAT_INSTALLED_VER" != "$_COMPAT_TARGET_VER" ]]; then
-        log "Updating: v${_COMPAT_INSTALLED_VER} → v${_COMPAT_TARGET_VER}"
+        log "Updating: v${_COMPAT_INSTALLED_VER} â†’ v${_COMPAT_TARGET_VER}"
     fi
 
-    # Pre-update snapshot — safety net before any images are pulled.
+    # Pre-update snapshot â€” safety net before any images are pulled.
     # Delegates to dream-update.sh (which writes to data/backups/ and includes
     # extension configs) when available; falls back to dream-backup.sh.
     local _snap_label="pre-update-$(date +%Y%m%d-%H%M%S)"
@@ -1144,7 +1144,7 @@ cmd_shell() {
     local container
     container=$(sr_container "$service")
 
-    # Distinguish "daemon down" from "container stopped" — the container-running
+    # Distinguish "daemon down" from "container stopped" â€” the container-running
     # check below uses `docker ps`, which also exits non-zero when the daemon
     # is unreachable. Without this preflight a user whose Docker is stopped
     # sees "Container X is not running" and tries `dream start`, which also
@@ -1153,7 +1153,7 @@ cmd_shell() {
     #
     # `docker info` can hang for 20+ seconds when Docker Desktop is mid-boot
     # (socket exists, daemon not yet accepting RPCs). `timeout` isn't stock
-    # macOS, but `perl alarm` is (perl ships with macOS ≥ 10.5 and every
+    # macOS, but `perl alarm` is (perl ships with macOS â‰¥ 10.5 and every
     # Linux/WSL2 distro we target). `alarm` is inherited across `exec`, so
     # the docker process receives SIGALRM after 3s if it hasn't returned.
     if ! perl -e 'alarm 3; exec "docker", "info"' >/dev/null 2>&1; then
@@ -1181,7 +1181,7 @@ cmd_config() {
 
     case "$action" in
         show)
-            echo -e "${BLUE}━━━ Configuration ━━━${NC}"
+            echo -e "${BLUE}â”â”â” Configuration â”â”â”${NC}"
             echo "Install dir: $INSTALL_DIR"
             echo ""
             echo -e "${CYAN}.env contents:${NC}"
@@ -1264,7 +1264,7 @@ cmd_benchmark() {
     local duration=$(( end - start ))
 
     echo ""
-    echo -e "${BLUE}━━━ Benchmark Results ━━━${NC}"
+    echo -e "${BLUE}â”â”â” Benchmark Results â”â”â”${NC}"
     echo "  Response time: ${duration}s"
     echo "  Response: $response"
 
@@ -1334,7 +1334,7 @@ cmd_doctor() {
     fi
 
     # Parse and display operator-friendly output
-    echo -e "${BLUE}━━━ Dream Server Diagnostics ━━━${NC}"
+    echo -e "${BLUE}â”â”â” Dream Server Diagnostics â”â”â”${NC}"
     echo ""
 
     # Use Python to parse JSON and display results
@@ -1354,7 +1354,7 @@ try:
     with open(report_file, 'r') as f:
         report = json.load(f)
 except Exception as e:
-    print(f"{RED}✗{NC} Failed to parse report: {e}")
+    print(f"{RED}âœ—{NC} Failed to parse report: {e}")
     sys.exit(1)
 
 # Runtime checks
@@ -1371,9 +1371,9 @@ checks = [
 has_failures = False
 for name, status in checks:
     if status:
-        print(f"  {GREEN}✓{NC} {name}")
+        print(f"  {GREEN}âœ“{NC} {name}")
     else:
-        print(f"  {RED}✗{NC} {name}")
+        print(f"  {RED}âœ—{NC} {name}")
         has_failures = True
 
 print()
@@ -1392,12 +1392,12 @@ if pf_checks:
         message = check.get('message', '')
 
         if status == 'pass':
-            print(f"  {GREEN}✓{NC} {name}")
+            print(f"  {GREEN}âœ“{NC} {name}")
         elif status == 'warn':
-            print(f"  {YELLOW}⚠{NC} {name}: {message}")
+            print(f"  {YELLOW}âš {NC} {name}: {message}")
             warnings.append((name, message))
         elif status == 'blocker':
-            print(f"  {RED}✗{NC} {name}: {message}")
+            print(f"  {RED}âœ—{NC} {name}: {message}")
             blockers.append((name, message))
             has_failures = True
         else:
@@ -1412,11 +1412,11 @@ runtime_ready = summary.get('runtime_ready', False)
 
 print(f"{CYAN}Summary:{NC}")
 if blocker_count > 0:
-    print(f"  {RED}✗{NC} {blocker_count} blocker(s) found")
+    print(f"  {RED}âœ—{NC} {blocker_count} blocker(s) found")
 if warning_count > 0:
-    print(f"  {YELLOW}⚠{NC} {warning_count} warning(s) found")
+    print(f"  {YELLOW}âš {NC} {warning_count} warning(s) found")
 if blocker_count == 0 and warning_count == 0 and runtime_ready:
-    print(f"  {GREEN}✓{NC} All checks passed")
+    print(f"  {GREEN}âœ“{NC} All checks passed")
 
 print()
 
@@ -1569,7 +1569,7 @@ cmd_enable() {
                     cmd_enable "$dep"
                 done
             else
-                warn "Proceeding without dependencies — $service_id may not start correctly."
+                warn "Proceeding without dependencies â€” $service_id may not start correctly."
             fi
         fi
     fi
@@ -1714,7 +1714,7 @@ cmd_purge() {
         return 0
     fi
 
-    # Delete data — try direct rm first, fall back to docker for root-owned files
+    # Delete data â€” try direct rm first, fall back to docker for root-owned files
     rm -rf "$_data_dir" 2>/dev/null || true
     if [[ -d "$_data_dir" ]]; then
         log "Some files are owned by root (created by Docker). Removing via container..."
@@ -1737,7 +1737,7 @@ cmd_list() {
     load_env 2>/dev/null || true
     local active_flags
     active_flags=$(get_compose_flags)
-    echo -e "${BLUE}━━━ Available Services ━━━${NC}"
+    echo -e "${BLUE}â”â”â” Available Services â”â”â”${NC}"
     printf "%-20s %-12s %-10s\n" "SERVICE" "CATEGORY" "STATUS"
     printf "%-20s %-12s %-10s\n" "$(hr 20)" "$(hr 12)" "$(hr 10)"
     for sid in "${SERVICE_IDS[@]}"; do
@@ -1781,7 +1781,7 @@ validate_preset_compatibility() {
     done < "$preset_dir/extensions.list"
 
     if [[ ${#missing_exts[@]} -gt 0 ]]; then
-        log "⚠️  Preset references extensions that are no longer available:"
+        log "âš ï¸  Preset references extensions that are no longer available:"
         for ext in "${missing_exts[@]}"; do
             log "   - $ext"
         done
@@ -1840,7 +1840,7 @@ META
             local preset_dir="${PRESETS_DIR}/${name}"
             [[ -d "$preset_dir" ]] || error "Preset not found: $name"
 
-            echo -e "${BLUE}━━━ Loading Preset: ${name} ━━━${NC}"
+            echo -e "${BLUE}â”â”â” Loading Preset: ${name} â”â”â”${NC}"
 
             # Validate preset compatibility
             if ! validate_preset_compatibility "$preset_dir"; then
@@ -1899,7 +1899,7 @@ META
             ;;
 
         list|ls)
-            echo -e "${BLUE}━━━ Saved Presets ━━━${NC}"
+            echo -e "${BLUE}â”â”â” Saved Presets â”â”â”${NC}"
             if [[ ! -d "$PRESETS_DIR" ]] || [[ -z "$(ls -A "$PRESETS_DIR" 2>/dev/null)" ]]; then
                 echo "  No presets saved yet."
                 echo ""
@@ -1974,7 +1974,7 @@ META
 
             # Security: Check for path traversal
             if tar tzf "$archive" 2>/dev/null | grep -qE '(^/|\.\./|\.\.\\)'; then
-                error "Archive contains unsafe paths (absolute or ../) — refusing to import"
+                error "Archive contains unsafe paths (absolute or ../) â€” refusing to import"
             fi
 
             # Validate archive structure
@@ -2033,14 +2033,14 @@ META
             echo ""
 
             # Compare metadata
-            echo -e "${CYAN}━━━ Metadata ━━━${NC}"
+            echo -e "${CYAN}â”â”â” Metadata â”â”â”${NC}"
             if [[ -f "$dir1/meta.txt" ]] && [[ -f "$dir2/meta.txt" ]]; then
                 diff -u "$dir1/meta.txt" "$dir2/meta.txt" | tail -n +4 | sed "s/^-/$(printf "${RED}-${NC}")/" | sed "s/^+/$(printf "${GREEN}+${NC}")/" || true
             fi
             echo ""
 
             # Compare extensions
-            echo -e "${CYAN}━━━ Service State ━━━${NC}"
+            echo -e "${CYAN}â”â”â” Service State â”â”â”${NC}"
             if [[ -f "$dir1/extensions.list" ]] && [[ -f "$dir2/extensions.list" ]]; then
                 # Parse both files into associative arrays
                 declare -A ext1 ext2
@@ -2071,7 +2071,7 @@ META
                         elif [[ "$state2" == "missing" ]]; then
                             echo -e "  ${RED}-${NC} $sid: $state1"
                         else
-                            echo -e "  ${YELLOW}~${NC} $sid: $state1 → $state2"
+                            echo -e "  ${YELLOW}~${NC} $sid: $state1 â†’ $state2"
                         fi
                     fi
                 done
@@ -2081,7 +2081,7 @@ META
             echo ""
 
             # Compare environment variables
-            echo -e "${CYAN}━━━ Environment Variables ━━━${NC}"
+            echo -e "${CYAN}â”â”â” Environment Variables â”â”â”${NC}"
             if [[ -f "$dir1/env" ]] && [[ -f "$dir2/env" ]]; then
                 # Parse both env files
                 declare -A env1 env2
@@ -2124,7 +2124,7 @@ META
                         elif [[ -z "$val2" ]]; then
                             echo -e "  ${RED}-${NC} $key=$val1"
                         else
-                            echo -e "  ${YELLOW}~${NC} $key: $val1 → $val2"
+                            echo -e "  ${YELLOW}~${NC} $key: $val1 â†’ $val2"
                         fi
                     fi
                 done
@@ -2171,7 +2171,7 @@ cmd_mode() {
         local api_url=$(grep "^LLM_API_URL=" .env 2>/dev/null | cut -d= -f2)
         local model=$(grep "^LLM_MODEL=" .env 2>/dev/null | cut -d= -f2)
         local tier=$(grep "^TIER=" .env 2>/dev/null | cut -d= -f2)
-        echo -e "${BLUE}━━━ Dream Server Mode ━━━${NC}"
+        echo -e "${BLUE}â”â”â” Dream Server Mode â”â”â”${NC}"
         echo ""
         echo -e "Current mode: ${GREEN}${current}${NC}"
         [[ -n "$api_url" ]] && echo "LLM_API_URL: $api_url"
@@ -2181,7 +2181,7 @@ cmd_mode() {
 
         case "$current" in
             cloud)
-                echo "  LLM:  LiteLLM → Cloud APIs (Claude, GPT-4, etc.)"
+                echo "  LLM:  LiteLLM â†’ Cloud APIs (Claude, GPT-4, etc.)"
                 echo "  Cost: ~\$0.003-0.06/1K tokens"
                 ;;
             local)
@@ -2189,16 +2189,16 @@ cmd_mode() {
                 echo "  Cost: \$0 (electricity only)"
                 ;;
             hybrid)
-                echo "  LLM:  Local llama-server → Cloud fallback on failure"
+                echo "  LLM:  Local llama-server â†’ Cloud fallback on failure"
                 echo "  Cost: \$0 when local works, cloud rates on fallback"
                 ;;
         esac
 
         echo ""
         echo -e "${CYAN}Available modes:${NC}"
-        echo "  local   — Local inference via llama-server (requires GPU/CPU)"
-        echo "  cloud   — Cloud APIs via LiteLLM (requires API keys)"
-        echo "  hybrid  — Local primary, cloud fallback"
+        echo "  local   â€” Local inference via llama-server (requires GPU/CPU)"
+        echo "  cloud   â€” Cloud APIs via LiteLLM (requires API keys)"
+        echo "  hybrid  â€” Local primary, cloud fallback"
         echo ""
         echo "Usage: dream mode <local|cloud|hybrid>"
         return 0
@@ -2231,11 +2231,11 @@ cmd_mode() {
         grep -q "^ANTHROPIC_API_KEY=." .env 2>/dev/null && has_keys=true
         grep -q "^OPENAI_API_KEY=." .env 2>/dev/null && has_keys=true
         if [[ "$has_keys" == "false" ]]; then
-            warn "No API keys found in .env — add ANTHROPIC_API_KEY or OPENAI_API_KEY"
+            warn "No API keys found in .env â€” add ANTHROPIC_API_KEY or OPENAI_API_KEY"
         fi
     fi
 
-    echo -e "${BLUE}━━━ Mode updated ━━━${NC}"
+    echo -e "${BLUE}â”â”â” Mode updated â”â”â”${NC}"
     echo "  DREAM_MODE  = $mode"
     echo "  LLM_API_URL = $api_url"
     success "Switched to $mode mode. Run 'dream restart' to apply."
@@ -2254,15 +2254,15 @@ cmd_model() {
             return 0
             ;;
         list)
-            echo -e "${BLUE}━━━ Available Tiers ━━━${NC}"
-            echo "  T0         — qwen3.5-2b (< 8GB RAM, any GPU)"
-            echo "  T1         — qwen3.5-9b (<12GB VRAM)"
-            echo "  T2         — qwen3.5-9b (12-19GB, larger context)"
-            echo "  T3         — qwen3-30b-a3b (20-47GB)"
-            echo "  T4         — qwen3-30b-a3b (48GB+)"
-            echo "  SH         — qwen3-30b-a3b (Strix Halo unified)"
-            echo "  SH_LARGE   — qwen3-coder-next (90GB+ unified)"
-            echo "  NV_ULTRA   — qwen3-coder-next (90GB+ NVIDIA)"
+            echo -e "${BLUE}â”â”â” Available Tiers â”â”â”${NC}"
+            echo "  T0         â€” qwen3.5-2b (< 8GB RAM, any GPU)"
+            echo "  T1         â€” qwen3.5-9b (<12GB VRAM)"
+            echo "  T2         â€” qwen3.5-9b (12-19GB, larger context)"
+            echo "  T3         â€” qwen3-30b-a3b (20-47GB)"
+            echo "  T4         â€” qwen3-30b-a3b (48GB+)"
+            echo "  SH         â€” qwen3-30b-a3b (Strix Halo unified)"
+            echo "  SH_LARGE   â€” qwen3-coder-next (90GB+ unified)"
+            echo "  NV_ULTRA   â€” qwen3-coder-next (90GB+ NVIDIA)"
             echo ""
             echo "Usage: dream model swap <tier>"
             ;;
@@ -2275,7 +2275,7 @@ cmd_model() {
             local model
             model=$(tier_to_model "$tier")
             [[ -z "$model" ]] && error "Unknown tier: $tier"
-            # Normalize aliases for resolve_tier_config (T0→0, T1→1, SH→SH_COMPACT)
+            # Normalize aliases for resolve_tier_config (T0â†’0, T1â†’1, SHâ†’SH_COMPACT)
             TIER="$tier"
             [[ "$TIER" =~ ^T([0-9]+)$ ]] && TIER="${BASH_REMATCH[1]}"
             [[ "$TIER" == "SH" ]] && TIER="SH_COMPACT"
@@ -2557,7 +2557,110 @@ cmd_agent() {
 }
 
 #=============================================================================
-# cmd_gpu — Multi-GPU inspection and management
+# cmd_glances â€” System monitoring via Glances
+#=============================================================================
+
+_cmd_glances_install() {
+    if command -v glances &>/dev/null; then
+        return 0
+    fi
+    log "Installing Glances (system monitoring)..."
+    if ! command -v pip3 &>/dev/null && ! command -v pip &>/dev/null; then
+        error "pip3 not found. Install Python pip first:"
+        error "  Ubuntu/Debian: sudo apt install python3-pip"
+        error "  macOS: brew install python3"
+        return 1
+    fi
+    local pip_cmd="pip3"
+    command -v pip &>/dev/null && pip_cmd="pip"
+    if $pip_cmd install --user "glances[all]" 2>&1 | tail -3; then
+        success "Glances installed ($(glances --version 2>/dev/null | head -1 || echo 'installed'))"
+    else
+        error "Glances installation failed"
+        return 1
+    fi
+}
+
+cmd_glances() {
+    check_install
+    load_env 2>/dev/null || true
+
+    local action="${1:-}"
+    local port="${GLANCES_PORT:-61208}"
+    local glances_path
+
+    # Find glances in PATH or --user install location
+    if command -v glances &>/dev/null; then
+        glances_path="$(command -v glances)"
+    else
+        # Try common --user locations
+        glances_path="$HOME/.local/bin/glances"
+        if [[ ! -f "$glances_path" ]]; then
+            glances_path="$HOME/.local/bin/glances.exe"  # Windows pip
+        fi
+    fi
+
+    case "$action" in
+        install)
+            _cmd_glances_install
+            ;;
+        status)
+            if [[ -x "$glances_path" ]] || command -v glances &>/dev/null; then
+                success "Glances is installed"
+            else
+                warn "Glances is not installed. Run: dream glances install"
+            fi
+            ;;
+        web)
+            # Install if needed, then open browser
+            if ! command -v glances &>/dev/null && [[ ! -x "$glances_path" ]]; then
+                _cmd_glances_install
+            fi
+            local url="http://localhost:${port}"
+            log "Starting Glances web UI at $url ..."
+            if command -v xdg-open &>/dev/null; then
+                xdg-open "$url" &>/dev/null &
+            elif command -v open &>/dev/null; then
+                open "$url" &>/dev/null &
+            fi
+            glances_path="${glances_path:-glances}"
+            $glances_path --port "$port" --web &
+            success "Glances web UI started on $url"
+            ;;
+        top)
+            # Quick terminal view
+            if ! command -v glances &>/dev/null && [[ ! -x "$glances_path" ]]; then
+                _cmd_glances_install
+            fi
+            glances_path="${glances_path:-glances}"
+            $glances_path --port "$port" &
+            ;;
+        *)
+            cat << EOF
+${BLUE}Glances â€” System Monitoring${NC}
+
+Usage: dream glances <action>
+
+Actions:
+  install     Install Glances (pip install --user glances[all])
+  status      Check if Glances is installed
+  web         Start Glances web UI and open browser (default: http://localhost:61208)
+  top         Start Glances in terminal mode (Ctrl+C to exit)
+
+Examples:
+  dream glances install    # One-time install
+  dream glances web        # Launch browser-based monitoring dashboard
+  dream glances top         # Quick terminal htop-like view
+
+Port: 61208 (customize with GLANCES_PORT env var in .env)
+
+EOF
+            ;;
+    esac
+}
+
+#=============================================================================
+# cmd_gpu â€” Multi-GPU inspection and management
 #=============================================================================
 
 _gpu_status() {
@@ -2567,7 +2670,7 @@ _gpu_status() {
     local gpu_count
     gpu_count=$(nvidia-smi --list-gpus 2>/dev/null | wc -l | tr -d ' ') || gpu_count=0
 
-    echo -e "${BLUE}━━━ GPU Status (${gpu_count} GPU$([ "$gpu_count" -ne 1 ] && echo s)) ━━━${NC}"
+    echo -e "${BLUE}â”â”â” GPU Status (${gpu_count} GPU$([ "$gpu_count" -ne 1 ] && echo s)) â”â”â”${NC}"
     echo ""
 
     if [[ "${GPU_BACKEND:-nvidia}" == "nvidia" ]] && command -v nvidia-smi &>/dev/null && [ "$gpu_count" -gt 0 ]; then
@@ -2583,7 +2686,7 @@ _gpu_status() {
             printf "  %-4s %-22s %-22s  %-7s  %-7s  %s\n", \
                 "#", "Name", "VRAM Used/Total", "Util", "Temp", "Power"
             printf "  %-4s %-22s %-22s  %-7s  %-7s  %s\n", \
-                "─", "──────────────────────", "──────────────────────", "───────", "───────", "─────"
+                "â”€", "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€", "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€", "â”€â”€â”€â”€â”€â”€â”€", "â”€â”€â”€â”€â”€â”€â”€", "â”€â”€â”€â”€â”€"
             n=0; total_u=0; total_t=0; util_sum=0; max_temp=0; pw_sum=0; pw_count=0
         }
         {
@@ -2600,7 +2703,7 @@ _gpu_status() {
                 pw_str = "N/A"
             }
 
-            printf "  %-4s %-22s %-22s  %3d%%     %3d°C   %s\n", \
+            printf "  %-4s %-22s %-22s  %3d%%     %3dÂ°C   %s\n", \
                 idx, substr(name,1,22), vram_str, util, temp, pw_str
 
             total_u += mem_used; total_t += mem_total
@@ -2610,11 +2713,11 @@ _gpu_status() {
         }
         END {
             if (n > 1) {
-                printf "                         ──────────────────────\n"
+                printf "                         â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€\n"
                 pw_total_str = (pw_count > 0) ? sprintf("%.0fW", pw_sum) : "N/A"
                 vram_str = sprintf("%.1f / %.1f GB", total_u/1024, total_t/1024)
-                printf "  %-4s %-22s %-22s  %3d%%     %3d°C   %s\n", \
-                    "Σ", "", vram_str, int(util_sum/n), max_temp, pw_total_str
+                printf "  %-4s %-22s %-22s  %3d%%     %3dÂ°C   %s\n", \
+                    "Î£", "", vram_str, int(util_sum/n), max_temp, pw_total_str
             }
         }'
 
@@ -2672,7 +2775,7 @@ _gpu_status() {
         echo "  Chip:             $_chip"
         echo "  Unified memory:   ${_total_mem_gb} GB"
         echo "  GPU cores:        $_gpu_cores"
-        echo "  (Apple Silicon integrated GPU — unified memory shared with CPU)"
+        echo "  (Apple Silicon integrated GPU â€” unified memory shared with CPU)"
     else
         warn "GPU status unavailable: nvidia-smi not found and GPU_BACKEND is not amd"
     fi
@@ -2688,7 +2791,7 @@ _gpu_topology() {
     check_install
     load_env
 
-    echo -e "${BLUE}━━━ GPU Topology ━━━${NC}"
+    echo -e "${BLUE}â”â”â” GPU Topology â”â”â”${NC}"
     echo ""
 
     if [[ "${GPU_BACKEND:-}" == "amd" ]]; then
@@ -2698,17 +2801,17 @@ _gpu_topology() {
     fi
 
     if [[ "${GPU_BACKEND:-}" == "apple" ]]; then
-        echo "  Single integrated GPU (Apple Silicon, unified memory) — no multi-GPU topology to display."
+        echo "  Single integrated GPU (Apple Silicon, unified memory) â€” no multi-GPU topology to display."
         return 0
     fi
 
     if ! command -v nvidia-smi &>/dev/null; then
-        warn "nvidia-smi not found — topology unavailable"
+        warn "nvidia-smi not found â€” topology unavailable"
         return
     fi
 
     if ! command -v jq &>/dev/null; then
-        warn "jq not found — required for topology display"
+        warn "jq not found â€” required for topology display"
         return
     fi
 
@@ -2769,18 +2872,18 @@ _gpu_assignment() {
     check_install
     load_env
 
-    echo -e "${BLUE}━━━ GPU Assignment ━━━${NC}"
+    echo -e "${BLUE}â”â”â” GPU Assignment â”â”â”${NC}"
     echo ""
 
     local assignment_b64="${GPU_ASSIGNMENT_JSON_B64:-}"
 
     if [[ -z "$assignment_b64" ]]; then
-        echo "  Single GPU — no multi-GPU assignment configured."
+        echo "  Single GPU â€” no multi-GPU assignment configured."
         return
     fi
 
     if ! command -v jq &>/dev/null; then
-        warn "jq not found — required for assignment display"
+        warn "jq not found â€” required for assignment display"
         return
     fi
 
@@ -2788,7 +2891,7 @@ _gpu_assignment() {
     assignment_b64=$(echo "$assignment_b64" | tr -d '\r' | tr -d '[:space:]')
     local assignment_json
     assignment_json=$(echo "$assignment_b64" | base64 -d 2>/dev/null) || {
-        warn "Failed to decode GPU_ASSIGNMENT_JSON_B64 — try running 'dream gpu reassign'"
+        warn "Failed to decode GPU_ASSIGNMENT_JSON_B64 â€” try running 'dream gpu reassign'"
         return
     }
 
@@ -2797,21 +2900,21 @@ _gpu_assignment() {
     echo "  Strategy: ${strategy}"
     echo ""
 
-    # Build UUID → index map for readable display
+    # Build UUID â†’ index map for readable display
     local uuid_map=""
     if command -v nvidia-smi &>/dev/null; then
         uuid_map=$(nvidia-smi --query-gpu=index,uuid --format=csv,noheader,nounits 2>/dev/null) || uuid_map=""
     fi
 
     printf "  %-16s %-24s %-10s %-4s %-4s\n" "Service" "GPUs" "Mode" "TP" "PP"
-    printf "  %-16s %-24s %-10s %-4s %-4s\n" "───────────────" "───────────────────────" "─────────" "──" "──"
+    printf "  %-16s %-24s %-10s %-4s %-4s\n" "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€" "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€" "â”€â”€â”€â”€â”€â”€â”€â”€â”€" "â”€â”€" "â”€â”€"
 
     echo "$assignment_json" | jq -r '.gpu_assignment.services | to_entries[] |
         [.key,
          (.value.gpus | join(",")),
-         (.value.parallelism.mode // "—"),
-         (.value.parallelism.tensor_parallel_size // "—" | tostring),
-         (.value.parallelism.pipeline_parallel_size // "—" | tostring)] |
+         (.value.parallelism.mode // "â€”"),
+         (.value.parallelism.tensor_parallel_size // "â€”" | tostring),
+         (.value.parallelism.pipeline_parallel_size // "â€”" | tostring)] |
         @tsv' | while IFS=$'\t' read -r service gpus mode tp pp; do
         # Map UUIDs to GPU indices when possible
         local display_gpus="$gpus"
@@ -2835,14 +2938,14 @@ _gpu_validate() {
     check_install
     load_env
 
-    echo -e "${BLUE}━━━ GPU Validate ━━━${NC}"
+    echo -e "${BLUE}â”â”â” GPU Validate â”â”â”${NC}"
     echo ""
 
-    # Apple Silicon is a single integrated GPU with unified memory —
+    # Apple Silicon is a single integrated GPU with unified memory â€”
     # GPU_COUNT / multi-GPU assignment / split-mode checks do not apply.
     # Report a clean skip rather than emitting false-positive failures.
     if [[ "${GPU_BACKEND:-}" == "apple" ]]; then
-        echo "  Apple Silicon: single integrated GPU (unified memory) — no multi-GPU validation needed."
+        echo "  Apple Silicon: single integrated GPU (unified memory) â€” no multi-GPU validation needed."
         echo ""
         echo "  Result: 0 check(s) passed, 0 failed"
         return 0
@@ -2858,7 +2961,7 @@ _gpu_validate() {
     fi
 
     if [[ -z "${GPU_COUNT:-}" ]]; then
-        warn "GPU_COUNT not set in .env — defaulting to 1 (re-run installer or set manually)"
+        warn "GPU_COUNT not set in .env â€” defaulting to 1 (re-run installer or set manually)"
         ((fail++)) || true
     elif [[ "$env_count" -eq "$actual_count" ]]; then
         success "GPU_COUNT=${env_count} matches actual GPU count"
@@ -2872,7 +2975,7 @@ _gpu_validate() {
     # Check 2: Assigned UUIDs still present in system
     local assignment_b64="${GPU_ASSIGNMENT_JSON_B64:-}"
     if [[ -z "$assignment_b64" ]]; then
-        echo "  (No multi-GPU assignment — single GPU setup)"
+        echo "  (No multi-GPU assignment â€” single GPU setup)"
     elif command -v jq &>/dev/null; then
         local assignment_json
         if assignment_json=$(echo "$assignment_b64" | base64 -d 2>/dev/null); then
@@ -2934,7 +3037,7 @@ _gpu_reassign() {
     check_install
     load_env
 
-    echo -e "${BLUE}━━━ GPU Reassign ━━━${NC}"
+    echo -e "${BLUE}â”â”â” GPU Reassign â”â”â”${NC}"
     echo ""
 
     if [[ "${GPU_BACKEND:-}" == "apple" ]]; then
@@ -2948,7 +3051,7 @@ _gpu_reassign() {
     fi
 
     if ! command -v jq &>/dev/null; then
-        warn "jq not found — required for GPU reassignment"
+        warn "jq not found â€” required for GPU reassignment"
         return
     fi
 
@@ -2993,7 +3096,7 @@ _gpu_reassign() {
 
     local enabled_services="${ENABLED_SERVICES:-llama_server,whisper,comfyui,embeddings}"
 
-    # ── Manual assignment mode ──
+    # â”€â”€ Manual assignment mode â”€â”€
     if [[ "$manual_mode" -eq 1 ]]; then
         echo ""
         echo "  Available GPUs:"
@@ -3056,7 +3159,7 @@ _gpu_reassign() {
 
         if [[ "$dry_run" -eq 1 ]]; then
             echo ""
-            echo "  Dry run — manual assignment:"
+            echo "  Dry run â€” manual assignment:"
             echo "    llama-server: $(echo "$_manual_llama" | tr ',' ' ' | sed 's/[^ ]*/GPU&/g')"
             [[ -n "$_manual_whisper" ]] && echo "    whisper:      GPU${_manual_whisper}"
             [[ -n "$_manual_comfyui" ]] && echo "    comfyui:      GPU${_manual_comfyui}"
@@ -3099,7 +3202,7 @@ _gpu_reassign() {
 
     if [[ "$dry_run" -eq 1 ]]; then
         echo ""
-        echo "  Dry run — proposed assignment:"
+        echo "  Dry run â€” proposed assignment:"
         echo "$assignment_json" | jq '.gpu_assignment' 2>/dev/null || echo "$assignment_json"
         return
     fi
@@ -3182,7 +3285,7 @@ cmd_gpu() {
             echo "Subcommands:"
             echo "  status       Per-GPU metrics table with VRAM, util, temp, power"
             echo "  topology     Show GPU interconnect topology (NVLink, PCIe, NUMA)"
-            echo "  assignment   Show current service→GPU mapping from .env"
+            echo "  assignment   Show current serviceâ†’GPU mapping from .env"
             echo "  validate     Check GPU config is consistent with live system"
             echo "  reassign     Re-run GPU assignment algorithm and update .env"
             echo ""
@@ -3320,7 +3423,7 @@ if already:
 if to_enable:
     print(f"Will enable:     {', '.join(to_enable)}")
 if not to_enable:
-    print("Nothing to change — all services already enabled.")
+    print("Nothing to change â€” all services already enabled.")
 PYEOF
 }
 
@@ -3364,7 +3467,7 @@ PYEOF
         local cf="$INSTALL_DIR/extensions/services/$svc/compose.yaml"
         local ucf="$INSTALL_DIR/data/user-extensions/$svc/compose.yaml"
         if [[ -f "$cf" || -f "$ucf" ]]; then
-            log "  $svc — already enabled"
+            log "  $svc â€” already enabled"
             continue
         fi
 
@@ -3430,6 +3533,7 @@ ${CYAN}Commands:${NC}
   template [action]   Apply pre-built service templates (list|preview|apply)
   audit [extensions]  Audit extension manifests and compose contracts
   agent [action]      Manage dream host agent (status|start|stop|restart|logs)
+  glances [action]    System monitoring â€” Glances web UI or terminal (install|web|top|status)
   help                Show this help
 
 ${CYAN}Preset Commands:${NC}
@@ -3475,7 +3579,7 @@ EOF
 ${CYAN}Examples:${NC}
   dream gpu status                # Per-GPU metrics (VRAM, util, temp, power)
   dream gpu topology              # Show GPU interconnect topology
-  dream gpu assignment            # Show service→GPU mapping
+  dream gpu assignment            # Show serviceâ†’GPU mapping
   dream gpu validate              # Validate GPU configuration
   dream gpu reassign --auto       # Auto-reassign GPUs after hardware change
   dream status                    # Check all services
@@ -3550,6 +3654,7 @@ case "${1:-help}" in
     audit)        shift; cmd_audit "$@" ;;
     template|tmpl) shift; cmd_template "$@" ;;
     agent)        shift; cmd_agent "$@" ;;
+    glances)      shift; cmd_glances "$@" ;;
     help|h|--help|-h) cmd_help ;;
     version|v|--version|-v) echo "dream-cli v${VERSION}" ;;
     *)           error "Unknown command: $1. Run 'dream help' for usage." ;;

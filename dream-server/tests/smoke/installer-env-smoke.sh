@@ -3,7 +3,7 @@
 # Installer Environment Smoke Test
 # ============================================================================
 # Exercises real .env generation, schema validation, dependency validation,
-# and compose syntax checking — without Docker containers or GPU hardware.
+# and compose syntax checking â€” without Docker containers or GPU hardware.
 #
 # This catches: schema drift, duplicate .env keys, undefined functions,
 # dependency validator failures, and compose syntax errors.
@@ -23,8 +23,8 @@ PASSED=0
 FAILED=0
 TMPDIR_SMOKE=""
 
-pass() { echo -e "  ${GREEN}✓${NC} $1"; PASSED=$((PASSED + 1)); }
-fail() { echo -e "  ${RED}✗${NC} $1"; FAILED=$((FAILED + 1)); }
+pass() { echo -e "  ${GREEN}âœ“${NC} $1"; PASSED=$((PASSED + 1)); }
+fail() { echo -e "  ${RED}âœ—${NC} $1"; FAILED=$((FAILED + 1)); }
 
 cleanup() {
     [[ -n "$TMPDIR_SMOKE" && -d "$TMPDIR_SMOKE" ]] && rm -rf "$TMPDIR_SMOKE"
@@ -32,13 +32,13 @@ cleanup() {
 trap cleanup EXIT
 
 echo ""
-echo "╔═══════════════════════════════════════════════╗"
-echo "║   Installer Environment Smoke Test            ║"
-echo "╚═══════════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘   Installer Environment Smoke Test            â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
-# ── Test 1: All lib files parse without syntax errors ──
-echo "── Lib & phase syntax ──"
+# â”€â”€ Test 1: All lib files parse without syntax errors â”€â”€
+echo "â”€â”€ Lib & phase syntax â”€â”€"
 ALL_OK=true
 for f in installers/lib/*.sh installers/phases/*.sh lib/*.sh; do
     [[ -f "$f" ]] || continue
@@ -49,13 +49,13 @@ for f in installers/lib/*.sh installers/phases/*.sh lib/*.sh; do
 done
 $ALL_OK && pass "All lib/phase scripts parse cleanly"
 
-# ── Test 2: Generate a real .env in a temp directory ──
+# â”€â”€ Test 2: Generate a real .env in a temp directory â”€â”€
 echo ""
-echo "── .env generation ──"
+echo "â”€â”€ .env generation â”€â”€"
 TMPDIR_SMOKE="$(mktemp -d)"
 INSTALL_DIR="$TMPDIR_SMOKE/dream-server"
 mkdir -p "$INSTALL_DIR"/{config,data,models}
-mkdir -p "$INSTALL_DIR"/config/{n8n,litellm,openclaw,searxng}
+mkdir -p "$INSTALL_DIR"/config/{n8n,litellm,hermes-agent,searxng}
 
 # Copy source tree so phase 06 can find compose files and schemas
 cp -a "$ROOT_DIR"/* "$INSTALL_DIR/" 2>/dev/null || true
@@ -76,7 +76,7 @@ export DREAM_VERSION="2.1.0"
 export ENABLE_VOICE=true
 export ENABLE_WORKFLOWS=true
 export ENABLE_RAG=true
-export ENABLE_OPENCLAW=true
+export ENABLE_HERMES=true
 
 # Source required libraries (same order as install-core.sh)
 source installers/lib/constants.sh
@@ -119,7 +119,7 @@ if bash -c "
     export ENABLE_VOICE=true
     export ENABLE_WORKFLOWS=true
     export ENABLE_RAG=true
-    export ENABLE_OPENCLAW=true
+    export ENABLE_HERMES=true
 
     # Source libs
     source installers/lib/constants.sh
@@ -155,9 +155,9 @@ else
     fail ".env generation failed (exit $?)"
 fi
 
-# ── Test 3: Validate generated .env against schema ──
+# â”€â”€ Test 3: Validate generated .env against schema â”€â”€
 echo ""
-echo "── .env schema validation ──"
+echo "â”€â”€ .env schema validation â”€â”€"
 if [[ "$ENV_GENERATED" == true && -f "$INSTALL_DIR/.env" ]]; then
     if bash scripts/validate-env.sh "$INSTALL_DIR/.env" "$ROOT_DIR/.env.schema.json" 2>/dev/null; then
         pass ".env validates against schema"
@@ -194,9 +194,9 @@ if [[ "$ENV_GENERATED" == true && -f "$INSTALL_DIR/.env" ]]; then
     fi
 fi
 
-# ── Test 4: Validate service dependency graph ──
+# â”€â”€ Test 4: Validate service dependency graph â”€â”€
 echo ""
-echo "── Dependency validation ──"
+echo "â”€â”€ Dependency validation â”€â”€"
 if [[ -f lib/service-registry.sh && -f lib/validate-dependencies.sh ]]; then
     DEP_RESULT=$(bash -c "
         export INSTALL_DIR='$INSTALL_DIR'
@@ -223,9 +223,9 @@ else
     fail "service-registry.sh or validate-dependencies.sh not found"
 fi
 
-# ── Test 5: Compose syntax validation ──
+# â”€â”€ Test 5: Compose syntax validation â”€â”€
 echo ""
-echo "── Compose syntax ──"
+echo "â”€â”€ Compose syntax â”€â”€"
 if command -v docker &>/dev/null && docker compose version &>/dev/null 2>&1; then
     # Generate a minimal .env for compose parsing
     COMPOSE_ENV="$TMPDIR_SMOKE/compose-test.env"
@@ -249,8 +249,8 @@ QDRANT_GRPC_PORT=6334
 QDRANT_API_KEY=test
 LITELLM_PORT=4000
 LITELLM_KEY=test
-OPENCLAW_PORT=7860
-OPENCLAW_TOKEN=test
+HERMES_PORT=8642
+HERMES_API_KEY=test
 SEARXNG_PORT=8888
 DASHBOARD_API_KEY=test
 LIVEKIT_API_KEY=test
@@ -297,12 +297,12 @@ MINENV
         fail "Compose validation failed (base + nvidia)"
     fi
 else
-    echo "  (skipped — docker compose not available)"
+    echo "  (skipped â€” docker compose not available)"
 fi
 
-# ── Test 6: All function calls resolve ──
+# â”€â”€ Test 6: All function calls resolve â”€â”€
 echo ""
-echo "── Function resolution ──"
+echo "â”€â”€ Function resolution â”€â”€"
 # Check that ai_err is not called anywhere (it doesn't exist)
 if grep -rn 'ai_err ' installers/phases/*.sh installers/lib/*.sh 2>/dev/null; then
     fail "Found calls to undefined function 'ai_err'"
@@ -330,12 +330,12 @@ else
     fail "Undefined functions called:$UNDEFINED"
 fi
 
-# ── Summary ──
+# â”€â”€ Summary â”€â”€
 echo ""
-echo "════════════════════════════════════════════════"
+echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 TOTAL=$((PASSED + FAILED))
 echo -e "  Results: ${GREEN}$PASSED passed${NC}, ${RED}$FAILED failed${NC} / $TOTAL total"
-echo "════════════════════════════════════════════════"
+echo "â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
 [[ $FAILED -eq 0 ]] && exit 0 || exit 1

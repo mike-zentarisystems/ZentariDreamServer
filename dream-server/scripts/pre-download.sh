@@ -1,8 +1,8 @@
 #!/bin/bash
 #=============================================================================
-# pre-download.sh — Download Models Before Installation
+# pre-download.sh â€” Download Models Before Installation
 #
-# Part of Dream Server — Phase 3
+# Part of Dream Server â€” Phase 3
 #
 # Downloads models ahead of time so install.sh can skip the download step.
 # Useful for slow/metered connections or offline installs.
@@ -53,11 +53,11 @@ TTS_MODEL="hexgrad/Kokoro-82M"
 print_banner() {
     echo -e "${CYAN}"
     cat << 'EOF'
-    ╔═══════════════════════════════════════════════════════════╗
-    ║         Dream Server — Model Pre-Download                 ║
-    ║                                                           ║
-    ║  Download models before installation for faster setup.    ║
-    ╚═══════════════════════════════════════════════════════════╝
+    â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+    â•‘         Dream Server â€” Model Pre-Download                 â•‘
+    â•‘                                                           â•‘
+    â•‘  Download models before installation for faster setup.    â•‘
+    â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 EOF
     echo -e "${NC}"
 }
@@ -190,9 +190,9 @@ try:
         repo_id="$model",
         local_files_only=True
     )
-    print(f"✓ Cached: {path}")
+    print(f"âœ“ Cached: {path}")
 except Exception:
-    print(f"✗ Not cached: $model")
+    print(f"âœ— Not cached: $model")
     sys.exit(1)
 EOF
 }
@@ -204,13 +204,13 @@ EOF
 list_models() {
     echo -e "\n${BOLD}Available Models by Tier:${NC}\n"
     
-    echo -e "${CYAN}Tier     │ Model                              │ Size${NC}"
-    echo "─────────┼────────────────────────────────────┼──────"
+    echo -e "${CYAN}Tier     â”‚ Model                              â”‚ Size${NC}"
+    echo "â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€"
     
     for tier in nano edge pro cluster; do
         local model="${TIER_MODELS[$tier]}"
         local size="${MODEL_SIZES_GB[$tier]}"
-        printf "%-8s │ %-34s │ ~%sGB\n" "$tier" "$model" "$size"
+        printf "%-8s â”‚ %-34s â”‚ ~%sGB\n" "$tier" "$model" "$size"
     done
     
     echo ""
@@ -230,7 +230,7 @@ verify_cache() {
         if verify_model "$tier_model" 2>/dev/null; then
             ((found++))
         else
-            echo -e "  ${RED}✗${NC} $tier: Not cached"
+            echo -e "  ${RED}âœ—${NC} $tier: Not cached"
             ((missing++))
         fi
     done
@@ -240,13 +240,13 @@ verify_cache() {
     if verify_model "$STT_MODEL" 2>/dev/null; then
         ((found++))
     else
-        echo -e "  ${YELLOW}○${NC} STT (Whisper): Not cached (optional)"
+        echo -e "  ${YELLOW}â—‹${NC} STT (Whisper): Not cached (optional)"
     fi
     
     if verify_model "$TTS_MODEL" 2>/dev/null; then
         ((found++))
     else
-        echo -e "  ${YELLOW}○${NC} TTS (Kokoro): Not cached (optional)"
+        echo -e "  ${YELLOW}â—‹${NC} TTS (Kokoro): Not cached (optional)"
     fi
     
     echo ""
@@ -296,7 +296,7 @@ download_tier() {
     echo ""
     success "Pre-download complete!"
     echo ""
-    echo "You can now run install.sh — it will use the cached models."
+    echo "You can now run install.sh â€” it will use the cached models."
     echo "  ./install.sh"
 }
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 #=============================================================================
-# test-stack.sh — Complete Local AI Stack Validation
+# test-stack.sh â€” Complete Local AI Stack Validation
 #
 # One command to verify your entire Dream Server installation is working.
 # Run after install, after updates, or when troubleshooting.
@@ -12,12 +12,12 @@
 #   ./test-stack.sh --voice            # Voice-specific deep test
 #
 # Exit codes:
-#   0 — All tests passed
-#   1 — Some tests failed
-#   2 — Critical failure (can't continue)
+#   0 â€” All tests passed
+#   1 â€” Some tests failed
+#   2 â€” Critical failure (can't continue)
 #=============================================================================
 
-# Note: Intentionally NOT using set -e here — test functions may return non-zero
+# Note: Intentionally NOT using set -e here â€” test functions may return non-zero
 # and we want to continue running all tests, tracking results via PASSED/FAILED counters
 set -uo pipefail
 
@@ -71,10 +71,10 @@ done
 
 # Banner
 echo ""
-echo -e "${CYAN}╔══════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}║${NC}  ${BOLD}Dream Server Stack Test${NC}                                     ${CYAN}║${NC}"
-echo -e "${CYAN}║${NC}  Validating your local AI installation                        ${CYAN}║${NC}"
-echo -e "${CYAN}╚══════════════════════════════════════════════════════════════╝${NC}"
+echo -e "${CYAN}â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—${NC}"
+echo -e "${CYAN}â•‘${NC}  ${BOLD}Dream Server Stack Test${NC}                                     ${CYAN}â•‘${NC}"
+echo -e "${CYAN}â•‘${NC}  Validating your local AI installation                        ${CYAN}â•‘${NC}"
+echo -e "${CYAN}â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
 echo ""
 
 # Track results
@@ -87,7 +87,7 @@ run_suite() {
     local script="$2"
     local args="${3:-}"
     
-    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
     echo -e "${BOLD}Running: $name${NC}"
     echo ""
     
@@ -95,21 +95,21 @@ run_suite() {
         if $script $args; then
             ((SUITE_PASSED++))
             echo ""
-            echo -e "${GREEN}✓ $name passed${NC}"
+            echo -e "${GREEN}âœ“ $name passed${NC}"
         else
             ((SUITE_FAILED++))
             echo ""
-            echo -e "${RED}✗ $name failed${NC}"
+            echo -e "${RED}âœ— $name failed${NC}"
         fi
     else
-        echo -e "${YELLOW}○ $name skipped (script not found)${NC}"
+        echo -e "${YELLOW}â—‹ $name skipped (script not found)${NC}"
     fi
     echo ""
 }
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Phase 1: Integration Tests
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 INTEGRATION_ARGS=""
 $QUICK && INTEGRATION_ARGS="--quick"
@@ -117,58 +117,58 @@ $VERBOSE && INTEGRATION_ARGS="$INTEGRATION_ARGS --verbose"
 
 run_suite "Integration Tests" "$TESTS_DIR/test-integration.sh" "$INTEGRATION_ARGS"
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Phase 2: Dashboard Tests
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 if [[ -x "$TESTS_DIR/test-dashboard-integration.sh" ]]; then
     run_suite "Dashboard Integration" "$TESTS_DIR/test-dashboard-integration.sh"
 fi
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Phase 3: Voice Tests (optional)
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 if $VOICE || $STRESS; then
-    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
     echo -e "${BOLD}Voice Pipeline Health Check${NC}"
     echo ""
     
     # Quick voice health
     if curl -s http://localhost:3002/api/voice/status | grep -q '"available":true'; then
-        echo -e "${GREEN}✓ Voice services available${NC}"
+        echo -e "${GREEN}âœ“ Voice services available${NC}"
         
         # Check individual services
         for svc in stt tts livekit; do
             if curl -s http://localhost:3002/api/voice/status | jq -e ".services.$svc.status == \"healthy\"" >/dev/null 2>&1; then
-                echo -e "  ${GREEN}✓${NC} $svc healthy"
+                echo -e "  ${GREEN}âœ“${NC} $svc healthy"
             else
-                echo -e "  ${RED}✗${NC} $svc unhealthy"
+                echo -e "  ${RED}âœ—${NC} $svc unhealthy"
             fi
         done
         ((SUITE_PASSED++))
     else
-        echo -e "${RED}✗ Voice services unavailable${NC}"
+        echo -e "${RED}âœ— Voice services unavailable${NC}"
         ((SUITE_FAILED++))
     fi
     echo ""
 fi
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Phase 3.5: Phase C (P1 - Broken Features) Tests
 # Prioritized in CI pipeline after P0 (Phase A/B) completion
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 if [[ -x "$TESTS_DIR/test-phase-c-p1.sh" ]]; then
     run_suite "Phase C (P1) - Broken Features" "$TESTS_DIR/test-phase-c-p1.sh"
 else
-    echo -e "${YELLOW}○ Phase C (P1) tests skipped (script not found)${NC}"
+    echo -e "${YELLOW}â—‹ Phase C (P1) tests skipped (script not found)${NC}"
     echo ""
 fi
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Phase 4: Stress Tests (optional)
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 if $STRESS; then
     PYTHON_CMD="python3"
@@ -179,7 +179,7 @@ if $STRESS; then
     fi
 
     if [[ -f "$TESTS_DIR/voice-stress-test.py" ]] && command -v "$PYTHON_CMD" &>/dev/null; then
-        echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+        echo -e "${BLUE}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
         echo -e "${BOLD}Stress Test (10 concurrent, 1 round)${NC}"
         echo ""
         
@@ -192,18 +192,18 @@ if $STRESS; then
         cd - >/dev/null
         echo ""
     else
-        echo -e "${YELLOW}○ Stress test skipped (python3 or script not available)${NC}"
+        echo -e "${YELLOW}â—‹ Stress test skipped (python3 or script not available)${NC}"
     fi
 fi
 
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Summary
-# ═══════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
 
-echo -e "${CYAN}══════════════════════════════════════════════════════════════${NC}"
+echo -e "${CYAN}â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•${NC}"
 echo -e "${BOLD}Summary${NC}"
 echo ""
 echo -e "  Test suites: ${GREEN}$SUITE_PASSED passed${NC} / ${RED}$SUITE_FAILED failed${NC}"
@@ -211,11 +211,11 @@ echo -e "  Duration: ${DURATION}s"
 echo ""
 
 if [[ $SUITE_FAILED -eq 0 ]]; then
-    echo -e "${GREEN}${BOLD}✓ All tests passed!${NC}"
+    echo -e "${GREEN}${BOLD}âœ“ All tests passed!${NC}"
     echo -e "  Your Dream Server stack is working correctly."
     exit 0
 else
-    echo -e "${RED}${BOLD}✗ Some tests failed${NC}"
+    echo -e "${RED}${BOLD}âœ— Some tests failed${NC}"
     echo -e "  Check the output above for details."
     echo -e "  Run with --verbose for more information."
     exit 1

@@ -22,13 +22,13 @@ NC='\033[0m'
 PASSED=0
 FAILED=0
 
-pass() { echo -e "  ${GREEN}✓ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
-fail() { echo -e "  ${RED}✗ FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
+pass() { echo -e "  ${GREEN}âœ“ PASS${NC} $1"; PASSED=$((PASSED + 1)); }
+fail() { echo -e "  ${RED}âœ— FAIL${NC} $1"; FAILED=$((FAILED + 1)); }
 
 echo ""
-echo "╔═══════════════════════════════════════════════╗"
-echo "║   validate-env.sh Test Suite                  ║"
-echo "╚═══════════════════════════════════════════════╝"
+echo "â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—"
+echo "â•‘   validate-env.sh Test Suite                  â•‘"
+echo "â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•"
 echo ""
 
 # 1. Script and schema exist
@@ -54,7 +54,7 @@ pass "jq available"
 TMP_DIR=$(mktemp -d)
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-# 2. Missing .env → exit 3
+# 2. Missing .env â†’ exit 3
 set +e
 "$ROOT_DIR/scripts/validate-env.sh" "$TMP_DIR/nonexistent.env" "$ROOT_DIR/.env.schema.json" >/dev/null 2>&1
 r=$?
@@ -65,7 +65,7 @@ else
     fail "Missing .env should yield exit 3, got $r"
 fi
 
-# 3. Missing schema → exit 3
+# 3. Missing schema â†’ exit 3
 touch "$TMP_DIR/empty.env"
 set +e
 "$ROOT_DIR/scripts/validate-env.sh" "$TMP_DIR/empty.env" "$TMP_DIR/nonexistent.json" >/dev/null 2>&1
@@ -77,15 +77,15 @@ else
     fail "Missing schema should yield exit 3, got $r"
 fi
 
-# 4. .env with all required keys (minimal) → exit 0
-# Schema required: WEBUI_SECRET, SEARXNG_SECRET, N8N_USER, N8N_PASS, LITELLM_KEY, OPENCLAW_TOKEN
+# 4. .env with all required keys (minimal) â†’ exit 0
+# Schema required: WEBUI_SECRET, SEARXNG_SECRET, N8N_USER, N8N_PASS, LITELLM_KEY, HERMES_API_KEY
 cat > "$TMP_DIR/valid.env" <<'EOF'
 WEBUI_SECRET=test-secret
 SEARXNG_SECRET=test-secret
 N8N_USER=admin
 N8N_PASS=testpass
 LITELLM_KEY=testkey
-OPENCLAW_TOKEN=testtoken
+HERMES_API_KEY=testtoken
 EOF
 set +e
 "$ROOT_DIR/scripts/validate-env.sh" "$TMP_DIR/valid.env" "$ROOT_DIR/.env.schema.json" >/dev/null 2>&1
@@ -97,7 +97,7 @@ else
     fail "Valid .env should yield exit 0, got $r"
 fi
 
-# 5. .env missing one required key → exit 2
+# 5. .env missing one required key â†’ exit 2
 cat > "$TMP_DIR/missing.env" <<'EOF'
 WEBUI_SECRET=test-secret
 SEARXNG_SECRET=searxsecret
@@ -114,20 +114,20 @@ if [[ $r -eq 2 ]]; then
 else
     fail "Missing required key should yield exit 2, got $r"
 fi
-if echo "$out" | grep -q "Missing required\|OPENCLAW_TOKEN"; then
+if echo "$out" | grep -q "Missing required\|HERMES_API_KEY"; then
     pass "Output mentions missing key or required"
 else
     pass "Script produced validation output"
 fi
 
-# 6. Unknown key (not in schema) → exit 2
+# 6. Unknown key (not in schema) â†’ exit 2
 cat > "$TMP_DIR/unknown.env" <<'EOF'
 WEBUI_SECRET=test-secret
 SEARXNG_SECRET=test-secret
 N8N_USER=admin
 N8N_PASS=testpass
 LITELLM_KEY=testkey
-OPENCLAW_TOKEN=testtoken
+HERMES_API_KEY=testtoken
 UNKNOWN_KEY=value
 EOF
 set +e

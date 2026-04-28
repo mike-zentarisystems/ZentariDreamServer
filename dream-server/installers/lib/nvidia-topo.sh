@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================================================
-# Dream Server Installer — NVIDIA GPU Topology Detection
+# Dream Server Installer â€” NVIDIA GPU Topology Detection
 # ============================================================================
 # Part of: installers/lib/
 # Purpose: Detect NVIDIA Multi-GPU topology as well as basic GPU info

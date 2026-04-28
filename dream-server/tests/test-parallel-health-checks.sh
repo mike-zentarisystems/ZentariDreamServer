@@ -25,14 +25,14 @@ pass() {
 
 fail() {
     echo -e "  ${RED}FAIL${NC}  $1"
-    [[ -n "${2:-}" ]] && echo -e "        ${RED}→ $2${NC}"
+    [[ -n "${2:-}" ]] && echo -e "        ${RED}â†’ $2${NC}"
     FAIL=$((FAIL + 1))
 }
 
 header() {
     echo ""
     echo -e "${BOLD}${CYAN}[$1]${NC} ${BOLD}$2${NC}"
-    echo -e "${CYAN}$(printf '%.0s─' {1..60})${NC}"
+    echo -e "${CYAN}$(printf '%.0sâ”€' {1..60})${NC}"
 }
 
 # ============================================
@@ -113,16 +113,16 @@ fi
 # Summary
 # ============================================
 echo ""
-echo -e "${BOLD}━━━ Test Summary ━━━${NC}"
+echo -e "${BOLD}â”â”â” Test Summary â”â”â”${NC}"
 echo ""
 echo -e "  ${GREEN}Passed:${NC} $PASS"
 [[ $FAIL -gt 0 ]] && echo -e "  ${RED}Failed:${NC} $FAIL"
 echo ""
 
 if [[ $FAIL -eq 0 ]]; then
-    echo -e "${GREEN}✓ All tests passed${NC}"
+    echo -e "${GREEN}âœ“ All tests passed${NC}"
     exit 0
 else
-    echo -e "${RED}✗ Some tests failed${NC}"
+    echo -e "${RED}âœ— Some tests failed${NC}"
     exit 1
 fi

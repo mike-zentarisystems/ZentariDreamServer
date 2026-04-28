@@ -8,7 +8,7 @@
 # Matches the CRT narrator voice from installers/lib/ui.sh
 # ============================================================================
 
-DIVIDER="──────────────────────────────────────────────────────────────────────────────"
+DIVIDER="â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€"
 
 # Elapsed time since install start
 install_elapsed() {
@@ -19,11 +19,11 @@ install_elapsed() {
     printf '%dm %02ds' "$m" "$s"
 }
 
-# ── Logging ──
+# â”€â”€ Logging â”€â”€
 
 log() { echo -e "${GRN}[INFO]${NC} $1" | tee -a "$DS_LOG_FILE"; }
 
-# ── AI narrator voice ──
+# â”€â”€ AI narrator voice â”€â”€
 
 ai()       { echo -e "  ${GRN}>${NC} $1" | tee -a "$DS_LOG_FILE"; }
 ai_ok()    { echo -e "  ${BGRN}[OK]${NC} $1" | tee -a "$DS_LOG_FILE"; }

@@ -25,33 +25,33 @@ MISSING=()
 # Check LLM model (GGUF)
 if ls data/models/*.gguf &>/dev/null; then
     MODEL_FILE=$(ls -1 data/models/*.gguf | sed -n '1p')
-    echo -e "${GREEN}✓${NC} LLM model: $(basename "$MODEL_FILE")"
+    echo -e "${GREEN}âœ“${NC} LLM model: $(basename "$MODEL_FILE")"
 else
-    echo -e "${RED}✗${NC} LLM model (GGUF) - MISSING"
+    echo -e "${RED}âœ—${NC} LLM model (GGUF) - MISSING"
     MISSING+=("gguf-model")
 fi
 
 # Check Whisper model
 if [ -d "data/whisper/faster-whisper-base" ] || [ -d "data/whisper/models--Systran--faster-whisper-base" ]; then
-    echo -e "${GREEN}✓${NC} Whisper base (STT)"
+    echo -e "${GREEN}âœ“${NC} Whisper base (STT)"
 else
-    echo -e "${RED}✗${NC} Whisper base - MISSING"
+    echo -e "${RED}âœ—${NC} Whisper base - MISSING"
     MISSING+=("whisper-base")
 fi
 
 # Check Kokoro voice
 if [ -f "data/kokoro/voices/af_heart.pt" ]; then
-    echo -e "${GREEN}✓${NC} Kokoro voice af_heart (TTS)"
+    echo -e "${GREEN}âœ“${NC} Kokoro voice af_heart (TTS)"
 else
-    echo -e "${RED}✗${NC} Kokoro voice af_heart - MISSING"
+    echo -e "${RED}âœ—${NC} Kokoro voice af_heart - MISSING"
     MISSING+=("kokoro-af_heart")
 fi
 
 # Check embeddings model
 if [ -d "data/embeddings/BAAI/bge-base-en-v1.5" ] || [ -d "data/embeddings/models--BAAI--bge-base-en-v1.5" ]; then
-    echo -e "${GREEN}✓${NC} BGE base embeddings (RAG)"
+    echo -e "${GREEN}âœ“${NC} BGE base embeddings (RAG)"
 else
-    echo -e "${RED}✗${NC} BGE base embeddings - MISSING"
+    echo -e "${RED}âœ—${NC} BGE base embeddings - MISSING"
     MISSING+=("bge-base-en-v1.5")
 fi
 

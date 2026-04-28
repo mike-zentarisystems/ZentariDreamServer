@@ -20,7 +20,7 @@ NC='\033[0m'
 BOLD='\033[1m'
 
 #=============================================================================
-# Config — resolve from service registry when available
+# Config â€” resolve from service registry when available
 #=============================================================================
 _DEMO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 if [[ -f "$_DEMO_DIR/lib/service-registry.sh" ]]; then
@@ -60,25 +60,25 @@ done
 #=============================================================================
 header() {
     echo ""
-    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
     echo -e "${BOLD}${CYAN}  $1${NC}"
-    echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLUE}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
 }
 
 demo() {
-    echo -e "\n${MAGENTA}▶${NC} ${BOLD}$1${NC}"
+    echo -e "\n${MAGENTA}â–¶${NC} ${BOLD}$1${NC}"
 }
 
 success() {
-    echo -e "${GREEN}✓${NC} $1"
+    echo -e "${GREEN}âœ“${NC} $1"
 }
 
 fail() {
-    echo -e "${RED}✗${NC} $1"
+    echo -e "${RED}âœ—${NC} $1"
 }
 
 info() {
-    echo -e "${CYAN}ℹ${NC} $1"
+    echo -e "${CYAN}â„¹${NC} $1"
 }
 
 wait_key() {
@@ -117,13 +117,13 @@ cat << 'EOF'
                                                                    
 EOF
 echo -e "${NC}"
-echo -e "${BOLD}Your Local AI Stack — First Boot Demo${NC}"
+echo -e "${BOLD}Your Local AI Stack â€” First Boot Demo${NC}"
 echo -e "Everything runs on YOUR hardware. No cloud. No API costs. Full privacy.\n"
 
 #=============================================================================
 # Health Check
 #=============================================================================
-header "🔍 Checking Services"
+header "ðŸ” Checking Services"
 
 SERVICES_OK=0
 SERVICES_TOTAL=0
@@ -187,7 +187,7 @@ wait_key
 #=============================================================================
 # Demo 1: Chat Completion
 #=============================================================================
-header "💬 Demo 1: Local Chat Completion"
+header "ðŸ’¬ Demo 1: Local Chat Completion"
 
 demo "Asking your local AI a question..."
 
@@ -215,7 +215,7 @@ wait_key
 #=============================================================================
 # Demo 2: Code Assistance
 #=============================================================================
-header "🧑‍💻 Demo 2: Code Assistance"
+header "ðŸ§‘â€ðŸ’» Demo 2: Code Assistance"
 
 demo "Asking for help with a Python function..."
 
@@ -243,7 +243,7 @@ wait_key
 #=============================================================================
 # Demo 3: Streaming
 #=============================================================================
-header "📡 Demo 3: Streaming Response"
+header "ðŸ“¡ Demo 3: Streaming Response"
 
 demo "Watching tokens stream in real-time..."
 echo ""
@@ -275,28 +275,28 @@ wait_key
 #=============================================================================
 # Summary
 #=============================================================================
-header "🎉 Demo Complete!"
+header "ðŸŽ‰ Demo Complete!"
 
 echo ""
 echo -e "${BOLD}What you just saw:${NC}"
-echo "  ✓ Local LLM responding to prompts"
-echo "  ✓ Code assistance capabilities"  
-echo "  ✓ Real-time streaming"
+echo "  âœ“ Local LLM responding to prompts"
+echo "  âœ“ Code assistance capabilities"  
+echo "  âœ“ Real-time streaming"
 echo ""
 
 echo -e "${BOLD}What's available:${NC}"
-echo "  • Open WebUI:  ${WEBUI_URL}"
-[[ "$N8N_AVAILABLE" == "true" ]] && echo "  • n8n Workflows: ${N8N_URL}"
-[[ "$WHISPER_AVAILABLE" == "true" ]] && echo "  • Whisper STT:   ${WHISPER_URL}"
-[[ "$PIPER_AVAILABLE" == "true" ]] && echo "  • OpenTTS TTS:     ${PIPER_URL}"
+echo "  â€¢ Open WebUI:  ${WEBUI_URL}"
+[[ "$N8N_AVAILABLE" == "true" ]] && echo "  â€¢ n8n Workflows: ${N8N_URL}"
+[[ "$WHISPER_AVAILABLE" == "true" ]] && echo "  â€¢ Whisper STT:   ${WHISPER_URL}"
+[[ "$PIPER_AVAILABLE" == "true" ]] && echo "  â€¢ OpenTTS TTS:     ${PIPER_URL}"
 echo ""
 
 echo -e "${BOLD}Next steps:${NC}"
 echo "  1. Open ${WEBUI_URL} and start chatting"
 echo "  2. Import workflows from ./workflows/ into n8n"
 echo "  3. Try the voice demo: ./scripts/voice-demo.sh"
-echo "  4. OpenClaw agent: http://localhost:7860"
+echo "  4. Hermes Agent:   http://localhost:8642"
 echo ""
 
-echo -e "${CYAN}Everything runs locally. Your data stays private. Enjoy! 🚀${NC}"
+echo -e "${CYAN}Everything runs locally. Your data stays private. Enjoy! ðŸš€${NC}"
 echo ""

@@ -42,9 +42,9 @@ SUCCESS=0
 for i in $(seq 1 $CONCURRENT_REQUESTS); do
   if grep -q '"content"' "$TEMP_DIR/response_$i.json" 2>/dev/null; then
     SUCCESS=$((SUCCESS+1))
-    echo "  ✅ Request $i: Success"
+    echo "  âœ… Request $i: Success"
   else
-    echo "  ❌ Request $i: Failed"
+    echo "  âŒ Request $i: Failed"
   fi
 done
 
@@ -62,14 +62,14 @@ echo "  Success rate: $SUCCESS_RATE% ($SUCCESS/$CONCURRENT_REQUESTS)"
 
 if [ $SUCCESS -eq $CONCURRENT_REQUESTS ]; then
   echo ""
-  echo "✅ PASS: All $CONCURRENT_REQUESTS requests succeeded"
+  echo "âœ… PASS: All $CONCURRENT_REQUESTS requests succeeded"
   exit 0
 elif [ $SUCCESS -ge $(( CONCURRENT_REQUESTS * 4 / 5 )) ]; then
   echo ""
-  echo "⚠️  PARTIAL: $SUCCESS/$CONCURRENT_REQUESTS succeeded (≥80%)"
+  echo "âš ï¸  PARTIAL: $SUCCESS/$CONCURRENT_REQUESTS succeeded (â‰¥80%)"
   exit 0
 else
   echo ""
-  echo "❌ FAIL: Only $SUCCESS/$CONCURRENT_REQUESTS succeeded (<80%)"
+  echo "âŒ FAIL: Only $SUCCESS/$CONCURRENT_REQUESTS succeeded (<80%)"
   exit 1
 fi

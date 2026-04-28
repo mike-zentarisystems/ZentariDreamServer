@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server — Multi-Distro Test Runner
+# Dream Server â€” Multi-Distro Test Runner
 # ============================================================================
 # Purpose: Validate installer detection and package logic across Linux distros
 #          using Distrobox containers. No reboot required.
@@ -113,7 +113,7 @@ test_distro() {
     local distro_fail=0
 
     echo ""
-    echo -e "${BLD}━━━ Testing: ${name} ━━━${NC}"
+    echo -e "${BLD}â”â”â” Testing: ${name} â”â”â”${NC}"
 
     # Check container exists
     if ! distrobox list 2>/dev/null | grep -q "$cname"; then
@@ -162,7 +162,7 @@ test_distro() {
             distro_pass=$((distro_pass + 1))
         else
             skip "$name: $tool not pre-installed (installable via $expected_pkg)"
-            # Not a failure — we just need to install it during Phase 04
+            # Not a failure â€” we just need to install it during Phase 04
         fi
     done
 
@@ -202,21 +202,21 @@ test_distro() {
 # Print summary table
 print_summary() {
     echo ""
-    echo -e "${BLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLD}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
     echo -e "${BLD}  Multi-Distro Test Summary${NC}"
-    echo -e "${BLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLD}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
     for result in "${RESULTS[@]}"; do
         if [[ "$result" == *"PASS"* ]]; then
-            echo -e "  ${GRN}✓${NC} $result"
+            echo -e "  ${GRN}âœ“${NC} $result"
         elif [[ "$result" == *"FAIL"* ]]; then
-            echo -e "  ${RED}✗${NC} $result"
+            echo -e "  ${RED}âœ—${NC} $result"
         else
-            echo -e "  ${AMB}○${NC} $result"
+            echo -e "  ${AMB}â—‹${NC} $result"
         fi
     done
     echo ""
     echo -e "  Total: ${GRN}${PASS} passed${NC}, ${RED}${FAIL} failed${NC}, ${AMB}${SKIP} skipped${NC}"
-    echo -e "${BLD}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+    echo -e "${BLD}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
 
     [[ $FAIL -gt 0 ]] && return 1
     return 0

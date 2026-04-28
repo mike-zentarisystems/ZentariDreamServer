@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Linux install environment preflight — structured checks with stable IDs and JSON output.
+# Linux install environment preflight â€” structured checks with stable IDs and JSON output.
 # Use before or during install when services are not yet up (unlike ./dream-preflight.sh).
 #
 # Usage:
@@ -59,7 +59,7 @@ CHECKS_JSONL="$(mktemp)"
 trap 'rm -f "$CHECKS_JSONL"' EXIT
 
 append_check() {
-    # id, status, message, remediation — safe for special characters via env
+    # id, status, message, remediation â€” safe for special characters via env
     export LP_ID="$1" LP_STATUS="$2" LP_MSG="$3" LP_FIX="${4:-}"
     python3 -c '
 import json, os
@@ -89,7 +89,7 @@ if [[ -f /etc/os-release ]]; then
         ""
 else
     append_check "DISTRO_INFO" "fail" \
-        "/etc/os-release not found — installer expects a Linux environment" \
+        "/etc/os-release not found â€” installer expects a Linux environment" \
         "Run on a supported Linux distribution or use the platform-specific installer."
 fi
 
@@ -101,7 +101,7 @@ if command -v curl >/dev/null 2>&1; then
     append_check "CURL_INSTALLED" "pass" "curl is available" ""
 else
     append_check "CURL_INSTALLED" "warn" \
-        "curl not found — installer and health checks expect it" \
+        "curl not found â€” installer and health checks expect it" \
         "Install curl (e.g. apt install curl / dnf install curl) and re-run."
 fi
 
@@ -127,7 +127,7 @@ if command -v docker >/dev/null 2>&1; then
             "Start the service (e.g. sudo systemctl start docker) or log in to Docker Desktop; add your user to the docker group if permission denied (see LINUX-TROUBLESHOOTING-GUIDE.md#docker_daemon)."
     fi
 else
-    append_check "DOCKER_DAEMON" "fail" "Skipped — Docker CLI missing" ""
+    append_check "DOCKER_DAEMON" "fail" "Skipped â€” Docker CLI missing" ""
 fi
 
 # --- Docker Compose v2 / v1 ---
@@ -155,11 +155,11 @@ if command -v nvidia-smi >/dev/null 2>&1 && nvidia-smi --query-gpu=name --format
         fi
     else
         append_check "NVIDIA_CONTAINER_RUNTIME" "warn" \
-            "nvidia-smi works but Docker daemon check failed — could not verify NVIDIA runtime" \
+            "nvidia-smi works but Docker daemon check failed â€” could not verify NVIDIA runtime" \
             "Fix Docker daemon access first, then install nvidia-container-toolkit if needed."
     fi
 else
-    append_check "NVIDIA_CONTAINER_RUNTIME" "pass" "No NVIDIA GPU detected via nvidia-smi — check skipped" ""
+    append_check "NVIDIA_CONTAINER_RUNTIME" "pass" "No NVIDIA GPU detected via nvidia-smi â€” check skipped" ""
 fi
 
 # --- Free disk space for Dream Server root ---
@@ -174,7 +174,7 @@ if [[ -d "$DREAM_ROOT" ]]; then
                     "Free space on $DREAM_ROOT: ~${AVAIL_GB}GB (min ${MIN_DISK_GB_FREE}GB)" ""
             else
                 append_check "DISK_SPACE" "warn" \
-                    "Low free space on $DREAM_ROOT: ~${AVAIL_GB}GB (recommended ≥${MIN_DISK_GB_FREE}GB free)" \
+                    "Low free space on $DREAM_ROOT: ~${AVAIL_GB}GB (recommended â‰¥${MIN_DISK_GB_FREE}GB free)" \
                     "Free disk space or set DREAM_ROOT to a volume with more room; see LINUX-TROUBLESHOOTING-GUIDE.md#disk_space."
             fi
         else
@@ -193,7 +193,7 @@ if [[ -f /sys/fs/cgroup/cgroup.controllers ]]; then
     append_check "CGROUP_V2" "pass" "cgroup v2 detected (/sys/fs/cgroup/cgroup.controllers present)" ""
 else
     append_check "CGROUP_V2" "warn" \
-        "cgroup v2 not detected — some Docker/rootless setups may differ" \
+        "cgroup v2 not detected â€” some Docker/rootless setups may differ" \
         "Usually fine on modern distros; if Docker fails oddly, see LINUX-TROUBLESHOOTING-GUIDE.md#cgroups."
 fi
 
@@ -202,7 +202,7 @@ if command -v jq >/dev/null 2>&1; then
     append_check "JQ_INSTALLED" "pass" "jq available for JSON tooling" ""
 else
     append_check "JQ_INSTALLED" "warn" \
-        "jq not found — installer may install it; some scripts expect it" \
+        "jq not found â€” installer may install it; some scripts expect it" \
         "Install jq for smoother tooling (see INSTALL-TROUBLESHOOTING.md)."
 fi
 
@@ -336,7 +336,7 @@ print("  exit_ok:", "true" if s["exit_ok"] else "false")
 if [[ "$EXIT_CODE" -eq 0 ]]; then
     echo -e "${GREEN}Preflight OK (no failures).${NC}"
 else
-    echo -e "${RED}Preflight failed — see FAIL checks and LINUX-TROUBLESHOOTING-GUIDE.md${NC}"
+    echo -e "${RED}Preflight failed â€” see FAIL checks and LINUX-TROUBLESHOOTING-GUIDE.md${NC}"
 fi
 
 if [[ -n "$JSON_FILE" ]]; then

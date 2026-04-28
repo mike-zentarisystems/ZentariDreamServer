@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server — Extension Audit Test Suite
+# Dream Server â€” Extension Audit Test Suite
 # ============================================================================
 # Exercises scripts/audit-extensions.py against controlled fixture projects.
 #
@@ -31,14 +31,14 @@ pass() {
 
 fail() {
     echo -e "  ${RED}FAIL${NC}  $1"
-    [[ -n "${2:-}" ]] && echo -e "        ${RED}→ $2${NC}"
+    [[ -n "${2:-}" ]] && echo -e "        ${RED}â†’ $2${NC}"
     FAIL=$((FAIL + 1))
 }
 
 header() {
     echo ""
     echo -e "${BOLD}${CYAN}[$1/6]${NC} ${BOLD}$2${NC}"
-    echo -e "${CYAN}$(printf '%.0s─' {1..60})${NC}"
+    echo -e "${CYAN}$(printf '%.0sâ”€' {1..60})${NC}"
 }
 
 make_fixture_root() {
@@ -345,9 +345,9 @@ else
 fi
 
 echo ""
-echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BOLD}${CYAN}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
 echo -e "${BOLD}  Results: ${GREEN}$PASS passed${NC}, ${RED}$FAIL failed${NC}${BOLD}${NC}"
-echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BOLD}${CYAN}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
 echo ""
 
 if [[ $FAIL -gt 0 ]]; then

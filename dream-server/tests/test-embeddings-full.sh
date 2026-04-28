@@ -28,10 +28,10 @@ LATENCY=$(( END - START ))
 if echo "$RESPONSE" | grep -q '"embedding":\['; then
   # Extract vector dimension
   DIM=$(echo "$RESPONSE" | grep -o '"embedding":\[[^]]*\]' | head -1 | tr ',' '\n' | wc -l)
-  echo "✅ PASS: Embeddings generated (${LATENCY}ms, ${DIM} dimensions)"
+  echo "âœ… PASS: Embeddings generated (${LATENCY}ms, ${DIM} dimensions)"
   exit 0
 else
-  echo "❌ FAIL: No embedding vector in response (${LATENCY}ms)"
+  echo "âŒ FAIL: No embedding vector in response (${LATENCY}ms)"
   echo "   Response: ${RESPONSE:0:100}"
   exit 1
 fi

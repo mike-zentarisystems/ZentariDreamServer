@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================================================
-# Dream Server — Service Registry Test Suite
+# Dream Server â€” Service Registry Test Suite
 # ============================================================================
 # Tests the service registry (lib/service-registry.sh), manifest validation,
 # and the enable/disable mechanism.
@@ -34,7 +34,7 @@ pass() {
 
 fail() {
     echo -e "  ${RED}FAIL${NC}  $1"
-    [[ -n "${2:-}" ]] && echo -e "        ${RED}→ $2${NC}"
+    [[ -n "${2:-}" ]] && echo -e "        ${RED}â†’ $2${NC}"
     FAIL=$((FAIL + 1))
 }
 
@@ -46,7 +46,7 @@ skip() {
 header() {
     echo ""
     echo -e "${BOLD}${CYAN}[$1]${NC} ${BOLD}$2${NC}"
-    echo -e "${CYAN}$(printf '%.0s─' {1..60})${NC}"
+    echo -e "${CYAN}$(printf '%.0sâ”€' {1..60})${NC}"
 }
 
 # ============================================
@@ -82,7 +82,7 @@ fi
 if [[ ${#SERVICE_IDS[@]} -gt 0 ]]; then
     pass "SERVICE_IDS populated (${#SERVICE_IDS[@]} services)"
 else
-    fail "SERVICE_IDS is empty — no manifests loaded"
+    fail "SERVICE_IDS is empty â€” no manifests loaded"
 fi
 
 # ============================================
@@ -99,7 +99,7 @@ elif command -v python >/dev/null 2>&1; then
 fi
 
 if ! "$PYTHON_CMD" -c "import yaml" 2>/dev/null; then
-    skip "PyYAML not installed — cannot validate manifests"
+    skip "PyYAML not installed â€” cannot validate manifests"
 else
     manifest_count=0
     for svc_dir in "$PROJECT_DIR"/extensions/services/*/; do
@@ -211,9 +211,9 @@ for alias in "${!expected_aliases[@]}"; do
     expected="${expected_aliases[$alias]}"
     resolved=$(sr_resolve "$alias")
     if [[ "$resolved" == "$expected" ]]; then
-        pass "Alias '$alias' → '$expected'"
+        pass "Alias '$alias' â†’ '$expected'"
     else
-        fail "Alias '$alias' → '$resolved' (expected: '$expected')"
+        fail "Alias '$alias' â†’ '$resolved' (expected: '$expected')"
     fi
 done
 
@@ -221,9 +221,9 @@ done
 for sid in llama-server open-webui n8n whisper tts; do
     resolved=$(sr_resolve "$sid")
     if [[ "$resolved" == "$sid" ]]; then
-        pass "Identity: '$sid' → '$sid'"
+        pass "Identity: '$sid' â†’ '$sid'"
     else
-        fail "Identity broken: '$sid' → '$resolved'"
+        fail "Identity broken: '$sid' â†’ '$resolved'"
     fi
 done
 
@@ -243,7 +243,7 @@ header "5/7" "Registry Data Completeness"
 for sid in "${SERVICE_IDS[@]}"; do
     # Every service should have a name
     if [[ -n "${SERVICE_NAMES[$sid]:-}" ]]; then
-        pass "Has name: $sid → ${SERVICE_NAMES[$sid]}"
+        pass "Has name: $sid â†’ ${SERVICE_NAMES[$sid]}"
     else
         fail "Missing name: $sid"
     fi
@@ -251,14 +251,14 @@ for sid in "${SERVICE_IDS[@]}"; do
     # Every service should have a category
     cat="${SERVICE_CATEGORIES[$sid]:-}"
     if [[ "$cat" == "core" || "$cat" == "recommended" || "$cat" == "optional" ]]; then
-        pass "Valid category: $sid → $cat"
+        pass "Valid category: $sid â†’ $cat"
     else
-        fail "Invalid/missing category: $sid → '$cat'"
+        fail "Invalid/missing category: $sid â†’ '$cat'"
     fi
 
     # Every service should have a health endpoint
     if [[ -n "${SERVICE_HEALTH[$sid]:-}" ]]; then
-        pass "Has health endpoint: $sid → ${SERVICE_HEALTH[$sid]}"
+        pass "Has health endpoint: $sid â†’ ${SERVICE_HEALTH[$sid]}"
     else
         fail "Missing health endpoint: $sid"
     fi
@@ -266,7 +266,7 @@ for sid in "${SERVICE_IDS[@]}"; do
     # Every service should have a port
     port="${SERVICE_PORTS[$sid]:-0}"
     if [[ "$port" != "0" ]]; then
-        pass "Has port: $sid → $port"
+        pass "Has port: $sid â†’ $port"
     else
         fail "Missing/zero port: $sid"
     fi
@@ -286,8 +286,8 @@ for sid in "${SERVICE_IDS[@]}"; do
         if [[ ! -f "$svc_dir/compose.yaml" ]]; then
             pass "Core service has no compose fragment: $sid"
         else
-            # comfyui is an exception — it has a stub compose.yaml
-            # Actually, let's just warn — some core services might have compose fragments
+            # comfyui is an exception â€” it has a stub compose.yaml
+            # Actually, let's just warn â€” some core services might have compose fragments
             fail "Core service has compose fragment (unexpected): $sid"
         fi
     else
@@ -339,12 +339,12 @@ else
     svc_dir="$PROJECT_DIR/extensions/services/$test_service"
     pass "Selected test service: $test_service"
 
-    # Disable: rename compose.yaml → compose.yaml.disabled
+    # Disable: rename compose.yaml â†’ compose.yaml.disabled
     cp "$svc_dir/compose.yaml" "$svc_dir/compose.yaml.backup"
     mv "$svc_dir/compose.yaml" "$svc_dir/compose.yaml.disabled"
 
     if [[ ! -f "$svc_dir/compose.yaml" && -f "$svc_dir/compose.yaml.disabled" ]]; then
-        pass "Disable works: compose.yaml → compose.yaml.disabled"
+        pass "Disable works: compose.yaml â†’ compose.yaml.disabled"
     else
         fail "Disable failed: files not in expected state"
     fi
@@ -363,7 +363,7 @@ else
     mv "$svc_dir/compose.yaml.disabled" "$svc_dir/compose.yaml"
 
     if [[ -f "$svc_dir/compose.yaml" && ! -f "$svc_dir/compose.yaml.disabled" ]]; then
-        pass "Enable works: compose.yaml.disabled → compose.yaml"
+        pass "Enable works: compose.yaml.disabled â†’ compose.yaml"
     else
         fail "Enable failed: files not in expected state"
     fi
@@ -387,10 +387,10 @@ fi
 # Summary
 # ============================================
 echo ""
-echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BOLD}${CYAN}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
 TOTAL=$((PASS + FAIL + SKIP))
 echo -e "${BOLD}  Results: ${GREEN}$PASS passed${NC}, ${RED}$FAIL failed${NC}, ${YELLOW}$SKIP skipped${NC} ${BOLD}($TOTAL total)${NC}"
-echo -e "${BOLD}${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+echo -e "${BOLD}${CYAN}â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”${NC}"
 echo ""
 
 if [[ $FAIL -gt 0 ]]; then

@@ -27,10 +27,10 @@ LATENCY=$(( END - START ))
 
 # Check for streaming data prefix (should contain "data:")
 if echo "$RESPONSE" | grep -q "data:"; then
-  echo "✅ PASS: Streaming response received (${LATENCY}ms)"
+  echo "âœ… PASS: Streaming response received (${LATENCY}ms)"
   exit 0
 else
-  echo "❌ FAIL: No streaming data detected (${LATENCY}ms)"
+  echo "âŒ FAIL: No streaming data detected (${LATENCY}ms)"
   echo "Response preview: ${RESPONSE:0:100}"
   exit 1
 fi

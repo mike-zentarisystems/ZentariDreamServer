@@ -1,8 +1,8 @@
 #!/bin/bash
 #=============================================================================
-# upgrade-model.sh — Atomic Model Upgrade with Rollback
+# upgrade-model.sh â€” Atomic Model Upgrade with Rollback
 #
-# Part of Dream Server — Phase 0 Foundation
+# Part of Dream Server â€” Phase 0 Foundation
 #
 # Gracefully swaps models in llama-server with automatic rollback on failure.
 # Ensures zero downtime when possible, minimal downtime otherwise.
@@ -281,9 +281,9 @@ cmd_list() {
                 current=$(get_current_model)
                 
                 if [[ "$model_name" == "$current" ]]; then
-                    echo -e "  ${GREEN}● $model_name${NC} ($size) [ACTIVE]"
+                    echo -e "  ${GREEN}â— $model_name${NC} ($size) [ACTIVE]"
                 else
-                    echo -e "  ○ $model_name ($size)"
+                    echo -e "  â—‹ $model_name ($size)"
                 fi
             fi
         done
@@ -341,7 +341,7 @@ cmd_upgrade() {
         return 0
     fi
     
-    log "Upgrading model: $current_model → $new_model"
+    log "Upgrading model: $current_model â†’ $new_model"
     
     # Phase 1: Stop llama-server
     echo ""
@@ -394,7 +394,7 @@ cmd_rollback() {
     local current_model
     current_model=$(get_current_model)
     
-    log "Rolling back: $current_model → $previous_model"
+    log "Rolling back: $current_model â†’ $previous_model"
     
     # Restore from backup state if available
     if [[ -f "$BACKUP_FILE" ]]; then

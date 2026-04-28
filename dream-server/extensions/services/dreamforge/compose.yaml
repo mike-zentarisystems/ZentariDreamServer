@@ -22,7 +22,7 @@ services:
       - DREAMFORGE_RAG_ENABLED=${DREAMFORGE_RAG_ENABLED:-false}
       # WebSearch via SearXNG (HTML format for scraping)
       - DREAMFORGE_WEB_SEARCH_BASE_URL=http://searxng:8080/search?format=html
-      # Service URLs (Docker network) — /v1 required for Rust engine
+      # Service URLs (Docker network) â€” /v1 required for Rust engine
       - LLM_API_URL=${DREAMFORGE_LLM_API_URL:-http://llama-server:8080/v1}
       - QDRANT_URL=http://qdrant:6333
       - EMBEDDINGS_URL=http://embeddings:80
