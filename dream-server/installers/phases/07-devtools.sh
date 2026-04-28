@@ -108,11 +108,11 @@ else
         mkdir -p "$OPENCODE_CONFIG_DIR"
         # Read OLLAMA_PORT and DREAM_MODE from .env generated in phase 06
         if [[ -f "$INSTALL_DIR/.env" ]]; then
-            [[ -z "${OLLAMA_PORT:-}" ]] && OLLAMA_PORT=$(grep -m1 '^OLLAMA_PORT=' "$INSTALL_DIR/.env" | cut -d= -f2-)
-            # Always re-read DREAM_MODE from .env â€” Phase 06 may have changed it
-            # (e.g. "local" â†’ "lemonade" for AMD) but the shell variable is stale.
-            DREAM_MODE=$(grep -m1 '^DREAM_MODE=' "$INSTALL_DIR/.env" | cut -d= -f2-)
-            [[ -z "${LITELLM_KEY:-}" ]] && LITELLM_KEY=$(grep -m1 '^LITELLM_KEY=' "$INSTALL_DIR/.env" | cut -d= -f2-)
+            [[ -z "${OLLAMA_PORT:-}" ]] && OLLAMA_PORT=$(grep -m1 '^OLLAMA_PORT=' "$INSTALL_DIR/.env" | cut -d= -f2- || echo "")
+            # Always re-read DREAM_MODE from .env — Phase 06 may have changed it
+            # (e.g. "local" → "lemonade" for AMD) but the shell variable is stale.
+            DREAM_MODE=$(grep -m1 '^DREAM_MODE=' "$INSTALL_DIR/.env" | cut -d= -f2- || echo "local")
+            [[ -z "${LITELLM_KEY:-}" ]] && LITELLM_KEY=$(grep -m1 '^LITELLM_KEY=' "$INSTALL_DIR/.env" | cut -d= -f2- || echo "")
         fi
         # Route through LiteLLM on AMD/Lemonade, direct to llama-server otherwise
         if [[ "${DREAM_MODE:-local}" == "lemonade" ]]; then
