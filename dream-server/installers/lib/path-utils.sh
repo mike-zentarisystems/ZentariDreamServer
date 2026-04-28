@@ -68,7 +68,7 @@ resolve_install_dir() {
     elif [[ -n "${DS_INSTALL_DIR:-}" ]]; then
         resolved="$DS_INSTALL_DIR"
     else
-        resolved="$HOME/dream-server"
+        resolved=$(get_default_install_dir)
     fi
     
     # Normalize the path
@@ -119,8 +119,12 @@ validate_install_path() {
 # Get platform-specific default install directory
 get_default_install_dir() {
     case "$(uname -s)" in
-        Darwin|Linux|*)
-            # All platforms: use home directory (backward compatible)
+        Linux)
+            # Standard Linux path for optional software
+            echo "/opt/dream-server"
+            ;;
+        Darwin|*)
+            # macOS and others: use home directory
             echo "$HOME/dream-server"
             ;;
     esac

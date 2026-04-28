@@ -28,11 +28,11 @@ cleanup_on_error() {
     echo -e "\033[0;33m        Log file: ${LOG_FILE:-/tmp/dream-server-install.log}\033[0m"
     echo ""
     echo "The install did not complete. Partial state may exist at:"
-    echo "  ${INSTALL_DIR:-~/dream-server}"
+    echo "  ${INSTALL_DIR}"
     echo ""
     echo "To retry, run the installer again. It will resume safely."
     echo "To start fresh, remove the install directory first:"
-    echo "  rm -rf ${INSTALL_DIR:-~/dream-server} && ./install.sh"
+    echo "  rm -rf ${INSTALL_DIR} && ./install.sh"
     exit "$exit_code"
 }
 trap cleanup_on_error ERR
@@ -140,6 +140,7 @@ Options:
     --offline         M1 mode: Configure for fully offline/air-gapped operation
     --lan             Bind services to 0.0.0.0 for LAN access (headless servers)
     --no-bootstrap    Skip bootstrap fast-start (download full model in foreground)
+    --path PATH       Set installation directory (default: ~/dream-server)
     --summary-json P  Write machine-readable install summary JSON to path P
     -h, --help        Show this help
 
@@ -188,6 +189,7 @@ while [[ $# -gt 0 ]]; do
         --offline) OFFLINE_MODE=true; shift ;;
         --lan) BIND_ADDRESS="0.0.0.0"; shift ;;
         --no-bootstrap) NO_BOOTSTRAP=true; shift ;;
+        --path) INSTALL_DIR="$2"; shift 2 ;;
         --summary-json) SUMMARY_JSON_FILE="$2"; shift 2 ;;
         -h|--help) usage ;;
         *) error "Unknown option: $1" ;;

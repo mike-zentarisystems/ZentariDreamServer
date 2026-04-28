@@ -39,6 +39,13 @@ if $DRY_RUN; then
 else
     # Create directories
     dream_progress 38 "directories" "Creating directory structure"
+    if [[ ! -d "$INSTALL_DIR" ]]; then
+        if ! mkdir -p "$INSTALL_DIR" 2>/dev/null; then
+            ai "Installation directory requires elevated permissions..."
+            sudo mkdir -p "$INSTALL_DIR"
+            sudo chown "$(id -u):$(id -g)" "$INSTALL_DIR"
+        fi
+    fi
     mkdir -p "$INSTALL_DIR"/{config,data,models}
     mkdir -p "$INSTALL_DIR"/data/{open-webui,whisper,tts,n8n,qdrant,models,privacy-shield,dreamforge,ape}
     mkdir -p "$INSTALL_DIR"/data/langfuse/{postgres,clickhouse,redis,minio}
