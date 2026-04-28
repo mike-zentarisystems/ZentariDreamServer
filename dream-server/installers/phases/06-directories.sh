@@ -197,6 +197,10 @@ Fix with: sudo chown -R \$(id -u):\$(id -g) $INSTALL_DIR/config $INSTALL_DIR/dat
     BASEROW_SECRET_KEY=$(_env_get BASEROW_SECRET_KEY "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
     BASEROW_JWT_SIGNING_KEY=$(_env_get BASEROW_JWT_SIGNING_KEY "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
     GRAFANA_ADMIN_PASSWORD=$(_env_get GRAFANA_ADMIN_PASSWORD "$(openssl rand -hex 16 2>/dev/null || head -c 16 /dev/urandom | xxd -p)")
+    VAULTWARDEN_ADMIN_TOKEN=$(_env_get VAULTWARDEN_ADMIN_TOKEN "$(openssl rand -hex 32 2>/dev/null || head -c 32 /dev/urandom | xxd -p)")
+    FORGEJO_ADMIN_USER=$(_env_get FORGEJO_ADMIN_USER "admin")
+    FORGEJO_ADMIN_PASSWORD=$(_env_get FORGEJO_ADMIN_PASSWORD "$(openssl rand -hex 16 2>/dev/null || head -c 16 /dev/urandom | xxd -p)")
+    FORGEJO_ADMIN_EMAIL=$(_env_get FORGEJO_ADMIN_EMAIL "admin@dreamserver.local")
 
     # Langfuse (LLM Observability). LANGFUSE_ENABLED mirrors the install-time
     # ENABLE_LANGFUSE toggle, falling back to whatever the user had in .env on
@@ -346,8 +350,15 @@ AUTHELIA_PORT=9091
 BASEROW_PORT=8110
 PROMETHEUS_PORT=9090
 GRAFANA_PORT=3007
+CADVISOR_PORT=8083
+NODE_EXPORTER_PORT=9100
+UPTIME_KUMA_PORT=3008
 CADDY_HTTP_PORT=80
 CADDY_HTTPS_PORT=443
+VAULTWARDEN_PORT=8222
+FORGEJO_PORT=3009
+FORGEJO_SSH_PORT=2222
+DOCLING_PORT=5001
 LANGFUSE_PORT=${LANGFUSE_PORT}
 
 #=== Security (auto-generated, keep secret!) ===
@@ -370,6 +381,10 @@ AUTHELIA_STORAGE_ENCRYPTION_KEY=${AUTHELIA_STORAGE_ENCRYPTION_KEY}
 BASEROW_SECRET_KEY=${BASEROW_SECRET_KEY}
 BASEROW_JWT_SIGNING_KEY=${BASEROW_JWT_SIGNING_KEY}
 GRAFANA_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD}
+VAULTWARDEN_ADMIN_TOKEN=${VAULTWARDEN_ADMIN_TOKEN}
+FORGEJO_ADMIN_USER=${FORGEJO_ADMIN_USER}
+FORGEJO_ADMIN_PASSWORD=${FORGEJO_ADMIN_PASSWORD}
+FORGEJO_ADMIN_EMAIL=${FORGEJO_ADMIN_EMAIL}
 
 #=== Voice Settings ===
 WHISPER_MODEL=base
@@ -382,6 +397,8 @@ TTS_VOICE=en_US-lessac-medium
 WEBUI_AUTH=true
 ENABLE_WEB_SEARCH=true
 WEB_SEARCH_ENGINE=searxng
+VAULTWARDEN_SIGNUPS_ALLOWED=false
+DOCLING_USE_GPU=false
 
 #=== n8n Settings ===
 N8N_HOST=localhost
