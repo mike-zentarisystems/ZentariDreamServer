@@ -9,7 +9,11 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:?Set GRAFANA_ADMIN_PASSWORD in .env}
       - GF_SECURITY_ADMIN_USER=admin
       - GF_USERS_ALLOW_SIGN_UP=false
-      - GF_SERVER_ROOT_URL=http://localhost:${GRAFANA_PORT:-3007}
+      # Root URL reflects the Caddy reverse proxy entry point (subdomain routing)
+      - GF_SERVER_ROOT_URL=http://grafana.localhost
+      - GF_SERVER_HTTP_PORT=3000
+      # Authelia handles auth at the Caddy layer; Grafana login is still available as fallback
+      - GF_AUTH_DISABLE_LOGIN_FORM=false
       - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
     volumes:
       - grafana-data:/var/lib/grafana

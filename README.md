@@ -4,11 +4,14 @@
 
 ### Own your AI. One person, one dream, one machine at a time.
 
+> [!NOTE]
+> **Zentari Dream Server** is a specialized fork of the original [Dream Server](https://github.com/Light-Heart-Labs/DreamServer) project by Light Heart Labs. We are deeply grateful to the original authors and the "Wall of Heroes" for building the incredible foundation this project is built upon.
+
 A handful of companies control the vast majority of global AI traffic — and with it, your data, your costs, and your uptime. Every query you send to a centralized provider is business intelligence you don’t own, running on infrastructure you don’t control, priced on terms you can’t negotiate.
 
 If AI is becoming critical infrastructure, it shouldn’t be rented. Self-hosting local AI should be a sovereign human right, not a career choice.
 
-**Dream Server is the exit.** A fully local AI stack — LLM inference, chat, voice, agents, workflows, RAG, image generation, and privacy tools — deployed on your hardware with a single command. No cloud. No subscriptions. No one watching.
+**Zentari Dream Server is the exit.** A fully local AI stack — LLM inference, chat, voice, agents, workflows, RAG, image generation, and privacy tools — deployed on your hardware with a single command. No cloud. No subscriptions. No one watching.
 
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/Light-Heart-Labs/DreamServer)](https://github.com/Light-Heart-Labs/DreamServer/stargazers)
@@ -42,11 +45,11 @@ If AI is becoming critical infrastructure, it shouldn’t be rented. Self-hostin
 
 ---
 
-## Why Dream Server?
+## Why Zentari Dream Server?
 
 Because running your own AI shouldn't require a CS degree and a weekend of debugging CUDA drivers. Right now, setting up local AI means stitching together a dozen projects, writing Docker configs from scratch, and praying everything talks to each other. Most people give up and go back to paying OpenAI.
 
-We built Dream Server so you don't have to.
+We built Zentari Dream Server so you don't have to.
 
 - **One command** — detects your GPU, picks the right model, generates credentials, launches everything
 - **Chatting in under 2 minutes** — bootstrap mode gives you a working model instantly while your full model downloads in the background
@@ -59,7 +62,7 @@ curl -fsSL https://raw.githubusercontent.com/Light-Heart-Labs/DreamServer/v2.3.2
 
 Open **http://localhost:3000** and start chatting.
 
-> **No GPU?** Dream Server also runs in cloud mode — same full stack, powered by OpenAI/Anthropic/Together APIs instead of local inference:
+> **No GPU?** Zentari Dream Server also runs in cloud mode — same full stack, powered by OpenAI/Anthropic/Together APIs instead of local inference:
 > ```bash
 > ./install.sh --cloud
 > ```
@@ -129,7 +132,7 @@ See the [macOS Quickstart](dream-server/docs/MACOS-QUICKSTART.md) for details.
 
 ---
 
-## What's In The Box
+## What's In The Zentari Box
 
 ### Chat & Inference
 - **Open WebUI** — full-featured chat interface with conversation history, web search, document upload, and [30+ languages](https://docs.openwebui.com)
@@ -145,11 +148,12 @@ See the [macOS Quickstart](dream-server/docs/MACOS-QUICKSTART.md) for details.
 - **n8n** — workflow automation with 400+ integrations (Slack, email, databases, APIs)
 
 ### Ops & Infrastructure
-- **Authelia** — SSO / authentication middleware
-- **Prometheus** — metrics collection
-- **Grafana** — dashboards
-- **Baserow** — self-hosted database and app builder
-- **Caddy** — reverse proxy with automatic HTTPS
+- **Authelia** — centralized SSO and Multi-Factor Authentication (MFA)
+- **Caddy** — high-performance reverse proxy with automatic HTTPS
+- **Baserow** — self-hosted database and internal tool builder (Airtable alternative)
+- **Prometheus & Grafana** — full-stack observability and GPU metrics
+- **Privacy Shield** — PII scrubbing proxy for secure API interactions
+- **Dashboard** — real-time GPU monitor and service orchestration center
 
 ### Knowledge & Search
 - **Qdrant** — vector database for retrieval-augmented generation (RAG)
@@ -158,12 +162,6 @@ See the [macOS Quickstart](dream-server/docs/MACOS-QUICKSTART.md) for details.
 
 ### Creative
 - **ComfyUI** — node-based image generation
-
-### Privacy & Ops
-- **Privacy Shield** — PII scrubbing proxy for API calls
-- **Dashboard** — real-time GPU metrics, service health, model management
-- **Authelia** — SSO/authentication for all services
-- **Caddy** — reverse proxy with automatic HTTPS (entry point for all services)
 
 ---
 
@@ -304,7 +302,7 @@ dream preset load gaming    # Restore it
 
 Other tools get you part of the way. Dream Server gets you the whole way.
 
-| | Dream Server | Ollama + Open WebUI | LocalAI |
+| | Zentari Dream Server | Ollama + Open WebUI | LocalAI |
 |---|:---:|:---:|:---:|
 | **Scope** | Full AI stack — inference to agents to workflows | LLM + chat | LLM only |
 | One-command install | Everything, auto-configured | LLM + chat only | LLM only |
@@ -339,7 +337,7 @@ Other tools get you part of the way. Dream Server gets you the whole way.
 
 ## Wall of Heroes
 
-Dream Server exists because people chose to build instead of wait. Every contributor here is part of something bigger than code — a growing resistance against the idea that AI should be rented, gated, and controlled by the few. These are the founders of the sovereign AI movement, proving that one person, one machine, and one dream is enough.
+The original **Dream Server** exists because people chose to build instead of wait. Every contributor listed here is part of something bigger than code — a growing resistance against the idea that AI should be rented, gated, and controlled by the few. These are the founders of the sovereign AI movement, proving that one person, one machine, and one dream is enough. Zentari Dream Server stands on the shoulders of these giants.
 
 Thanks to [kyuz0](https://github.com/kyuz0) for [amd-strix-halo-toolboxes](https://github.com/kyuz0/amd-strix-halo-toolboxes) — pre-built ROCm containers for Strix Halo that saved us a lot of pain from having to build our own. And to [lhl](https://github.com/lhl) for [strix-halo-testing](https://github.com/lhl/strix-halo-testing) — the foundational Strix Halo AI research and rocWMMA performance work that the broader community builds on.
 
@@ -349,7 +347,7 @@ Thanks to [kyuz0](https://github.com/kyuz0) for [amd-strix-halo-toolboxes](https
 
 *   [halo-ai (bong-water-water-bong)](https://github.com/bong-water-water-bong/halo-ai) — Bare-metal DreamServer rebuild for Strix Halo on Arch Linux. Zero containers, compiled from source, 89 tok/s. Proved Vulkan > ROCm for generation on gfx1151 and contributed kernel tuning research (`amd_iommu=off`, TTM page pool expansion) back to the ecosystem. Early DreamServer advocate who introduced us to the Lemonade SDK community and AMD developer team.
 
-### Projects that make Dream Server possible
+### Projects that make Zentari Dream Server possible
 
 *   [llama.cpp (ggerganov)](https://github.com/ggml-org/llama.cpp) — LLM inference engine
 *   [Qwen (Alibaba Cloud)](https://github.com/QwenLM/Qwen) — Default language models

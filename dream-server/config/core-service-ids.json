@@ -1,27 +1,11 @@
 [
-  "ape",
-  "comfyui",
   "dashboard",
   "dashboard-api",
-  "dreamforge",
-  "embeddings",
-  "langfuse",
-  "litellm",
   "llama-server",
-  "n8n",
   "open-webui",
-  "hermes-agent",
   "authelia",
   "caddy",
   "prometheus",
   "grafana",
-  "baserow",
-  "opencode",
-  "perplexica",
-  "privacy-shield",
-  "qdrant",
-  "searxng",
-  "token-spy",
-  "tts",
-  "whisper"
+  "baserow"
 ]

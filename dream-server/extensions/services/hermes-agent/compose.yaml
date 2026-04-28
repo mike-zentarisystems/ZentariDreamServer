@@ -1,6 +1,9 @@
 services:
   hermes-agent:
-    image: ghcr.io/nousresearch/hermes-agent:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dream-server-hermes-agent:latest
     container_name: dream-hermes-agent
     restart: unless-stopped
     security_opt:

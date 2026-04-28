@@ -141,10 +141,10 @@ if ! $DRY_RUN; then
     fi
 
     # Sync Authelia, Caddy, Monitoring, Baserow
-    for _svc in authelia caddy prometheus grafana baserow; do
+    for _svc in authelia caddy prometheus grafana baserow cadvisor node-exporter uptime-kuma; do
         _svc_compose="$SCRIPT_DIR/extensions/services/$_svc/compose.yaml"
         _enabled_var="ENABLE_${_svc^^}"
-        [[ "$_svc" == "prometheus" || "$_svc" == "grafana" ]] && _enabled_var="ENABLE_MONITORING"
+        [[ "$_svc" == "prometheus" || "$_svc" == "grafana" || "$_svc" == "cadvisor" || "$_svc" == "node-exporter" || "$_svc" == "uptime-kuma" ]] && _enabled_var="ENABLE_MONITORING"
         if [[ "${!_enabled_var:-}" == "true" ]]; then
             if [[ ! -f "$_svc_compose" && -f "${_svc_compose}.disabled" ]]; then
                 mv "${_svc_compose}.disabled" "$_svc_compose"

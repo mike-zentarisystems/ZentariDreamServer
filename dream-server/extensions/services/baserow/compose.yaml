@@ -6,7 +6,7 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
-      - BASEROW_PUBLIC_URL=http://localhost:${BASEROW_PORT:-8110}
+      - BASEROW_PUBLIC_URL=http://baserow.localhost
       - SECRET_KEY=${BASEROW_SECRET_KEY:?Set BASEROW_SECRET_KEY in .env}
       - JWT_SIGNING_KEY=${BASEROW_JWT_SIGNING_KEY:?Set BASEROW_JWT_SIGNING_KEY in .env}
       - DATABASE_URL=sqlite:////baserow/data/baserow.db

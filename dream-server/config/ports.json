@@ -3,7 +3,7 @@
   "description": "Canonical external port contract for Dream Server services.",
   "ports": [
     {
-      "env_var": "OLLAMA_PORT",
+      "env_var": "LLAMA_SERVER_PORT",
       "external_default": 8080,
       "service_id": "llama-server",
       "internal_port": 8080,

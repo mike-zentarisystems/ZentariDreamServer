@@ -1,16 +1,39 @@
+# ============================================================
+# Zentari Dream Server — Caddyfile
+# ============================================================
+# Architecture: subdomain-based routing under *.localhost
+#
+# Each service is accessible at http://<service>.localhost
+# Caddy is the SOLE entry point (ports 80/443).
+# All other services bind to 127.0.0.1 only.
+#
+# *.localhost resolves to 127.0.0.1 on Linux/macOS natively.
+# Windows users: add these to C:\Windows\System32\drivers\etc\hosts:
+#   127.0.0.1  localhost
+#   127.0.0.1  auth.localhost
+#   127.0.0.1  chat.localhost
+#   127.0.0.1  dashboard.localhost
+#   127.0.0.1  grafana.localhost
+#   127.0.0.1  prometheus.localhost
+#   127.0.0.1  baserow.localhost
+#   127.0.0.1  n8n.localhost
+#   127.0.0.1  hermes.localhost
+#   127.0.0.1  perplexica.localhost
+#   127.0.0.1  comfyui.localhost
+#   127.0.0.1  langfuse.localhost
+#   127.0.0.1  uptime.localhost
+# ============================================================
+
 {
   # Use internal CA for localhost (self-signed)
   local_certs
   # Enable the admin API on localhost only
   admin localhost:2019
+  # Suppress ACME challenges on localhost
+  auto_https off
 }
 
-# Health check endpoint (no auth required)
-http://localhost/healthz {
-  respond "OK" 200
-}
-
-# Authelia forward-auth snippet
+# ── Authelia forward-auth snippet ──────────────────────────
 (authelia_forward_auth) {
   forward_auth authelia:9091 {
     uri /api/authz/forward-auth
@@ -18,60 +41,93 @@ http://localhost/healthz {
   }
 }
 
-# Open WebUI (Chat)
-localhost:3000 {
-  import authelia_forward_auth
-  reverse_proxy open-webui:3000
+# ── Health check (Caddy itself — no auth) ──────────────────
+http://localhost/healthz {
+  respond "OK" 200
 }
 
-# DreamServer Dashboard
-localhost:3001 {
+# ── Default: redirect bare localhost to Dashboard ──────────
+http://localhost {
+  redir http://dashboard.localhost 302
+}
+
+# ── Authelia (login portal — no forward auth on itself) ────
+http://auth.localhost {
+  reverse_proxy authelia:9091
+}
+
+# ── Open WebUI (Chat) ──────────────────────────────────────
+http://chat.localhost {
+  import authelia_forward_auth
+  reverse_proxy open-webui:8080
+}
+
+# ── DreamServer Dashboard ──────────────────────────────────
+http://dashboard.localhost {
   import authelia_forward_auth
   reverse_proxy dashboard:3001
 }
 
-# Hermes Agent API (bearer token auth â€” no forward auth)
-localhost:8642 {
-  reverse_proxy hermes-agent:8642
-}
-
-# Baserow
-localhost:8110 {
+# ── Dashboard API ──────────────────────────────────────────
+http://api.localhost {
   import authelia_forward_auth
-  reverse_proxy baserow:80
+  reverse_proxy dashboard-api:3002
 }
 
-# n8n
-localhost:5678 {
-  import authelia_forward_auth
-  reverse_proxy n8n:5678
-}
-
-# Grafana
-localhost:3007 {
+# ── Grafana ────────────────────────────────────────────────
+http://grafana.localhost {
   import authelia_forward_auth
   reverse_proxy grafana:3000
 }
 
-# Prometheus
-localhost:9090 {
+# ── Prometheus ─────────────────────────────────────────────
+http://prometheus.localhost {
   import authelia_forward_auth
   reverse_proxy prometheus:9090
 }
 
-# Authelia (login portal)
-localhost:9091 {
-  reverse_proxy authelia:9091
+# ── Baserow ────────────────────────────────────────────────
+http://baserow.localhost {
+  import authelia_forward_auth
+  reverse_proxy baserow:80
 }
 
-# Perplexica
-localhost:3004 {
+# ── n8n Workflow Automation ────────────────────────────────
+http://n8n.localhost {
+  import authelia_forward_auth
+  reverse_proxy n8n:5678
+}
+
+# ── Hermes Agent API (bearer token auth — no forward auth) ─
+http://hermes.localhost {
+  reverse_proxy hermes-agent:8642
+}
+
+# ── Perplexica ─────────────────────────────────────────────
+http://perplexica.localhost {
   import authelia_forward_auth
   reverse_proxy perplexica:3000
 }
 
-# ComfyUI
-localhost:8188 {
+# ── ComfyUI Image Generation ───────────────────────────────
+http://comfyui.localhost {
   import authelia_forward_auth
   reverse_proxy comfyui:8188
+}
+
+# ── Langfuse LLM Observability ─────────────────────────────
+http://langfuse.localhost {
+  import authelia_forward_auth
+  reverse_proxy langfuse:3000
+}
+
+# ── Uptime Kuma ────────────────────────────────────────────
+http://uptime.localhost {
+  import authelia_forward_auth
+  reverse_proxy uptime-kuma:3001
+}
+
+# ── SearXNG (internal only — no UI auth needed) ────────────
+http://search.localhost {
+  reverse_proxy searxng:8080
 }

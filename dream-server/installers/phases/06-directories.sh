@@ -9,13 +9,16 @@
 # Expects: SCRIPT_DIR, INSTALL_DIR, LOG_FILE, DRY_RUN, INTERACTIVE,
 #           TIER, TIER_NAME, VERSION, GPU_BACKEND, SYSTEM_TZ,
 #           LLM_MODEL, MAX_CONTEXT, GGUF_FILE, COMPOSE_FLAGS,
-#           ENABLE_VOICE, ENABLE_WORKFLOWS, ENABLE_RAG, ENABLE_HERMES,
+#           ENABLE_HERMES, ENABLE_AUTHELIA, ENABLE_CADDY, ENABLE_MONITORING,
+#           ENABLE_BASEROW, ENABLE_VOICE, ENABLE_WORKFLOWS, ENABLE_RAG,
+#           ENABLE_COMFYUI, ENABLE_DREAMFORGE, ENABLE_LANGFUSE,
 #           GPU_ASSIGNMENT_JSON,
 #           COMFYUI_GPU_UUID, WHISPER_GPU_UUID, EMBEDDINGS_GPU_UUID,
 #           LLAMA_SERVER_GPU_UUIDS, LLAMA_ARG_SPLIT_MODE, LLAMA_ARG_TENSOR_SPLIT,
-#           chapter(), ai(), ai_ok(), ai_warn(), log(), warn(), error()
+#           chapter(), ai(), ai_ok(), ai_warn(), log(), warn(), error(), _sed_i()
 # Provides: WEBUI_SECRET, N8N_PASS, LITELLM_KEY, LIVEKIT_SECRET,
 #           DASHBOARD_API_KEY, OPENCODE_SERVER_PASSWORD, HERMES_API_KEY,
+#           AUTHELIA_ADMIN_PASSWORD, GRAFANA_ADMIN_PASSWORD,
 #           GPU_ASSIGNMENT_JSON_B64 (in .env)
 #
 # Modder notes:
@@ -115,11 +118,39 @@ Fix with: sudo chown -R \$(id -u):\$(id -g) $INSTALL_DIR/config $INSTALL_DIR/dat
         ai_ok "Extensions library copied to data/extensions-library/"
     fi
 
-    # Hermes Agent setup â€” configured via environment variables in compose.yaml
+    # Hermes Agent setup -- configured via environment variables in compose.yaml
     if [[ "$ENABLE_HERMES" == "true" ]]; then
         mkdir -p "$INSTALL_DIR/data/hermes-agent"
         HERMES_API_KEY="${HERMES_API_KEY:-$(openssl rand -hex 24 2>/dev/null || head -c 24 /dev/urandom | xxd -p)}"
-        log "Hermes Agent configured ( Nous Research autonomous agent)"
+        log "Hermes Agent configured (Nous Research autonomous agent)"
+    fi
+
+    # Authelia password hash -- generate if placeholder is still present
+    if [[ "${ENABLE_AUTHELIA:-}" == "true" ]]; then
+        _users_db="$INSTALL_DIR/config/authelia/users_database.yml"
+        if [[ ! -f "$_users_db" ]]; then
+            cp "$SCRIPT_DIR/config/authelia/users_database.yml" "$_users_db"
+        fi
+        if grep -q "AUTHELIA_HASH_PLACEHOLDER" "$_users_db" 2>/dev/null; then
+            AUTHELIA_ADMIN_PASSWORD="${AUTHELIA_ADMIN_PASSWORD:-$(openssl rand -hex 16 2>/dev/null || head -c 16 /dev/urandom | xxd -p)}"
+            log "Generating Authelia Argon2id password hash (takes ~5s)..."
+            _authelia_hash=$(docker run --rm authelia/authelia:4.38 \
+                authelia crypto hash generate argon2 \
+                --password "$AUTHELIA_ADMIN_PASSWORD" 2>/dev/null \
+                | grep -oP "(?<=Digest: ).+" || true)
+            if [[ -n "$_authelia_hash" ]]; then
+                _sed_i "s|AUTHELIA_HASH_PLACEHOLDER|${_authelia_hash}|" "$_users_db"
+                ai_ok "Authelia admin password hash generated"
+                ai_warn "Save your Authelia admin password: $AUTHELIA_ADMIN_PASSWORD"
+                echo "AUTHELIA_ADMIN_PASSWORD=${AUTHELIA_ADMIN_PASSWORD}" >> "$INSTALL_DIR/.env"
+            else
+                warn "Could not generate Authelia hash via Docker -- set it manually:"
+                warn "  docker run --rm authelia/authelia:4.38 authelia crypto hash generate argon2 --password 'YourPassword'"
+                warn "  Then update: $INSTALL_DIR/config/authelia/users_database.yml"
+            fi
+        else
+            log "Authelia users_database.yml already has a hash -- skipping generation"
+        fi
     fi
 
     # â”€â”€ .env merge logic: preserve user-configured values on re-install â”€â”€
@@ -298,7 +329,8 @@ INTEL_ENV
 fi)
 
 #=== Ports ===
-OLLAMA_PORT=11434
+# LLAMA_SERVER_PORT: external port for llama-server (OpenAI-compatible API on :8080 internally)
+LLAMA_SERVER_PORT=8080
 WEBUI_PORT=3000
 SEARXNG_PORT=8888
 PERPLEXICA_PORT=3004

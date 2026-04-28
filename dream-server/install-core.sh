@@ -97,6 +97,9 @@ ENABLE_CADDY=true
 ENABLE_MONITORING=true
 ENABLE_COMFYUI=true
 ENABLE_DREAMFORGE=true
+ENABLE_VOICE=true
+ENABLE_WORKFLOWS=true
+ENABLE_RAG=true
 # Langfuse (LLM observability) defaults OFF on all tiers because its
 # clickhouse + postgres + minio stack adds ~500MB baseline memory that is
 # nontrivial even on Tier 3+ systems. Users opt in via --langfuse, --all,
