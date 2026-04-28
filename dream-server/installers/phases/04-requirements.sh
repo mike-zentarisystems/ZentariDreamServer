@@ -116,12 +116,12 @@ else
         ai_ok "RAM: ${RAM_GB}GB (recommended: ${MIN_RAM}GB+)"
     fi
     case $TIER in
-        0) MIN_DISK=15 ;;
-        1) MIN_DISK=30 ;;
-        2) MIN_DISK=50 ;;
-        3) MIN_DISK=80 ;;
-        4) MIN_DISK=150 ;;
-        *) MIN_DISK=50 ;;
+        0) MIN_DISK=10 ;;
+        1) MIN_DISK=20 ;;
+        2) MIN_DISK=40 ;;
+        3) MIN_DISK=60 ;;
+        4) MIN_DISK=120 ;;
+        *) MIN_DISK=40 ;;
     esac
     if [[ $DISK_AVAIL -lt $MIN_DISK ]]; then
         warn "Disk: ${DISK_AVAIL}GB available, ${MIN_DISK}GB minimum required for Tier $TIER"

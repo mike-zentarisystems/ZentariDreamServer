@@ -145,14 +145,14 @@ min_ram_map = {
     "SH_LARGE": 96,
 }
 min_disk_map = {
-    "0": 15,
-    "T0": 15,
-    "1": 30,
-    "2": 50,
-    "3": 80,
-    "4": 150,
-    "SH_COMPACT": 80,
-    "SH_LARGE": 120,
+    "0": 10,
+    "T0": 10,
+    "1": 20,
+    "2": 40,
+    "3": 60,
+    "4": 120,
+    "SH_COMPACT": 60,
+    "SH_LARGE": 100,
 }
 min_ram = min_ram_map.get(tier_key, 16)
 min_disk = min_disk_map.get(tier_key, 50)
